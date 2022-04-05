@@ -1,4 +1,50 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { GetUser } from "./auth/get-user.decorator";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { LoginUserDto } from "./dto/login-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { User } from "./user.model";
+import { UserService } from "./user.service";
 
-@Controller('user')
-export class UserController {}
+@Controller("user")
+export class UserController {
+  constructor(private userService: UserService) {}
+
+  @Post("/signup")
+  async signup(@Body() createUserDto: CreateUserDto): Promise<any> {
+    return await this.userService.createUser(createUserDto);
+  }
+
+  @Post("/login")
+  async signin(@Body() loginUserDto: LoginUserDto): Promise<any> {
+    return await this.userService.login(loginUserDto);
+  }
+
+  @UseGuards(AuthGuard())
+  @Get("/find")
+  async find(@GetUser() user: User) {
+    return await this.userService.findUser(user);
+  }
+
+  @UseGuards(AuthGuard())
+  @Patch("/update")
+  async update(@Body() updateUserDto: UpdateUserDto, @GetUser() user: User) {
+    return await this.userService.updateUser(updateUserDto, user);
+  }
+
+  @UseGuards(AuthGuard())
+  @Delete("/delete")
+  async delete(@GetUser() user: User) {
+    return await this.userService.deleteUser(user);
+  }
+}
