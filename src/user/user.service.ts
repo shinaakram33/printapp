@@ -68,7 +68,6 @@ export class UserService {
       });
       if (!user) throw new UnauthorizedException("Invalid Credentials");
       else {
-        // console.log("time", this.configService.get("JWT_EXPIRATION_TIME"));
         await this.verifyPassword(loginUserDto.password, user.password);
         const _id = user.id;
         const payload: JwtPayload = { _id };

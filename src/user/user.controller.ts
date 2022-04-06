@@ -32,13 +32,16 @@ export class UserController {
 
   @UseGuards(AuthGuard())
   @Get("/find")
-  async find(@GetUser() user: User) {
+  async findUser(@GetUser() user: User) {
     return await this.userService.findUser(user);
   }
 
   @UseGuards(AuthGuard())
   @Patch("/update")
-  async update(@Body() updateUserDto: UpdateUserDto, @GetUser() user: User) {
+  async updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @GetUser() user: User
+  ) {
     return await this.userService.updateUser(updateUserDto, user);
   }
 
