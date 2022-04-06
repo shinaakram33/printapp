@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -17,7 +17,7 @@ import { User } from "./user.model";
 import { UserService } from "./user.service";
 
 @Controller("user")
-@ApiTags('User Controller')
+@ApiTags("User Controller")
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -31,12 +31,14 @@ export class UserController {
     return await this.userService.login(loginUserDto);
   }
 
-  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   @Get("/find")
   async findUser(@GetUser() user: User) {
     return await this.userService.findUser(user);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   @Patch("/update")
   async updateUser(
@@ -46,6 +48,7 @@ export class UserController {
     return await this.userService.updateUser(updateUserDto, user);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   @Delete("/delete")
   async delete(@GetUser() user: User) {
