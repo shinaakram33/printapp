@@ -46,9 +46,11 @@ export class UserService {
     if (user) throw new BadRequestException("User already exists!");
     else {
       try {
-        const saltOrRounds = 10;
         const password = createUserDto.password;
-        const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+        const hashedPassword = await bcrypt.hash(
+          password,
+          process.env.SALT_ROUNDS
+        );
         user = await this.userModel.create({
           ...createUserDto,
           password: hashedPassword,
