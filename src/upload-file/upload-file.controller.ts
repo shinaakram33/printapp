@@ -15,7 +15,7 @@ export class UploadFileController {
     private configService: ConfigService
   ) {}
 
-  @Post("/product-image")
+  @Post("/category-image")
   @UseInterceptors(FileInterceptor("image"))
   async uploadUserProfile(
     @UploadedFile() file: Express.Multer.File

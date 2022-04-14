@@ -41,7 +41,7 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 
-# production mode
+# categoryion mode
 $ npm run start:prod
 ```
 

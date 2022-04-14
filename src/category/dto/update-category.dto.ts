@@ -1,4 +1,4 @@
-export class UpdateProductDto {
+export class UpdateCategoryDto {
   image?: string;
   title?: string;
   deliveryTime?: string;

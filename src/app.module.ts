@@ -4,8 +4,8 @@ import { AppService } from "./app.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserModule } from "./user/user.module";
 import { ConfigModule } from "@nestjs/config";
-import { ProductsModule } from './products/products.module';
-import { UploadFileModule } from './upload-file/upload-file.module';
+import { CategoryModule } from "./category/Category.module";
+import { UploadFileModule } from "./upload-file/upload-file.module";
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { UploadFileModule } from './upload-file/upload-file.module';
         uri: process.env.DB_URL,
       }),
     }),
-    ProductsModule,
+    CategoryModule,
     UploadFileModule,
   ],
   controllers: [AppController],

@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-export class AddProductDto {
+export class AddCategoryDto {
   @IsNotEmpty()
   image: string;
 

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
-enum Category {
+enum Category_types {
   BUSINESS_CARD = "BUSINESS_CARD",
   BOOKLET = "BOOKLET",
   POSTER = "POSTER",
@@ -12,7 +12,7 @@ enum Category {
 }
 
 @Schema()
-export class Products {
+export class Category {
   _id: MongooseSchema.Types.ObjectId;
 
   @Prop({ required: true })
@@ -28,9 +28,9 @@ export class Products {
   priceDescription: string;
 
   @Prop()
-  category: Category;
+  category: Category_types;
 }
 
-export type ProductDocument = Products & Document;
-const ProductSchema = SchemaFactory.createForClass(Products);
-export { ProductSchema };
+export type categoryDocument = Category & Document;
+const CategorySchema = SchemaFactory.createForClass(Category);
+export { CategorySchema };
