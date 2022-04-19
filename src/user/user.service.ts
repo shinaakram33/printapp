@@ -49,7 +49,7 @@ export class UserService {
         const password = createUserDto.password;
         const hashedPassword = await bcrypt.hash(
           password,
-          process.env.SALT_ROUNDS
+          parseInt(process.env.SALT_ROUNDS)
         );
         user = await this.userModel.create({
           ...createUserDto,
@@ -73,7 +73,6 @@ export class UserService {
         await this.verifyPassword(loginUserDto.password, user.password);
         const _id = user.id;
         const payload: JwtPayload = { _id };
-        console.log("here");
         const accessToken: string = this.jwtService.sign(payload);
         return { accessToken };
       }

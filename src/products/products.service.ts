@@ -7,68 +7,66 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Schema as MongooseSchema } from "mongoose";
-import { Category, categoryDocument } from "./Category.model";
 import { ConfigService } from "@nestjs/config";
-import { AddCategoryDto } from "./dto/add-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
+import { Model, Schema as MongooseSchema } from "mongoose";
+import { CategoryTypes, Product, productDocument } from "./products.model";
 import { User } from "../user/user.model";
+import { AddProductDto } from "./dto/add-product.dto";
+import { UpdateProductDto } from "./dto/update-product.dto";
 
 @Injectable()
-export class CategoryService {
+export class ProductsService {
   constructor(
-    @InjectModel(Category.name) private categoryModel: Model<categoryDocument>,
+    @InjectModel(Product.name) private productModel: Model<productDocument>,
     private configService: ConfigService
   ) {}
 
-  async addCategory(
-    user: User,
-    addCategoryDto: AddCategoryDto
-  ): Promise<Category> {
+  async deleteProduct(user: User, id: string) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.create(addCategoryDto);
+      var product = await this.productModel.findById(id);
+      if (!product) {
+        throw new NotFoundException("No product of this Id exists");
+      }
+      return await this.productModel.findByIdAndDelete(id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async deleteCategory(user: User, id: string) {
+  async addProduct(user: User, addProductDto: AddProductDto) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.findByIdAndDelete(id);
+      return await this.productModel.create(addProductDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findCategory(id: string): Promise<Category> {
-    try {
-      return await this.categoryModel.findById(id);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-  async updateCategory(
+  async updateProduct(
     user: User,
     id: string,
-    updateCategoryDto: UpdateCategoryDto
-  ): Promise<Category> {
+    updateProductDto: UpdateProductDto
+  ) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, {
+      var product = await this.productModel.findById(id);
+      if (!product) {
+        throw new NotFoundException("No product of this Id exists");
+      }
+      return await this.productModel.findByIdAndUpdate(id, updateProductDto, {
         new: true,
       });
     } catch (error) {
@@ -76,9 +74,10 @@ export class CategoryService {
     }
   }
 
-  async findAllCategory() {
+  async findByCategory(category: CategoryTypes) {
     try {
-      return await this.categoryModel.find();
+      console.log("category", category);
+      return await this.productModel.find({ title: category });
     } catch (error) {
       throw new BadRequestException(error.message);
     }

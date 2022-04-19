@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, BadRequestException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as AWS from "aws-sdk";
 
@@ -37,10 +37,9 @@ export class UploadFileService {
 
     try {
       let s3Response = await this.s3.upload(params).promise();
-      console.log(s3Response);
       return s3Response;
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
   }
 }

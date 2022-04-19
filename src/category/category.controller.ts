@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { AddCategoryDto } from "./dto/add-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";
-import { CategoryService } from "./Category.service";
+import { CategoryService } from "./category.service";
 import { GetUser } from "src/user/auth/get-user.decorator";
 import { User } from "../user/user.model";
 import { AuthGuard } from "@nestjs/passport";
@@ -36,24 +36,25 @@ export class CategoryController {
   @UseGuards(AuthGuard("jwt"))
   async deleteCategory(
     @GetUser() user: User,
-    @Param(":id") id: string
+    @Param("id") id: string
   ): Promise<any> {
     return await this.categoryService.deleteCategory(user, id);
   }
 
   @ApiBearerAuth()
-  @Patch("/update/id")
+  @Patch("/update/:id")
   @UseGuards(AuthGuard("jwt"))
   async updateCategory(
+    @Param("id") id: string,
     @GetUser() user: User,
-    @Body() updateCategoryDto: UpdateCategoryDto,
-    @Param(":id") id: string
+    @Body() updateCategoryDto: UpdateCategoryDto
   ): Promise<any> {
-    return await this.categoryService.updateCategory(
+    var response = await this.categoryService.updateCategory(
       user,
       id,
       updateCategoryDto
     );
+    return response;
   }
 
   @Get("/findall")

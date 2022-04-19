@@ -1,7 +1,18 @@
+import { IsOptional } from "class-validator";
+
 export class UpdateCategoryDto {
-  image?: string;
-  title?: string;
-  deliveryTime?: string;
-  priceDescription?: string;
-  category?: string;
+  @IsOptional()
+  image: string;
+
+  @IsOptional()
+  title: string;
+
+  @IsOptional()
+  deliveryTime: string;
+
+  @IsOptional()
+  priceDescription: string;
+
+  @IsOptional()
+  category: string;
 }

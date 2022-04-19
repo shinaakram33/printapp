@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
-import { CategoryController } from "./Category.controller";
-import { Category, CategorySchema } from "./Category.model";
-import { CategoryService } from "./Category.service";
+import { CategoryController } from "./category.controller";
+import { Category, CategorySchema } from "./category.model";
+import { CategoryService } from "./category.service";
 
 @Module({
   imports: [
@@ -13,6 +13,5 @@ import { CategoryService } from "./Category.service";
   ],
   controllers: [CategoryController],
   providers: [CategoryService, ConfigService],
-  exports: [CategoryService],
 })
 export class CategoryModule {}
