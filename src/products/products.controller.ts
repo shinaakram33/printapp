@@ -18,6 +18,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { CategoryTypes, Product } from "./products.model";
 
 @Controller("products")
+@ApiTags("Products Controller")
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 

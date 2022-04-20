@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { CategoryModule } from "./category/category.module";
 import { UploadFileModule } from "./upload-file/upload-file.module";
 import { ProductsModule } from "./products/products.module";
+import { HomeSliderModule } from './home-slider/home-slider.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProductsModule } from "./products/products.module";
     CategoryModule,
     UploadFileModule,
     ProductsModule,
+    HomeSliderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
