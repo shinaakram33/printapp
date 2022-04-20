@@ -76,7 +76,6 @@ export class ProductsService {
 
   async findByCategory(category: CategoryTypes) {
     try {
-      console.log("category", category);
       return await this.productModel.find({ title: category });
     } catch (error) {
       throw new BadRequestException(error.message);
