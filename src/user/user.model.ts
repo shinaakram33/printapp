@@ -1,32 +1,33 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Document, Schema as MongooseSchema } from "mongoose";
 
+enum Role {
+  USER = "USER",
+  ADMIN = "ADMIN",
+}
 @Schema()
 export class User {
   _id: MongooseSchema.Types.ObjectId;
 
   @Prop({ required: true })
-  first_name: string;
+  firstName: string;
 
   @Prop({ required: true })
-  last_name: string;
-
-  full_name: string;
+  lastName: string;
 
   @Prop({ required: true })
   phone: string;
-  
+
   @Prop()
   email: string;
 
   @Prop()
   password: string;
-  
+
+  @Prop()
+  role: Role;
 }
 
 export type UserDocument = User & Document;
 const UserSchema = SchemaFactory.createForClass(User);
-UserSchema.virtual('full_name').get(function (this: UserDocument) {
-    return `${this.first_name} ${this.last_name}`;
-});
-export { UserSchema }
+export { UserSchema };

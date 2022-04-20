@@ -46,9 +46,11 @@ export class UserService {
     if (user) throw new BadRequestException("User already exists!");
     else {
       try {
-        const saltOrRounds = 10;
         const password = createUserDto.password;
-        const hashedPassword = await bcrypt.hash(password, saltOrRounds);
+        const hashedPassword = await bcrypt.hash(
+          password,
+          parseInt(process.env.SALT_ROUNDS)
+        );
         user = await this.userModel.create({
           ...createUserDto,
           password: hashedPassword,
@@ -68,11 +70,9 @@ export class UserService {
       });
       if (!user) throw new UnauthorizedException("Invalid Credentials");
       else {
-        // console.log("time", this.configService.get("JWT_EXPIRATION_TIME"));
         await this.verifyPassword(loginUserDto.password, user.password);
         const _id = user.id;
         const payload: JwtPayload = { _id };
-        console.log("here");
         const accessToken: string = this.jwtService.sign(payload);
         return { accessToken };
       }

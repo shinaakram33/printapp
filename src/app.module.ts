@@ -3,17 +3,23 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserModule } from "./user/user.module";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
+import { CategoryModule } from "./category/category.module";
+import { UploadFileModule } from "./upload-file/upload-file.module";
+import { ProductsModule } from "./products/products.module";
 
 @Module({
   imports: [
     UserModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
-      useFactory: () => ({
-        uri: "mongodb+srv://noorulhuda:password12345678@print-app.0xtio.mongodb.net/PrintApp?retryWrites=true&w=majority",
+      useFactory: async () => ({
+        uri: process.env.DB_URL,
       }),
     }),
+    CategoryModule,
+    UploadFileModule,
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
