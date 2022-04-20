@@ -5,77 +5,75 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Schema as MongooseSchema } from "mongoose";
-import { Category, categoryDocument } from "./Category.model";
 import { ConfigService } from "@nestjs/config";
-import { AddCategoryDto } from "./dto/add-category.dto";
-import { UpdateCategoryDto } from "./dto/update-category.dto";
 import { User } from "../user/user.model";
+import { HomeSlider, homeSliderDocument } from "./home-slider.model";
+import { AddHomeSliderDto } from "./dto/add-homeSlider.dto";
+import { UpdateHomeSliderDto } from "./dto/update-homeSlider.dto";
 
 @Injectable()
-export class CategoryService {
+export class HomeSliderService {
   constructor(
-    @InjectModel(Category.name) private categoryModel: Model<categoryDocument>,
+    @InjectModel(HomeSlider.name)
+    private homeSliderModel: Model<homeSliderDocument>,
     private configService: ConfigService
   ) {}
 
-  async addCategory(
+  async addSlider(
     user: User,
-    addCategoryDto: AddCategoryDto
-  ): Promise<Category> {
+    addhomeSliderDto: AddHomeSliderDto
+  ): Promise<HomeSlider> {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.create(addCategoryDto);
+      return await this.homeSliderModel.create(addhomeSliderDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async deleteCategory(user: User, id: string) {
+  async deleteSlider(user: User, id: string) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.findByIdAndDelete(id);
+      return await this.homeSliderModel.findByIdAndDelete(id);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findCategory(id: string): Promise<Category> {
-    try {
-      return await this.categoryModel.findById(id);
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-  async updateCategory(
+  async updateSlider(
     user: User,
     id: string,
-    updateCategoryDto: UpdateCategoryDto
-  ): Promise<Category> {
+    updateHomeSliderDto: UpdateHomeSliderDto
+  ): Promise<HomeSlider> {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, {
-        new: true,
-      });
+      return await this.homeSliderModel.findByIdAndUpdate(
+        id,
+        updateHomeSliderDto,
+        {
+          new: true,
+        }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findAllCategory() {
+  async findAllSlides() {
     try {
-      return await this.categoryModel.find();
+      return await this.homeSliderModel.find();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
