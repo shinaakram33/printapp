@@ -10,6 +10,7 @@ import {
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
+import { AddAddressDto } from "./dto/add-address.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -46,6 +47,16 @@ export class UserController {
     @GetUser() user: User
   ) {
     return await this.userService.updateUser(updateUserDto, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/address/add/")
+  async updateAddress(
+    @Body() addAddressDto: AddAddressDto,
+    @GetUser() user: User
+  ) {
+    return await this.userService.addAddress(addAddressDto, user);
   }
 
   @ApiBearerAuth()

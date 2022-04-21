@@ -5,6 +5,32 @@ enum Role {
   USER = "USER",
   ADMIN = "ADMIN",
 }
+
+class Address extends Document {
+  @Prop({ required: true })
+  fullName: String;
+
+  @Prop({ required: false })
+  companyName: String;
+
+  @Prop({ required: true })
+  addressLine1: String;
+
+  @Prop({ required: true })
+  addressLine2: String;
+
+  @Prop({ required: true })
+  area: String;
+
+  @Prop({ required: true })
+  district: String;
+
+  @Prop({ required: true })
+  cityCountry: String;
+
+  @Prop({ required: true })
+  contactNumber: String;
+}
 @Schema()
 export class User {
   _id: MongooseSchema.Types.ObjectId;
@@ -18,14 +44,17 @@ export class User {
   @Prop({ required: true })
   phone: string;
 
-  @Prop()
+  @Prop({ required: true })
   email: string;
 
-  @Prop()
+  @Prop({ required: true })
   password: string;
 
-  @Prop()
+  @Prop({ required: true })
   role: Role;
+
+  @Prop({ required: false })
+  addresses: Address[];
 }
 
 export type UserDocument = User & Document;

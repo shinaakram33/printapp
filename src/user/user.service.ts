@@ -16,6 +16,7 @@ import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "./auth/jwt-payload.interface";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
+import { AddAddressDto } from "./dto/add-address.dto";
 
 @Injectable()
 export class UserService {
@@ -114,6 +115,27 @@ export class UserService {
   async deleteUser(user: User): Promise<User> {
     try {
       return await this.userModel.findByIdAndDelete(user._id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+    try {
+      return await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { $push: { addresses: addAddressDto } },
+          { safe: true, upsert: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
+          }
+        )
+        .clone();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
