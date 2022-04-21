@@ -1,77 +1,152 @@
 import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { CategoryTypes } from "../products.model";
+import { ApiProperty } from "@nestjs/swagger";
+
+class Category {
+  @ApiProperty()
+  name: String;
+
+  @ApiProperty()
+  pricePerHunderd: String;
+
+  @ApiProperty()
+  description: String;
+
+  @ApiProperty()
+  paperType: String;
+
+  @ApiProperty()
+  leadTime: String;
+
+  @ApiProperty()
+  colour: String;
+
+  @ApiProperty()
+  sizes: String;
+}
+
+class Size {
+  @ApiProperty()
+  name: String;
+
+  @ApiProperty()
+  description: String;
+}
+
+class PriceChart {
+  @ApiProperty()
+  quantity: String;
+
+  @ApiProperty()
+  unitPrice: String;
+}
+
+class NumberOfPages {
+  @ApiProperty()
+  pageName?: String;
+
+  @ApiProperty()
+  number?: number;
+}
+
+class Corner {
+  @ApiProperty()
+  cornerName?: String;
+
+  @ApiProperty()
+  cornerDescription?: String;
+}
+
+class Cut {
+  @ApiProperty()
+  cutName?: String;
+
+  @ApiProperty()
+  cutDescription?: String;
+}
+
+class Window {
+  @ApiProperty()
+  windowName?: String;
+
+  @ApiProperty()
+  windowDescription?: String;
+}
+
+class Folding {
+  @ApiProperty()
+  foldingName?: String;
+
+  @ApiProperty()
+  foldingDescription?: String;
+}
 export class AddProductDto {
+  @ApiProperty()
   @IsNotEmpty()
   image: [];
 
+  @ApiProperty()
   @IsEnum(CategoryTypes)
   @IsNotEmpty()
   title: CategoryTypes;
 
+  @ApiProperty()
   @IsNotEmpty()
-  category: {
-    name: String;
-    pricePerHunderd: String;
-    description: String;
-    paperType: String;
-    leadTime: String;
-    colour: String;
-    sizes: String;
-  };
+  category: Category;
+
+  @ApiProperty()
   @IsNotEmpty()
-  size: {
-    name: String;
-    description: String;
-  };
+  size: Size;
+
+  @ApiProperty()
   @IsNotEmpty()
-  priceChart: [
-    {
-      quantity: String;
-      unitPrice: String;
-    }
-  ];
+  priceChart: PriceChart[];
+
+  @ApiProperty()
   @IsNotEmpty()
   preview: Boolean;
 
+  @ApiProperty()
   @IsNotEmpty()
   designUrl: String;
 
+  @ApiProperty()
   @IsNotEmpty()
   remarks: String;
 
+  @ApiProperty()
   @IsOptional()
-  numberOfPages?: {
-    pageName?: String;
-    number?: number;
-  };
+  numberOfPages?: NumberOfPages;
 
+  @ApiProperty()
   @IsOptional()
-  corner?: {
-    cornerName?: String;
-    cornerDescription?: String;
-  };
+  corner?: Corner;
 
+  @ApiProperty()
   @IsOptional()
-  cut?: {
-    cutName?: String;
-    cutDescription?: String;
-  };
+  cut?: Cut;
 
+  @ApiProperty()
   @IsOptional()
-  window?: {
-    windowName?: String;
-    windowDescription?: String;
-  };
+  window?: Window;
 
+  @ApiProperty()
+  @IsOptional()
+  folding?: Folding;
+
+  @ApiProperty()
   @IsOptional()
   paperType?: String[];
 
+  @ApiProperty()
   @IsOptional()
   spotUV?: String[];
 
+  @ApiProperty()
   @IsOptional()
   finishing?: String[];
 
+  @ApiProperty()
   @IsOptional()
   numberOfSides?: String[];
 }

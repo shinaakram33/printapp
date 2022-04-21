@@ -35,10 +35,7 @@ export class UserService {
       hashedPassword
     );
     if (!isPasswordMatching) {
-      throw new HttpException(
-        "Wrong credentials provided",
-        HttpStatus.BAD_REQUEST
-      );
+      throw new UnauthorizedException("Invalid Credentials");
     }
   }
 
