@@ -39,7 +39,16 @@ export class UserService {
     }
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  private async signToken(userId: string) {
+    const _id = userId;
+    const payload: JwtPayload = { _id };
+    const accessToken: string = this.jwtService.sign(payload);
+    return accessToken;
+  }
+
+  async createUser(
+    createUserDto: CreateUserDto
+  ): Promise<{ accessToken: string }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) throw new BadRequestException("User already exists!");
     else {
@@ -58,7 +67,8 @@ export class UserService {
       }
     }
     await user.save();
-    return await this.findUser(user);
+    const accessToken = await this.signToken(user.id);
+    return { accessToken };
   }
 
   async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
@@ -69,9 +79,7 @@ export class UserService {
       if (!user) throw new UnauthorizedException("Invalid Credentials");
       else {
         await this.verifyPassword(loginUserDto.password, user.password);
-        const _id = user.id;
-        const payload: JwtPayload = { _id };
-        const accessToken: string = this.jwtService.sign(payload);
+        const accessToken = await this.signToken(user.id);
         return { accessToken };
       }
     } catch (error) {
