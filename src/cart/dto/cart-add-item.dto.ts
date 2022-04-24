@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
-import { CategoryTypes } from "../products.model";
+import { CategoryTypes } from "../../products/products.model";
 import { ApiProperty } from "@nestjs/swagger";
 
 class Category {
@@ -80,7 +80,7 @@ class Folding {
   @ApiProperty()
   foldingDescription?: String;
 }
-export class AddProductDto {
+export class CartAddItemDto {
   @ApiProperty()
   @IsNotEmpty()
   image: [];
@@ -100,7 +100,7 @@ export class AddProductDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  priceChart: PriceChart[];
+  priceChart: PriceChart;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -148,5 +148,5 @@ export class AddProductDto {
 
   @ApiProperty()
   @IsOptional()
-  numberOfSides?: String[];
+  numberOfSides?: String;
 }

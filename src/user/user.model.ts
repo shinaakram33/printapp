@@ -6,7 +6,7 @@ enum Role {
   ADMIN = "ADMIN",
 }
 
-class Address extends Document {
+export class Address extends Document {
   @Prop({ required: true })
   fullName: String;
 
