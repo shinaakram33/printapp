@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Schema as MongooseSchema } from "mongoose";
-import { Category, categoryDocument } from "./Category.model";
+import { Category, categoryDocument } from "./category.model";
 import { ConfigService } from "@nestjs/config";
 import { AddCategoryDto } from "./dto/add-category.dto";
 import { UpdateCategoryDto } from "./dto/update-category.dto";

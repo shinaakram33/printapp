@@ -84,6 +84,14 @@ class Window extends Document {
   windowDescription: String;
 }
 
+class Folding extends Document {
+  @Prop()
+  foldingName: String;
+
+  @Prop()
+  foldingDescription: String;
+}
+
 @Schema()
 export class Product {
   _id: MongooseSchema.Types.ObjectId;
@@ -135,6 +143,9 @@ export class Product {
 
   @ApiPropertyOptional()
   window: Window;
+
+  @ApiPropertyOptional()
+  folding: Folding;
 }
 
 export type productDocument = Product & Document;

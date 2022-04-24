@@ -1,23 +1,29 @@
 import { IsNotEmpty } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-export class AddCategoryDto {
+import { Product } from "../../products/products.model";
+
+export class CreateCartDto {
   @ApiProperty()
   @IsNotEmpty()
-  image: string;
+  products: Product[];
 
   @ApiProperty()
   @IsNotEmpty()
-  title: string;
+  userId: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  deliveryTime: string;
+  subTotal: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  priceDescription: string;
+  discount: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  category: string;
+  deliveryCharges: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  total: number;
 }

@@ -16,6 +16,7 @@ import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "./auth/jwt-payload.interface";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
+import { AddAddressDto } from "./dto/add-address.dto";
 
 @Injectable()
 export class UserService {
@@ -34,14 +35,20 @@ export class UserService {
       hashedPassword
     );
     if (!isPasswordMatching) {
-      throw new HttpException(
-        "Wrong credentials provided",
-        HttpStatus.BAD_REQUEST
-      );
+      throw new UnauthorizedException("Invalid Credentials");
     }
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  private async signToken(userId: string) {
+    const _id = userId;
+    const payload: JwtPayload = { _id };
+    const accessToken: string = this.jwtService.sign(payload);
+    return accessToken;
+  }
+
+  async createUser(
+    createUserDto: CreateUserDto
+  ): Promise<{ accessToken: string }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
     if (user) throw new BadRequestException("User already exists!");
     else {
@@ -60,7 +67,8 @@ export class UserService {
       }
     }
     await user.save();
-    return await this.findUser(user);
+    const accessToken = await this.signToken(user.id);
+    return { accessToken };
   }
 
   async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
@@ -71,9 +79,7 @@ export class UserService {
       if (!user) throw new UnauthorizedException("Invalid Credentials");
       else {
         await this.verifyPassword(loginUserDto.password, user.password);
-        const _id = user.id;
-        const payload: JwtPayload = { _id };
-        const accessToken: string = this.jwtService.sign(payload);
+        const accessToken = await this.signToken(user.id);
         return { accessToken };
       }
     } catch (error) {
@@ -114,6 +120,27 @@ export class UserService {
   async deleteUser(user: User): Promise<User> {
     try {
       return await this.userModel.findByIdAndDelete(user._id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+    try {
+      return await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { $push: { addresses: addAddressDto } },
+          { safe: true, upsert: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
+          }
+        )
+        .clone();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
