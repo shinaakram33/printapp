@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 import { Product } from "../products/products.model";
-import { Address } from "../user/user.model";
 import mongoose from "mongoose";
 @Schema()
 export class Cart {

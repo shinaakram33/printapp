@@ -46,7 +46,10 @@ class Cut {
   cutName?: String;
 
   @ApiProperty()
-  cutDescription?: String;
+  cutHeight?: String;
+
+  @ApiProperty()
+  cutWidth?: String;
 }
 
 class Window {
@@ -54,7 +57,10 @@ class Window {
   windowName?: String;
 
   @ApiProperty()
-  windowDescription?: String;
+  windowHeight?: String;
+
+  @ApiProperty()
+  windowWidth?: String;
 }
 
 class Folding {
@@ -62,7 +68,10 @@ class Folding {
   foldingName?: String;
 
   @ApiProperty()
-  foldingDescription?: String;
+  foldingHeight?: String;
+
+  @ApiProperty()
+  foldingWidth?: String;
 }
 
 class Size {
@@ -70,7 +79,10 @@ class Size {
   name?: String;
 
   @ApiProperty()
-  description?: String;
+  height?: String;
+
+  @ApiProperty()
+  Width?: String;
 }
 
 class PriceChart {
@@ -96,7 +108,7 @@ export class UpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
-  size?: Size;
+  size?: Size[];
 
   @ApiProperty()
   @IsOptional()
@@ -116,23 +128,31 @@ export class UpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
-  numberOfPages?: NumberOfPages;
+  feature1?: String;
 
   @ApiProperty()
   @IsOptional()
-  corner?: Corner;
+  feature2?: String;
 
   @ApiProperty()
   @IsOptional()
-  cut?: Cut;
+  numberOfPages?: NumberOfPages[];
 
   @ApiProperty()
   @IsOptional()
-  window?: Window;
+  corner?: Corner[];
 
   @ApiProperty()
   @IsOptional()
-  folding?: Folding;
+  cut?: Cut[];
+
+  @ApiProperty()
+  @IsOptional()
+  window?: Window[];
+
+  @ApiProperty()
+  @IsOptional()
+  folding?: Folding[];
 
   @ApiProperty()
   @IsOptional()

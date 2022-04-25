@@ -41,7 +41,10 @@ class Size extends Document {
   name: String;
 
   @Prop({ required: true })
-  description: String;
+  height: String;
+
+  @Prop({ required: true })
+  width: String;
 }
 
 class PriceChart extends Document {
@@ -73,7 +76,10 @@ class Cut extends Document {
   cutName: String;
 
   @Prop()
-  cutDescription: String;
+  cutHeight: String;
+
+  @Prop()
+  cutWidth: String;
 }
 
 class Window extends Document {
@@ -81,7 +87,10 @@ class Window extends Document {
   windowName: String;
 
   @Prop()
-  windowDescription: String;
+  windowHeight: String;
+
+  @Prop()
+  windowWidth: String;
 }
 
 class Folding extends Document {
@@ -89,7 +98,10 @@ class Folding extends Document {
   foldingName: String;
 
   @Prop()
-  foldingDescription: String;
+  foldingHeight: String;
+
+  @Prop()
+  foldingWidth: String;
 }
 
 @Schema()
@@ -106,7 +118,7 @@ export class Product {
   category: Category;
 
   @Prop({ required: true })
-  size: Size;
+  size: Size[];
 
   @Prop({ required: true })
   priceChart: [{ type: PriceChart }];
@@ -120,8 +132,14 @@ export class Product {
   @Prop({ required: true })
   remarks: String;
 
+  @Prop({ required: true })
+  feature1: String;
+
+  @Prop({ required: true })
+  feature2: String;
+
   @ApiPropertyOptional()
-  corner: Corner;
+  corner: Corner[];
 
   @ApiPropertyOptional()
   paperType: String[];
@@ -136,16 +154,16 @@ export class Product {
   numberOfSides: String[];
 
   @ApiPropertyOptional()
-  numberOfPages: NumberOfPages;
+  numberOfPages: NumberOfPages[];
 
   @ApiPropertyOptional()
-  cut: Cut;
+  cut: Cut[];
 
   @ApiPropertyOptional()
-  window: Window;
+  window: Window[];
 
   @ApiPropertyOptional()
-  folding: Folding;
+  folding: Folding[];
 }
 
 export type productDocument = Product & Document;
