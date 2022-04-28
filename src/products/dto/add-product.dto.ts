@@ -10,6 +10,9 @@ class Category {
   pricePerHunderd: String;
 
   @ApiProperty()
+  productType: String;
+
+  @ApiProperty()
   description: String;
 
   @ApiProperty()
@@ -33,7 +36,7 @@ class Size {
   height: String;
 
   @ApiProperty()
-  Width: String;
+  width: String;
 }
 
 class PriceChart {

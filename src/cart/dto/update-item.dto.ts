@@ -1,4 +1,4 @@
-import { CategoryTypes } from "../products.model";
+import { CategoryTypes } from "../../products/products.model";
 import { IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 class Category {
@@ -92,7 +92,7 @@ class PriceChart {
   unitPrice?: String;
 }
 
-export class UpdateProductDto {
+export class UpdateItemDto {
   @ApiProperty()
   @IsOptional()
   image: string;
@@ -135,37 +135,37 @@ export class UpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
-  numberOfPages?: NumberOfPages[];
+  numberOfPages?: NumberOfPages;
 
   @ApiProperty()
   @IsOptional()
-  corner?: Corner[];
+  corner?: Corner;
 
   @ApiProperty()
   @IsOptional()
-  cut?: Cut[];
+  cut?: Cut;
 
   @ApiProperty()
   @IsOptional()
-  window?: Window[];
+  window?: Window;
 
   @ApiProperty()
   @IsOptional()
-  folding?: Folding[];
+  folding?: Folding;
 
   @ApiProperty()
   @IsOptional()
-  paperType?: String[];
+  paperType?: String;
 
   @ApiProperty()
   @IsOptional()
-  spotUV?: String[];
+  spotUV?: String;
 
   @ApiProperty()
   @IsOptional()
-  finishing?: String[];
+  finishing?: String;
 
   @ApiProperty()
   @IsOptional()
-  numberOfSides?: String[];
+  numberOfSides?: String;
 }
