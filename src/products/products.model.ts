@@ -43,11 +43,14 @@ class Size extends Document {
   @Prop({ required: true })
   name: String;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   height: String;
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   width: String;
+
+  @Prop({ required: false })
+  image: String;
 }
 
 const SizeSchema = SchemaFactory.createForClass(Size);

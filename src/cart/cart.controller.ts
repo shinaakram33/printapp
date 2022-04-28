@@ -30,6 +30,13 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
+  @Post("/empty")
+  async emptyCart(@GetUser() user: User): Promise<any> {
+    return await this.cartService.emptyCart(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   @Patch("/item/add")
   async addItemToCart(
     @Body() cartAddItemDto: CartAddItemDto,

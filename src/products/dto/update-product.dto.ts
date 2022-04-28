@@ -82,6 +82,9 @@ class Size {
 
   @ApiProperty()
   Width?: String;
+
+  @ApiProperty()
+  image?: String;
 }
 
 class PriceChart {

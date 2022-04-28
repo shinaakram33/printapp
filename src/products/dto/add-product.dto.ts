@@ -4,95 +4,125 @@ import { ApiProperty } from "@nestjs/swagger";
 
 class Category {
   @ApiProperty()
+  @IsNotEmpty()
   name: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   pricePerHunderd: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   productType: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   description: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   paperType: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   leadTime: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   colour: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   sizes: String;
 }
 
 class Size {
   @ApiProperty()
+  @IsNotEmpty()
   name: String;
 
   @ApiProperty()
+  @IsOptional()
   height: String;
 
   @ApiProperty()
+  @IsOptional()
   width: String;
+
+  @ApiProperty()
+  @IsOptional()
+  image: String;
 }
 
 class PriceChart {
   @ApiProperty()
+  @IsNotEmpty()
   quantity: String;
 
+  @IsNotEmpty()
   @ApiProperty()
   unitPrice: String;
 }
 
 class NumberOfPages {
+  @IsNotEmpty()
   @ApiProperty()
   pageName?: String;
 
+  @IsNotEmpty()
   @ApiProperty()
   number?: number[];
 }
 
 class Corner {
+  @IsNotEmpty()
   @ApiProperty()
   cornerName?: String;
 
+  @IsNotEmpty()
   @ApiProperty()
   cornerDescription?: String;
 }
 
 class Cut {
   @ApiProperty()
+  @IsNotEmpty()
   cutName?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   cutHeight?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   cutWidth?: String;
 }
 
 class Window {
   @ApiProperty()
+  @IsNotEmpty()
   windowName?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   windowHeight?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   windowWidth?: String;
 }
 
 class Folding {
   @ApiProperty()
+  @IsNotEmpty()
   foldingName?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   foldingHeight?: String;
 
   @ApiProperty()
+  @IsNotEmpty()
   foldingWidth?: String;
 }
 export class AddProductDto {
