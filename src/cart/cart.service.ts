@@ -88,20 +88,7 @@ export class CartService {
   ) {
     try {
       const cart = await this.findCart(user);
-      return await this.cartModel
-        .findByIdAndUpdate(
-          cart._id,
-          { $pull: { products: { _id: itemId } } },
-          { safe: true, upsert: true },
-          (error, newCart) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newCart;
-            }
-          }
-        )
-        .clone();
+      return await cart.products.findByIdAndUpdate(itemId, updateItemDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -110,6 +97,9 @@ export class CartService {
   async emptyCart(user: User) {
     try {
       const cart = await this.findCart(user);
+      if (!cart) {
+        throw new BadRequestException("This user has no Cart");
+      }
       return await this.cartModel.updateOne(
         { _id: cart._id },
         { $set: { products: [] } },

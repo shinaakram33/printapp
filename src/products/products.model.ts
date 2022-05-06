@@ -84,6 +84,9 @@ class Corner extends Document {
 
   @Prop()
   cornerDescription: String;
+
+  @Prop()
+  image: String;
 }
 
 const CornerSchema = SchemaFactory.createForClass(Corner);

@@ -82,6 +82,10 @@ class Corner {
   @IsNotEmpty()
   @ApiProperty()
   cornerDescription?: String;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  image?: String;
 }
 
 class Cut {
