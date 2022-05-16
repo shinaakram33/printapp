@@ -130,8 +130,8 @@ export class UserService {
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
-          { $push: { addresses: addAddressDto } },
-          { safe: true, upsert: true },
+          { $addToSet: { addresses: addAddressDto } },
+          { safe: true, upsert: true, new: true },
           (error, newUser) => {
             if (error) {
               throw new BadRequestException(error.message);
@@ -141,6 +141,72 @@ export class UserService {
           }
         )
         .clone();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+    try {
+      return await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { $pull: { addresses: { _id: addAddressDto } } },
+          { safe: true, upsert: true, new: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
+          }
+        )
+        .clone();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateAddress(
+    updateAddressDto: AddAddressDto,
+    user: User,
+    addressId: string
+  ): Promise<any> {
+    try {
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id, "addresses._id": addressId },
+        {
+          $set: {
+            "portfolio.$.fullname": updateAddressDto.fullName,
+            "portfolio.$.companyName": updateAddressDto.companyName,
+            "portfolio.$.addressLine1": updateAddressDto.addressLine1,
+            "portfolio.$.addressLine2": updateAddressDto.addressLine2,
+            "portfolio.$.district": updateAddressDto.district,
+            "portfolio.$.cityCoutry": updateAddressDto.cityCountry,
+            "portfolio.$.contactNumber": updateAddressDto.contactNumber,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllAddresses(user: User): Promise<any> {
+    try {
+      const addresses = await this.userModel
+        .findById(user._id)
+        .select("addresses");
+      if (!addresses) throw new NotFoundException("User not found!");
+      else return addresses;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
