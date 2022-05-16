@@ -100,6 +100,9 @@ class Cut extends Document {
 
   @Prop()
   cutWidth: String;
+
+  @Prop()
+  image: string;
 }
 
 const CutSchema = SchemaFactory.createForClass(Cut);
