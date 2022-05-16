@@ -100,6 +100,10 @@ class Cut {
   @ApiProperty()
   @IsNotEmpty()
   cutWidth?: String;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  image?: String;
 }
 
 class Window {
@@ -165,7 +169,7 @@ export class AddProductDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  designUrl: String;
+  designUrl: String[];
 
   @ApiProperty()
   @IsNotEmpty()

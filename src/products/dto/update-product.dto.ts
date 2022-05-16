@@ -3,95 +3,121 @@ import { IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 class Category {
   @ApiProperty()
+  @IsOptional()
   name?: String;
 
   @ApiProperty()
+  @IsOptional()
   pricePerHunderd?: String;
 
   @ApiProperty()
+  @IsOptional()
   description?: String;
 
   @ApiProperty()
+  @IsOptional()
   paperType?: String;
 
   @ApiProperty()
+  @IsOptional()
   leadTime?: String;
 
   @ApiProperty()
+  @IsOptional()
   colour?: String;
 
   @ApiProperty()
+  @IsOptional()
   sizes?: String;
 }
 
 class NumberOfPages {
   @ApiProperty()
+  @IsOptional()
   pageName?: String;
 
   @ApiProperty()
+  @IsOptional()
   number?: number;
 }
 
 class Corner {
   @ApiProperty()
+  @IsOptional()
   cornerName?: String;
 
   @ApiProperty()
+  @IsOptional()
   cornerDescription?: String;
 }
 
 class Cut {
   @ApiProperty()
+  @IsOptional()
   cutName?: String;
 
   @ApiProperty()
+  @IsOptional()
   cutHeight?: String;
 
   @ApiProperty()
+  @IsOptional()
   cutWidth?: String;
 }
 
 class Window {
   @ApiProperty()
+  @IsOptional()
   windowName?: String;
 
   @ApiProperty()
+  @IsOptional()
   windowHeight?: String;
 
   @ApiProperty()
+  @IsOptional()
   windowWidth?: String;
 }
 
 class Folding {
   @ApiProperty()
+  @IsOptional()
   foldingName?: String;
 
   @ApiProperty()
+  @IsOptional()
   foldingHeight?: String;
 
   @ApiProperty()
+  @IsOptional()
   foldingWidth?: String;
 }
 
 class Size {
   @ApiProperty()
+  @IsOptional()
   name?: String;
 
   @ApiProperty()
+  @IsOptional()
   height?: String;
 
   @ApiProperty()
+  @IsOptional()
   Width?: String;
 
   @ApiProperty()
+  @IsOptional()
   image?: String;
 }
 
 class PriceChart {
   @ApiProperty()
+  @IsOptional()
   quantity?: String;
 
   @ApiProperty()
+  @IsOptional()
   unitPrice?: String;
 }
 

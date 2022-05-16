@@ -10,7 +10,7 @@ import { User } from "../user/user.model";
 import { PriceChart, priceChartDocument } from "./priceChart.model";
 
 @Injectable()
-export class HomeSliderService {
+export class PriceChartService {
   constructor(
     @InjectModel(PriceChart.name)
     private priceChartModel: Model<priceChartDocument>,

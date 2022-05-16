@@ -155,7 +155,7 @@ export class Product {
   preview: Boolean;
 
   @Prop({ required: true })
-  designUrl: String;
+  designUrl: String[];
 
   @Prop({ required: true })
   remarks: String;
