@@ -13,39 +13,56 @@ import { User } from "../user/user.model";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { CartService } from "./cart.service";
-import { CreateCartDto } from "./dto/create-cart.dto";
 import { CartAddItemDto } from "./dto/cart-add-item.dto";
+import { UpdateItemDto } from "./dto/update-item.dto";
 
+@ApiTags("Cart Controller")
 @Controller("cart")
 export class CartController {
   constructor(private cartService: CartService) {}
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Get("/")
+  @Post("/")
   async findCart(@GetUser() user: User): Promise<any> {
-    return await this.cartService.findCart(user);
+    return await this.cartService.createCart(user);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Post("/item/add")
+  @Post("/empty")
+  async emptyCart(@GetUser() user: User): Promise<any> {
+    return await this.cartService.emptyCart(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Patch("/item/add")
   async addItemToCart(
     @Body() cartAddItemDto: CartAddItemDto,
-    @Body() createCartDto: CreateCartDto,
     @GetUser() user: User
   ): Promise<any> {
-    return await this.cartService.cartAddItem(
-      user,
-      cartAddItemDto,
-      createCartDto
-    );
+    return await this.cartService.cartAddItem(user, cartAddItemDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Delete("/item/delete/:itemId")
+  @Patch("/item/delete/:itemId")
   async removeItemFromCart(
     @Param("itemId") itemId: string,
     @GetUser() user: User
   ): Promise<any> {
     return await this.cartService.cartRemoveItem(user, itemId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Delete("/item/update/:itemId")
+  async updateItemFromCart(
+    @Param("itemId") itemId: string,
+    @GetUser() user: User,
+    @Body() updateItemDto: UpdateItemDto
+  ): Promise<any> {
+    return await this.cartService.cartUpdateItem(user, itemId, updateItemDto);
   }
 }
