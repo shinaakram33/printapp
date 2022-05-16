@@ -146,12 +146,12 @@ export class UserService {
     }
   }
 
-  async deleteAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+  async deleteAddress(addressId: String, user: User): Promise<any> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
-          { $pull: { addresses: { _id: addAddressDto } } },
+          { $pull: { addresses: { _id: addressId } } },
           { safe: true, upsert: true, new: true },
           (error, newUser) => {
             if (error) {
@@ -170,7 +170,7 @@ export class UserService {
   async updateAddress(
     updateAddressDto: AddAddressDto,
     user: User,
-    addressId: string
+    addressId: String
   ): Promise<any> {
     try {
       return await this.userModel.findOneAndUpdate(

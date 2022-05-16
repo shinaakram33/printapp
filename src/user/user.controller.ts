@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Patch,
   Post,
   UseGuards,
@@ -13,6 +14,7 @@ import { GetUser } from "./auth/get-user.decorator";
 import { AddAddressDto } from "./dto/add-address.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
+import { UpdateAddressDto } from "./dto/update-address.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./user.model";
 import { UserService } from "./user.service";
@@ -52,11 +54,43 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
   @Patch("/address/add/")
-  async updateAddress(
+  async addAddress(
     @Body() addAddressDto: AddAddressDto,
     @GetUser() user: User
   ) {
     return await this.userService.addAddress(addAddressDto, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/address/update/:addressId")
+  async updateAddress(
+    @Body() updateAddressDto: UpdateAddressDto,
+    @GetUser() user: User,
+    @Param("addressId") addressId: String
+  ) {
+    return await this.userService.updateAddress(
+      updateAddressDto,
+      user,
+      addressId
+    );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/address/delete/:addressId")
+  async deleteAddress(
+    @GetUser() user: User,
+    @Param("addressId") addressId: String
+  ) {
+    return await this.userService.deleteAddress(addressId, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/address/getall/")
+  async getAllAddresses(@GetUser() user: User) {
+    return await this.userService.getAllAddresses(user);
   }
 
   @ApiBearerAuth()
