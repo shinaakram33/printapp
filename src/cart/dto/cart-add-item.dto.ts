@@ -30,7 +30,10 @@ class Size {
   name: String;
 
   @ApiProperty()
-  description: String;
+  height: String;
+
+  @ApiProperty()
+  width: String;
 }
 
 class PriceChart {
@@ -62,7 +65,9 @@ class Cut {
   cutName?: String;
 
   @ApiProperty()
-  cutDescription?: String;
+  cutHeight?: String;
+
+  cutWidth?: String;
 }
 
 class Window {
@@ -70,7 +75,10 @@ class Window {
   windowName?: String;
 
   @ApiProperty()
-  windowDescription?: String;
+  windowHeight?: String;
+
+  @ApiProperty()
+  windowWidth?: String;
 }
 
 class Folding {
@@ -78,7 +86,10 @@ class Folding {
   foldingName?: String;
 
   @ApiProperty()
-  foldingDescription?: String;
+  foldingHeight?: String;
+
+  @ApiProperty()
+  foldingWidth?: String;
 }
 export class CartAddItemDto {
   @ApiProperty()
@@ -136,15 +147,15 @@ export class CartAddItemDto {
 
   @ApiProperty()
   @IsOptional()
-  paperType?: String[];
+  paperType?: String;
 
   @ApiProperty()
   @IsOptional()
-  spotUV?: String[];
+  spotUV?: String;
 
   @ApiProperty()
   @IsOptional()
-  finishing?: String[];
+  finishing?: String;
 
   @ApiProperty()
   @IsOptional()

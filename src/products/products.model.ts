@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiPropertyOptional } from "@nestjs/swagger";
 import { Document, Schema as MongooseSchema } from "mongoose";
-import Api from "twilio/lib/rest/Api";
 
 export enum CategoryTypes {
   BUSINESS_CARD = "BUSINESS_CARD",
@@ -16,6 +14,9 @@ export enum CategoryTypes {
 class Category extends Document {
   @Prop({ required: true })
   name: String;
+
+  @Prop({ required: true })
+  productType: String;
 
   @Prop({ required: true })
   pricePerHunderd: String;
@@ -36,14 +37,24 @@ class Category extends Document {
   sizes: String;
 }
 
+@Schema()
 class Size extends Document {
   @Prop({ required: true })
   name: String;
 
-  @Prop({ required: true })
-  description: String;
+  @Prop({ required: false })
+  height: String;
+
+  @Prop({ required: false })
+  width: String;
+
+  @Prop({ required: false })
+  image: String;
 }
 
+const SizeSchema = SchemaFactory.createForClass(Size);
+
+@Schema()
 class PriceChart extends Document {
   @Prop({ required: true })
   quantity: String;
@@ -52,6 +63,9 @@ class PriceChart extends Document {
   unitPrice: String;
 }
 
+const PriceChartSchema = SchemaFactory.createForClass(PriceChart);
+
+@Schema()
 class NumberOfPages extends Document {
   @Prop()
   pageName: String;
@@ -60,92 +74,124 @@ class NumberOfPages extends Document {
   number: number;
 }
 
+const NumberOfPagesSchema = SchemaFactory.createForClass(NumberOfPages);
+
+@Schema()
 class Corner extends Document {
   @Prop()
   cornerName: String;
 
   @Prop()
   cornerDescription: String;
+
+  @Prop()
+  image: String;
 }
 
+const CornerSchema = SchemaFactory.createForClass(Corner);
+
+@Schema()
 class Cut extends Document {
   @Prop()
   cutName: String;
 
   @Prop()
-  cutDescription: String;
+  cutHeight: String;
+
+  @Prop()
+  cutWidth: String;
 }
 
+const CutSchema = SchemaFactory.createForClass(Cut);
+
+@Schema()
 class Window extends Document {
   @Prop()
   windowName: String;
 
   @Prop()
-  windowDescription: String;
+  windowHeight: String;
+
+  @Prop()
+  windowWidth: String;
 }
 
+const WindowSchema = SchemaFactory.createForClass(Window);
+
+@Schema()
 class Folding extends Document {
   @Prop()
   foldingName: String;
 
   @Prop()
-  foldingDescription: String;
+  foldingHeight: String;
+
+  @Prop()
+  foldingWidth: String;
 }
+
+const FoldingSchema = SchemaFactory.createForClass(Folding);
 
 @Schema()
 export class Product {
   _id: MongooseSchema.Types.ObjectId;
 
-  @Prop({ required: true })
-  image: [];
+  @Prop({ required: true, type: MongooseSchema.Types.Mixed })
+  image: [{ type: String }];
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: MongooseSchema.Types.Mixed })
   title: CategoryTypes;
 
   @Prop({ required: true })
   category: Category;
 
-  @Prop({ required: true })
-  size: Size;
+  @Prop({ required: true, type: [SizeSchema] })
+  size: [{ type: Size }];
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: [PriceChartSchema] })
   priceChart: [{ type: PriceChart }];
 
   @Prop({ required: true })
   preview: Boolean;
 
   @Prop({ required: true })
-  designUrl: String;
+  designUrl: String[];
 
   @Prop({ required: true })
   remarks: String;
 
-  @ApiPropertyOptional()
-  corner: Corner;
+  @Prop({ required: true })
+  feature1: String;
 
-  @ApiPropertyOptional()
+  @Prop({ required: true })
+  feature2: String;
+
+  @Prop({ required: false, type: [CornerSchema] })
+  corner: Corner[];
+
+  @Prop({ required: false, type: [String] })
   paperType: String[];
 
-  @ApiPropertyOptional()
+  @Prop({ required: false, type: [String] })
   spotUV: String[];
 
-  @ApiPropertyOptional()
+  @Prop({ required: false, type: [String] })
   finishing: String[];
 
-  @ApiPropertyOptional()
+  @Prop({ required: false, type: [String] })
   numberOfSides: String[];
 
-  @ApiPropertyOptional()
-  numberOfPages: NumberOfPages;
+  @Prop({ required: false, type: [NumberOfPagesSchema] })
+  numberOfPages: NumberOfPages[];
 
-  @ApiPropertyOptional()
-  cut: Cut;
+  @Prop({ required: false, type: [CutSchema] })
+  cut: Cut[];
 
-  @ApiPropertyOptional()
-  window: Window;
+  @Prop({ required: false, type: [WindowSchema] })
+  window: Window[];
 
-  @ApiPropertyOptional()
-  folding: Folding;
+  @Prop({ required: false, type: [FoldingSchema] })
+  folding: Folding[];
 }
 
 export type productDocument = Product & Document;

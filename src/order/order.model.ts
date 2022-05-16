@@ -3,6 +3,16 @@ import { Document } from "mongoose";
 import { Product } from "../products/products.model";
 import { Address } from "../user/user.model";
 import mongoose from "mongoose";
+
+export enum orderStatus {
+  ORDER_RECIEVED = "ORDER_RECIEVED",
+  COMPLETED = "COMPLETED",
+  OUT_FOR_DELIVERY = "OUT_FOR_DELIVERY",
+  CANCELLED = "CANCELLED",
+  READY_FOR_PICKUP = "READY_FOR_PICKUP",
+  PRINTING = "PRINTING",
+}
+
 @Schema()
 export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
@@ -31,6 +41,9 @@ export class Order {
 
   @Prop({ required: true })
   total: number;
+
+  @Prop({ required: false })
+  status: orderStatus;
 }
 
 export type orderDocument = Order & Document;

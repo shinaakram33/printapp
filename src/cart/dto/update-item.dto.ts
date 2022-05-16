@@ -1,127 +1,98 @@
-import { CategoryTypes } from "../products.model";
+import { CategoryTypes } from "../../products/products.model";
 import { IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 class Category {
   @ApiProperty()
-  @IsOptional()
   name?: String;
 
   @ApiProperty()
-  @IsOptional()
   pricePerHunderd?: String;
 
   @ApiProperty()
-  @IsOptional()
   description?: String;
 
   @ApiProperty()
-  @IsOptional()
   paperType?: String;
 
   @ApiProperty()
-  @IsOptional()
   leadTime?: String;
 
   @ApiProperty()
-  @IsOptional()
   colour?: String;
 
   @ApiProperty()
-  @IsOptional()
   sizes?: String;
 }
 
 class NumberOfPages {
   @ApiProperty()
-  @IsOptional()
   pageName?: String;
 
   @ApiProperty()
-  @IsOptional()
   number?: number;
 }
 
 class Corner {
   @ApiProperty()
-  @IsOptional()
   cornerName?: String;
 
   @ApiProperty()
-  @IsOptional()
   cornerDescription?: String;
 }
 
 class Cut {
   @ApiProperty()
-  @IsOptional()
   cutName?: String;
 
   @ApiProperty()
-  @IsOptional()
   cutHeight?: String;
 
   @ApiProperty()
-  @IsOptional()
   cutWidth?: String;
 }
 
 class Window {
   @ApiProperty()
-  @IsOptional()
   windowName?: String;
 
   @ApiProperty()
-  @IsOptional()
   windowHeight?: String;
 
   @ApiProperty()
-  @IsOptional()
   windowWidth?: String;
 }
 
 class Folding {
   @ApiProperty()
-  @IsOptional()
   foldingName?: String;
 
   @ApiProperty()
-  @IsOptional()
   foldingHeight?: String;
 
   @ApiProperty()
-  @IsOptional()
   foldingWidth?: String;
 }
 
 class Size {
   @ApiProperty()
-  @IsOptional()
   name?: String;
 
   @ApiProperty()
-  @IsOptional()
   height?: String;
 
   @ApiProperty()
-  @IsOptional()
   Width?: String;
-
-  @ApiProperty()
-  @IsOptional()
-  image?: String;
 }
 
 class PriceChart {
   @ApiProperty()
-  @IsOptional()
   quantity?: String;
 
   @ApiProperty()
-  @IsOptional()
   unitPrice?: String;
 }
 
-export class UpdateProductDto {
+export class UpdateItemDto {
   @ApiProperty()
   @IsOptional()
   image: string;
@@ -164,37 +135,37 @@ export class UpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
-  numberOfPages?: NumberOfPages[];
+  numberOfPages?: NumberOfPages;
 
   @ApiProperty()
   @IsOptional()
-  corner?: Corner[];
+  corner?: Corner;
 
   @ApiProperty()
   @IsOptional()
-  cut?: Cut[];
+  cut?: Cut;
 
   @ApiProperty()
   @IsOptional()
-  window?: Window[];
+  window?: Window;
 
   @ApiProperty()
   @IsOptional()
-  folding?: Folding[];
+  folding?: Folding;
 
   @ApiProperty()
   @IsOptional()
-  paperType?: String[];
+  paperType?: String;
 
   @ApiProperty()
   @IsOptional()
-  spotUV?: String[];
+  spotUV?: String;
 
   @ApiProperty()
   @IsOptional()
-  finishing?: String[];
+  finishing?: String;
 
   @ApiProperty()
   @IsOptional()
-  numberOfSides?: String[];
+  numberOfSides?: String;
 }
