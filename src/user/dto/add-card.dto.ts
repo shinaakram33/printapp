@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class AddCardDto {
@@ -13,4 +13,8 @@ export class AddCardDto {
   @ApiProperty()
   @IsNotEmpty()
   cvv: String;
+
+  @ApiProperty()
+  @IsOptional()
+  primary: Boolean;
 }

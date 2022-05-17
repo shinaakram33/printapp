@@ -33,4 +33,8 @@ export class UpdateAddressDto {
   @ApiProperty()
   @IsOptional()
   contactNumber: String;
+
+  @ApiProperty()
+  @IsOptional()
+  primary: Boolean;
 }

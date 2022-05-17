@@ -13,4 +13,8 @@ export class UpdateCardDto {
   @ApiProperty()
   @IsOptional()
   cvv: String;
+
+  @ApiProperty()
+  @IsOptional()
+  primary: Boolean;
 }

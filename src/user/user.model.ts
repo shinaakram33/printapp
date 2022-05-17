@@ -67,7 +67,7 @@ export class User {
       },
     ],
   })
-  products: [
+  addresses: [
     {
       fullName: String;
       companyName: String;
