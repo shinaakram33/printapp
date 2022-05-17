@@ -215,6 +215,94 @@ export class UserService {
     }
   }
 
+  async setCardPrimary(
+    user: User,
+    previousId: String,
+    newId: String
+  ): Promise<any> {
+    try {
+      await this.userModel.findOneAndUpdate(
+        { _id: user._id, "cards._id": previousId },
+        {
+          $set: {
+            "cards.$.primary": false,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id, "cards._id": newId },
+        {
+          $set: {
+            "cards.$.primary": true,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async setAddressPrimary(
+    user: User,
+    previousId: String,
+    newId: String
+  ): Promise<any> {
+    try {
+      await this.userModel.findOneAndUpdate(
+        { _id: user._id, "addresses._id": previousId },
+        {
+          $set: {
+            "addresses.$.primary": false,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id, "addresses._id": newId },
+        {
+          $set: {
+            "addresses.$.primary": true,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async addCard(addCardDto: AddCardDto, user: User): Promise<any> {
     try {
       return await this.userModel

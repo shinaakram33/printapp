@@ -97,9 +97,31 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Patch("/address/getall/")
+  @Get("/address/getall/")
   async getAllAddresses(@GetUser() user: User) {
     return await this.userService.getAllAddresses(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/card/:previousId/:newId")
+  async setCardPrimary(
+    @GetUser() user: User,
+    @Param("previousId") previousId: String,
+    @Param("newId") newId: String
+  ) {
+    return await this.userService.setCardPrimary(user, previousId, newId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/address/:previousId/:newId")
+  async setAddressPrimary(
+    @GetUser() user: User,
+    @Param("previousId") previousId: String,
+    @Param("newId") newId: String
+  ) {
+    return await this.userService.setCardPrimary(user, previousId, newId);
   }
 
   @ApiBearerAuth()
@@ -129,7 +151,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Patch("/card/getall/")
+  @Get("/card/getall/")
   async getAllCards(@GetUser() user: User) {
     return await this.userService.getAllCards(user);
   }
