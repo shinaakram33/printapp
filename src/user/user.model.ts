@@ -53,8 +53,49 @@ export class User {
   @Prop({ required: true })
   role: Role;
 
-  @Prop({ required: false })
-  addresses: Address[];
+  @Prop({
+    type: [
+      {
+        fullName: String,
+        companyName: String,
+        addressLine1: String,
+        addressLine2: String,
+        area: String,
+        district: String,
+        cityCountry: String,
+        contactNumber: String,
+      },
+    ],
+  })
+  products: [
+    {
+      fullName: String;
+      companyName: String;
+      addressLine1: String;
+      addressLine2: String;
+      area: String;
+      district: String;
+      cityCountry: String;
+      contactNumber: String;
+    }
+  ];
+
+  @Prop({
+    type: [
+      {
+        cardnumber: String,
+        expiry: String,
+        cvv: String,
+      },
+    ],
+  })
+  cards: [
+    {
+      cardnumber: String;
+      expiry: String;
+      cvv: String;
+    }
+  ];
 }
 
 export type UserDocument = User & Document;

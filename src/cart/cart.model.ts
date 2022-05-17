@@ -209,9 +209,6 @@ export class Cart {
       folding: Folding;
     }
   ];
-
-  // @Prop({ required: true })
-  // products: [{ type: Product }];
 }
 
 export type cartDocument = Cart & Document;

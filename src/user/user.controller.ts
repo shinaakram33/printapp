@@ -12,9 +12,11 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
 import { AddAddressDto } from "./dto/add-address.dto";
+import { AddCardDto } from "./dto/add-card.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { UpdateAddressDto } from "./dto/update-address.dto";
+import { UpdateCardDto } from "./dto/update-card.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./user.model";
 import { UserService } from "./user.service";
@@ -49,6 +51,13 @@ export class UserController {
     @GetUser() user: User
   ) {
     return await this.userService.updateUser(updateUserDto, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Delete("/delete")
+  async delete(@GetUser() user: User) {
+    return await this.userService.deleteUser(user);
   }
 
   @ApiBearerAuth()
@@ -95,8 +104,33 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Delete("/delete")
-  async delete(@GetUser() user: User) {
-    return await this.userService.deleteUser(user);
+  @Patch("/card/add/")
+  async addCard(@Body() addCardDto: AddCardDto, @GetUser() user: User) {
+    return await this.userService.addCard(addCardDto, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/card/update/:cardId")
+  async updateCard(
+    @Body() updateCardDto: UpdateCardDto,
+    @GetUser() user: User,
+    @Param("cardId") cardId: String
+  ) {
+    return await this.userService.updateCard(updateCardDto, user, cardId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/card/delete/:cardId")
+  async deleteCard(@GetUser() user: User, @Param("cardId") cardId: String) {
+    return await this.userService.deleteCard(cardId, user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/card/getall/")
+  async getAllCards(@GetUser() user: User) {
+    return await this.userService.getAllCards(user);
   }
 }
