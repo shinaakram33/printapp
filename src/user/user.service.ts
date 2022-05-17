@@ -132,9 +132,10 @@ export class UserService {
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
-          { $addToSet: { addresses: addAddressDto } },
+          { $push: { addresses: addAddressDto } },
           { safe: true, upsert: true, new: true },
           (error, newUser) => {
+            console.log("new user", newUser);
             if (error) {
               throw new BadRequestException(error.message);
             } else {
