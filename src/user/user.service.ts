@@ -17,6 +17,8 @@ import { JwtPayload } from "./auth/jwt-payload.interface";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { AddAddressDto } from "./dto/add-address.dto";
+import { AddCardDto } from "./dto/add-card.dto";
+import { UpdateCardDto } from "./dto/update-card.dto";
 
 @Injectable()
 export class UserService {
@@ -146,12 +148,12 @@ export class UserService {
     }
   }
 
-  async deleteAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+  async deleteAddress(addressId: String, user: User): Promise<any> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
-          { $pull: { addresses: { _id: addAddressDto } } },
+          { $pull: { addresses: { _id: addressId } } },
           { safe: true, upsert: true, new: true },
           (error, newUser) => {
             if (error) {
@@ -170,20 +172,20 @@ export class UserService {
   async updateAddress(
     updateAddressDto: AddAddressDto,
     user: User,
-    addressId: string
+    addressId: String
   ): Promise<any> {
     try {
       return await this.userModel.findOneAndUpdate(
         { _id: user._id, "addresses._id": addressId },
         {
           $set: {
-            "portfolio.$.fullname": updateAddressDto.fullName,
-            "portfolio.$.companyName": updateAddressDto.companyName,
-            "portfolio.$.addressLine1": updateAddressDto.addressLine1,
-            "portfolio.$.addressLine2": updateAddressDto.addressLine2,
-            "portfolio.$.district": updateAddressDto.district,
-            "portfolio.$.cityCoutry": updateAddressDto.cityCountry,
-            "portfolio.$.contactNumber": updateAddressDto.contactNumber,
+            "addresses.$.fullname": updateAddressDto.fullName,
+            "addresses.$.companyName": updateAddressDto.companyName,
+            "addresses.$.addressLine1": updateAddressDto.addressLine1,
+            "addresses.$.addressLine2": updateAddressDto.addressLine2,
+            "addresses.$.district": updateAddressDto.district,
+            "addresses.$.cityCoutry": updateAddressDto.cityCountry,
+            "addresses.$.contactNumber": updateAddressDto.contactNumber,
           },
         },
         { safe: true, upsert: true, new: true },
@@ -205,6 +207,87 @@ export class UserService {
       const addresses = await this.userModel
         .findById(user._id)
         .select("addresses");
+      if (!addresses) throw new NotFoundException("User not found!");
+      else return addresses;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async addCard(addCardDto: AddCardDto, user: User): Promise<any> {
+    try {
+      return await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { $addToSet: { cards: addCardDto } },
+          { safe: true, upsert: true, new: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
+          }
+        )
+        .clone();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteCard(cardId: String, user: User): Promise<any> {
+    try {
+      return await this.userModel
+        .findByIdAndUpdate(
+          user._id,
+          { $pull: { cards: { _id: cardId } } },
+          { safe: true, upsert: true, new: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
+          }
+        )
+        .clone();
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateCard(
+    updateCardDto: UpdateCardDto,
+    user: User,
+    cardId: String
+  ): Promise<any> {
+    try {
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id, "cards._id": cardId },
+        {
+          $set: {
+            "cards.$.cardNumber": updateCardDto.cardNumber,
+            "cards.$.expiry": updateCardDto.expiry,
+            "cards.$.cvv": updateCardDto.cvv,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllCards(user: User): Promise<any> {
+    try {
+      const addresses = await this.userModel.findById(user._id).select("cards");
       if (!addresses) throw new NotFoundException("User not found!");
       else return addresses;
     } catch (error) {
