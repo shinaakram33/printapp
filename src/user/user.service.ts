@@ -129,21 +129,12 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      return await this.userModel
-        .findByIdAndUpdate(
-          user._id,
-          { $push: { addresses: addAddressDto } },
-          { safe: true, upsert: true, new: true },
-          (error, newUser) => {
-            console.log("new user", newUser);
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newUser;
-            }
-          }
-        )
-        .clone();
+      console.log("dto ", addAddressDto);
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id },
+        { $addToSet: { addresses: addAddressDto } },
+        { new: true }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -178,28 +169,30 @@ export class UserService {
     addressId: String
   ): Promise<any> {
     try {
-      return await this.userModel.findOneAndUpdate(
-        { _id: user._id, "addresses._id": addressId },
-        {
-          $set: {
-            "addresses.$.fullname": updateAddressDto.fullName,
-            "addresses.$.companyName": updateAddressDto.companyName,
-            "addresses.$.addressLine1": updateAddressDto.addressLine1,
-            "addresses.$.addressLine2": updateAddressDto.addressLine2,
-            "addresses.$.district": updateAddressDto.district,
-            "addresses.$.cityCoutry": updateAddressDto.cityCountry,
-            "addresses.$.contactNumber": updateAddressDto.contactNumber,
+      return await this.userModel
+        .findOneAndUpdate(
+          { _id: user._id, "addresses._id": addressId },
+          {
+            $set: {
+              "addresses.$.fullname": updateAddressDto.fullName,
+              "addresses.$.companyName": updateAddressDto.companyName,
+              "addresses.$.addressLine1": updateAddressDto.addressLine1,
+              "addresses.$.addressLine2": updateAddressDto.addressLine2,
+              "addresses.$.district": updateAddressDto.district,
+              "addresses.$.cityCoutry": updateAddressDto.cityCountry,
+              "addresses.$.contactNumber": updateAddressDto.contactNumber,
+            },
           },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
+          { new: true },
+          (error, newUser) => {
+            if (error) {
+              throw new BadRequestException(error.message);
+            } else {
+              return newUser;
+            }
           }
-        }
-      );
+        )
+        .clone();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
