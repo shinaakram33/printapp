@@ -10,7 +10,7 @@ import { ProductsModule } from "./products/products.module";
 import { HomeSliderModule } from "./home-slider/home-slider.module";
 import { OrderModule } from "./order/order.module";
 import { CartModule } from "./cart/cart.module";
-import { PriceChartModule } from "./pricechart/pricechart.module";
+import { PriceChartModule } from "./priceChart/pricechart.module";
 
 @Module({
   imports: [
