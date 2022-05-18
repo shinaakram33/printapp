@@ -7,9 +7,10 @@ import { ConfigModule } from "@nestjs/config";
 import { CategoryModule } from "./category/category.module";
 import { UploadFileModule } from "./upload-file/upload-file.module";
 import { ProductsModule } from "./products/products.module";
-import { HomeSliderModule } from './home-slider/home-slider.module';
-import { OrderModule } from './order/order.module';
-import { CartModule } from './cart/cart.module';
+import { HomeSliderModule } from "./home-slider/home-slider.module";
+import { OrderModule } from "./order/order.module";
+import { CartModule } from "./cart/cart.module";
+import { PriceChartModule } from "./pricechart/pricechart.module";
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CartModule } from './cart/cart.module';
     HomeSliderModule,
     OrderModule,
     CartModule,
+    PriceChartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

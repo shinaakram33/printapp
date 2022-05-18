@@ -92,6 +92,7 @@ export class UserController {
     @GetUser() user: User,
     @Param("addressId") addressId: String
   ) {
+    console.log("params ,", addressId, user);
     return await this.userService.deleteAddress(addressId, user);
   }
 
@@ -121,7 +122,7 @@ export class UserController {
     @Param("previousId") previousId: String,
     @Param("newId") newId: String
   ) {
-    return await this.userService.setCardPrimary(user, previousId, newId);
+    return await this.userService.setAddressPrimary(user, previousId, newId);
   }
 
   @ApiBearerAuth()
