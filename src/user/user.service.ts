@@ -169,30 +169,24 @@ export class UserService {
     addressId: String
   ): Promise<any> {
     try {
-      return await this.userModel
-        .findOneAndUpdate(
-          { _id: user._id, "addresses._id": addressId },
-          {
-            $set: {
-              "addresses.$.fullname": updateAddressDto.fullName,
-              "addresses.$.companyName": updateAddressDto.companyName,
-              "addresses.$.addressLine1": updateAddressDto.addressLine1,
-              "addresses.$.addressLine2": updateAddressDto.addressLine2,
-              "addresses.$.district": updateAddressDto.district,
-              "addresses.$.cityCoutry": updateAddressDto.cityCountry,
-              "addresses.$.contactNumber": updateAddressDto.contactNumber,
-            },
+      return await this.userModel.findOneAndUpdate(
+        {
+          _id: user._id,
+          "addresses.id": addressId,
+        },
+        {
+          $set: {
+            "addresses.0.fullName": updateAddressDto.fullName,
+            "addresses.0.companyName": updateAddressDto.companyName,
+            "addresses.0.addressLine1": updateAddressDto.addressLine1,
+            "addresses.0.addressLine2": updateAddressDto.addressLine2,
+            "addresses.0.district": updateAddressDto.district,
+            "addresses.0.cityCountry": updateAddressDto.cityCountry,
+            "addresses.0.contactNumber": updateAddressDto.contactNumber,
           },
-          { new: true },
-          (error, newUser) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newUser;
-            }
-          }
-        )
-        .clone();
+        },
+        { new: true }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
