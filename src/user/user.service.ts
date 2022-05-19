@@ -19,13 +19,15 @@ import * as bcrypt from "bcrypt";
 import { AddAddressDto } from "./dto/add-address.dto";
 import { AddCardDto } from "./dto/add-card.dto";
 import { UpdateCardDto } from "./dto/update-card.dto";
+import { StripeService } from "../stripe/stripe.service";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private configService: ConfigService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private stripeService: StripeService
   ) {}
 
   private async verifyPassword(
@@ -52,6 +54,10 @@ export class UserService {
     createUserDto: CreateUserDto
   ): Promise<{ accessToken: string }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
+    const stripeCustomer = await this.stripeService.createCustomer(
+      createUserDto.firstName,
+      createUserDto.email
+    );
     if (user) throw new BadRequestException("User already exists!");
     else {
       try {
@@ -63,6 +69,7 @@ export class UserService {
         user = await this.userModel.create({
           ...createUserDto,
           password: hashedPassword,
+          stripeCustomerId: stripeCustomer.id,
         });
       } catch (err) {
         throw new BadRequestException("All fields are required");

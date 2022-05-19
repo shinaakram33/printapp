@@ -53,6 +53,9 @@ export class User {
   @Prop({ required: true })
   role: Role;
 
+  @Prop({ required: false })
+  stripeCustomerId: string[];
+
   @Prop({
     type: [
       {
