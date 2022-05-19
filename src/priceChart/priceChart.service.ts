@@ -39,7 +39,7 @@ export class PriceChartService {
         });
       }
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -57,7 +57,7 @@ export class PriceChartService {
         innerPageNumber,
       });
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -70,7 +70,7 @@ export class PriceChartService {
         window,
       });
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -99,7 +99,7 @@ export class PriceChartService {
         });
       }
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -109,7 +109,7 @@ export class PriceChartService {
     try {
       const priceChart = await this.priceChartModel.find({ product });
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -129,7 +129,7 @@ export class PriceChartService {
         sides,
       });
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -143,7 +143,7 @@ export class PriceChartService {
         shape,
       });
       if (!priceChart) throw new NotFoundException("No data found");
-      else return;
+      else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

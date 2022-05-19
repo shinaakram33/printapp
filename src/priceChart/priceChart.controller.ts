@@ -52,6 +52,23 @@ export class PriceChartController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
+  @Get("/flyer?")
+  async getFlyer(
+    @Query("product") product: String,
+    @Query("size") size: String,
+    @Query("papertype") paperType: String,
+    @Query("folding") folding: String
+  ): Promise<any> {
+    return await this.priceChartService.getFlyer(
+      product,
+      size,
+      paperType,
+      folding
+    );
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
   @Get("/letterhead?")
   async getletterhead(@Query("product") product: String): Promise<any> {
     return await this.priceChartService.getletterhead(product);
