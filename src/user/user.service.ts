@@ -136,7 +136,6 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      console.log("dto ", addAddressDto);
       return await this.userModel.findOneAndUpdate(
         { _id: user._id },
         { $addToSet: { addresses: addAddressDto } },
@@ -179,17 +178,17 @@ export class UserService {
       return await this.userModel.findOneAndUpdate(
         {
           _id: user._id,
-          "addresses.id": addressId,
+          "addresses._id": addressId,
         },
         {
           $set: {
-            "addresses.0.fullName": updateAddressDto.fullName,
-            "addresses.0.companyName": updateAddressDto.companyName,
-            "addresses.0.addressLine1": updateAddressDto.addressLine1,
-            "addresses.0.addressLine2": updateAddressDto.addressLine2,
-            "addresses.0.district": updateAddressDto.district,
-            "addresses.0.cityCountry": updateAddressDto.cityCountry,
-            "addresses.0.contactNumber": updateAddressDto.contactNumber,
+            "addresses.$.fullName": updateAddressDto.fullName,
+            "addresses.$.companyName": updateAddressDto.companyName,
+            "addresses.$.addressLine1": updateAddressDto.addressLine1,
+            "addresses.$.addressLine2": updateAddressDto.addressLine2,
+            "addresses.$.district": updateAddressDto.district,
+            "addresses.$.cityCountry": updateAddressDto.cityCountry,
+            "addresses.$.contactNumber": updateAddressDto.contactNumber,
           },
         },
         { new: true }

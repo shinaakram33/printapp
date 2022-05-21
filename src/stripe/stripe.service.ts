@@ -23,12 +23,17 @@ export class StripeService {
     paymentMethodId: string,
     customerId: string
   ) {
-    return this.stripe.paymentIntents.create({
+    // return this.stripe.charges.create({
+    //   amount,
+    //   customer: customerId,
+    //   source: paymentMethodId,
+    //   currency: this.configService.get("STRIPE_CURRENCY"),
+    // });
+    return await this.stripe.charges.create({
       amount,
-      customer: customerId,
-      payment_method: paymentMethodId,
       currency: this.configService.get("STRIPE_CURRENCY"),
-      confirm: true,
+      customer: customerId,
+      source: paymentMethodId,
     });
   }
 }

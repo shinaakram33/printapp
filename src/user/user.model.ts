@@ -54,7 +54,7 @@ export class User {
   role: Role;
 
   @Prop({ required: false })
-  stripeCustomerId: string[];
+  stripeCustomerId: string;
 
   @Prop({
     type: [

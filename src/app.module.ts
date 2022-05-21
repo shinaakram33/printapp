@@ -11,18 +11,13 @@ import { HomeSliderModule } from "./home-slider/home-slider.module";
 import { OrderModule } from "./order/order.module";
 import { CartModule } from "./cart/cart.module";
 import { PriceChartModule } from "./priceChart/pricechart.module";
-// import * as Joi from "@hapi/joi";
+import { StripeModule } from "./stripe/stripe.module";
 
 @Module({
   imports: [
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      // validationSchema: Joi.object({
-      //   STRIPE_SECRET_KEY: Joi.string(),
-      //   STRIPE_CURRENCY: Joi.string(),
-      //   FRONTEND_URL: Joi.string(),
-      // }),
     }),
     MongooseModule.forRootAsync({
       useFactory: async () => ({
@@ -36,6 +31,7 @@ import { PriceChartModule } from "./priceChart/pricechart.module";
     OrderModule,
     CartModule,
     PriceChartModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

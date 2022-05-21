@@ -15,10 +15,26 @@ import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { AddOrderDto } from "./dto/add-order.dto";
 import { OrderService } from "./order.service";
 import { UpdateOrderDto } from "./dto/update-order.dto";
+import CreateChargeDto from "./dto/createCharge.dto";
+import { StripeService } from "../stripe/stripe.service";
 
 @Controller("order")
 export class OrderController {
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private orderService: OrderService,
+    private readonly stripeService: StripeService
+  ) {}
+
+  @ApiBearerAuth()
+  @Post("/charge")
+  @UseGuards(AuthGuard("jwt"))
+  async createCharge(@Body() charge: CreateChargeDto, @GetUser() user: User) {
+    await this.stripeService.charge(
+      charge.amount,
+      charge.paymentMethodId,
+      user.stripeCustomerId
+    );
+  }
 
   @ApiBearerAuth()
   @Post("/add")
