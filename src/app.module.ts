@@ -12,6 +12,7 @@ import { OrderModule } from "./order/order.module";
 import { CartModule } from "./cart/cart.module";
 import { PriceChartModule } from "./priceChart/pricechart.module";
 import { StripeModule } from "./stripe/stripe.module";
+import { PromocodeModule } from './promocode/promocode.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { StripeModule } from "./stripe/stripe.module";
     CartModule,
     PriceChartModule,
     StripeModule,
+    PromocodeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

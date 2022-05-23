@@ -96,7 +96,7 @@ export class UserService {
     }
   }
 
-  async findUser(user: User): Promise<User> {
+  async findUser(user: User): Promise<any> {
     try {
       const userInfo = await this.userModel.findById(user._id);
       if (!userInfo) throw new NotFoundException("User not found!");
@@ -106,9 +106,65 @@ export class UserService {
     }
   }
 
-  async getUserById(id: string): Promise<User> {
+  async findAll(user: User): Promise<any> {
     try {
-      const user = await this.userModel.findById(id);
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find();
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchByName(user: User, name: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find({ firstName: name });
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchById(user: User, userId: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.findById(userId);
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchByStatus(user: User, status: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find({ status });
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getUserById(userId: String): Promise<User> {
+    try {
+      const user = await this.userModel.findById(userId);
       if (!user) throw new NotFoundException("User not found!");
       else return user;
     } catch (error) {

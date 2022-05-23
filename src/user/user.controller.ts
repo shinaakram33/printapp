@@ -44,6 +44,34 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/findall")
+  async findAllUsers(@GetUser() user: User) {
+    return await this.userService.findUser(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/name/:name")
+  async findByName(@GetUser() user: User, @Param("name") name: String) {
+    return await this.userService.searchByName(user, name);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/id/:userId")
+  async findById(@GetUser() user: User, @Param("userId") userId: String) {
+    return await this.userService.searchByName(user, userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/status/:userId")
+  async findByStatus(@GetUser() user: User, @Param("status") status: String) {
+    return await this.userService.searchByName(user, status);
+  }
+
+  @ApiBearerAuth()
   @UseGuards(AuthGuard())
   @Patch("/update")
   async updateUser(
