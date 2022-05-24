@@ -32,7 +32,7 @@ export class Address extends Document {
   contactNumber: String;
 
   @Prop({ type: [String] })
-  deviceId: String[];
+  deviceId: String;
 }
 @Schema()
 export class User {
@@ -61,6 +61,11 @@ export class User {
 
   @Prop({ required: false })
   stripeCustomerId: string;
+  @Prop()
+  resetPasswordToken: string;
+
+  @Prop()
+  resetPasswordExpires: number;
 
   @Prop({
     type: [
@@ -73,6 +78,7 @@ export class User {
         district: String,
         cityCountry: String,
         contactNumber: String,
+        primary: Boolean,
       },
     ],
   })
@@ -86,23 +92,7 @@ export class User {
       district: String;
       cityCountry: String;
       contactNumber: String;
-    }
-  ];
-
-  @Prop({
-    type: [
-      {
-        cardnumber: String,
-        expiry: String,
-        cvv: String,
-      },
-    ],
-  })
-  cards: [
-    {
-      cardnumber: String;
-      expiry: String;
-      cvv: String;
+      primary: Boolean;
     }
   ];
 }

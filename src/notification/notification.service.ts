@@ -51,7 +51,6 @@ export class NotificationService {
       const notification = await this.notificationModel.create({
         _id: id,
         to: to,
-        from: from,
         message: message,
       });
       return notification;

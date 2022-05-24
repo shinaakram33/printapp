@@ -8,4 +8,8 @@ export class LoginUserDto {
   @ApiProperty()
   @IsNotEmpty()
   readonly password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly deviceId: string;
 }

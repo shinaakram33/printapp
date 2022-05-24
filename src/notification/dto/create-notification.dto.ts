@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class CreateNotificationDto {
   @IsNotEmpty()
@@ -12,8 +12,4 @@ export class CreateNotificationDto {
   @IsNotEmpty()
   @IsUUID("4")
   to: string;
-
-  @IsNotEmpty()
-  @IsUUID("4")
-  from: string;
 }

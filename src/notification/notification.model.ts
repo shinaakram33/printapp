@@ -10,14 +10,8 @@ export class Notification {
   @Prop({ type: String, ref: "User", required: true })
   to: User;
 
-  @Prop({ type: String, ref: "User", required: true })
-  from: User;
-
   @Prop()
   message: string;
-
-  @Prop({ default: false })
-  deleted: boolean;
 }
 
 export type NotificationDocument = Notification & Document;

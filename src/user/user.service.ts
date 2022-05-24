@@ -9,7 +9,6 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "./user.model";
 import { Model, Schema as MongooseSchema } from "mongoose";
-import { ConfigService } from "@nestjs/config";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { JwtService } from "@nestjs/jwt";
@@ -17,18 +16,35 @@ import { JwtPayload } from "./auth/jwt-payload.interface";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { AddAddressDto } from "./dto/add-address.dto";
-import { AddCardDto } from "./dto/add-card.dto";
-import { UpdateCardDto } from "./dto/update-card.dto";
 import { StripeService } from "../stripe/stripe.service";
+import { ForgetPasswordDto } from "./dto/forget-password.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 
 @Injectable()
 export class UserService {
+  sgMail = require("@sendgrid/mail");
+
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private configService: ConfigService,
     private jwtService: JwtService,
     private stripeService: StripeService
-  ) {}
+  ) {
+    this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  }
+
+  async sendEmail(
+    email: String,
+    subject: String,
+    message: String
+  ): Promise<any> {
+    const mailOptions = {
+      from: "admin@printprint.com.hk",
+      to: email,
+      subject: subject,
+      text: message,
+    };
+    await this.sgMail.send(mailOptions);
+  }
 
   private async verifyPassword(
     plainTextPassword: string,
@@ -110,6 +126,7 @@ export class UserService {
     try {
       if (user.role == "ADMIN") {
         const users = await this.userModel.find();
+        console.log("users ", users);
         if (!users) throw new NotFoundException("No User found!");
         else return users;
       } else {
@@ -266,50 +283,6 @@ export class UserService {
     }
   }
 
-  async setCardPrimary(
-    user: User,
-    previousId: String,
-    newId: String
-  ): Promise<any> {
-    try {
-      await this.userModel.findOneAndUpdate(
-        { _id: user._id, "cards._id": previousId },
-        {
-          $set: {
-            "cards.$.primary": false,
-          },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
-          }
-        }
-      );
-
-      return await this.userModel.findOneAndUpdate(
-        { _id: user._id, "cards._id": newId },
-        {
-          $set: {
-            "cards.$.primary": true,
-          },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
-          }
-        }
-      );
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
   async setAddressPrimary(
     user: User,
     previousId: String,
@@ -354,142 +327,58 @@ export class UserService {
     }
   }
 
-  async addCard(addCardDto: AddCardDto, user: User): Promise<any> {
+  async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<string> {
     try {
-      return await this.userModel
-        .findByIdAndUpdate(
-          user._id,
-          { $addToSet: { cards: addCardDto } },
-          { safe: true, upsert: true, new: true },
-          (error, newUser) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newUser;
-            }
-          }
-        )
-        .clone();
+      const resetToken = Math.random().toString(36).substring(4);
+
+      let user = await this.userModel.findOne({
+        email: forgetPasswordDto.email,
+      });
+      if (!user) throw new NotFoundException("Email does not exist");
+
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = Date.now() + 300000;
+
+      await user.save();
+
+      const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
+
+      try {
+        await this.sendEmail(
+          user.email,
+          "Your password reset token (Valid for 10 mints)",
+          message
+        );
+        return "OTP sent to the email";
+      } catch (err) {
+        throw new BadRequestException(
+          "Error in sending an email. Try again later!"
+        );
+      }
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async deleteCard(cardId: String, user: User): Promise<any> {
+  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
     try {
-      return await this.userModel
-        .findByIdAndUpdate(
-          user._id,
-          { $pull: { cards: { _id: cardId } } },
-          { safe: true, upsert: true, new: true },
-          (error, newUser) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newUser;
-            }
-          }
-        )
-        .clone();
+      const user = await this.userModel.findOne({
+        resetPasswordToken: resetPasswordDto.pin,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+      if (!user) throw new NotFoundException("Invalid pin or pin expired!");
+      if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
+        throw new UnauthorizedException(
+          "Password Does Not Match with Confirm Pasword"
+        );
+      user.password = await bcrypt.hash(resetPasswordDto.password, 10);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      return "Password changed successfully!";
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
-
-  async updateCard(
-    updateCardDto: UpdateCardDto,
-    user: User,
-    cardId: String
-  ): Promise<any> {
-    try {
-      return await this.userModel.findOneAndUpdate(
-        { _id: user._id, "cards._id": cardId },
-        {
-          $set: {
-            "cards.$.cardNumber": updateCardDto.cardNumber,
-            "cards.$.expiry": updateCardDto.expiry,
-            "cards.$.cvv": updateCardDto.cvv,
-          },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
-          }
-        }
-      );
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  async getAllCards(user: User): Promise<any> {
-    try {
-      const addresses = await this.userModel.findById(user._id).select("cards");
-      if (!addresses) throw new NotFoundException("User not found!");
-      else return addresses;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  // public async forgetPassword(
-  //   forgetPasswordDto: ForgetPasswordDto,
-  // ): Promise<string> {
-  //   try {
-  //     const resetToken = Math.random().toString(36).substring(4);
-
-  //     let user = await this.userModel.findOne({
-  //       email: forgetPasswordDto.email,
-  //     });
-  //     if (!user) throw new NotFoundException('Email does not exist');
-
-  //     user.resetPasswordToken = resetToken;
-  //     user.resetPasswordExpires = Date.now() + 300000;
-
-  //     await user.save();
-
-  //     const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
-
-  //     try {
-  //       await sendEmail({
-  //         email: user.email,
-  //         subject: 'Your password reset token (Valid for 10 mints)',
-  //         message,
-  //       });
-  //       return 'OTP sent to the email';
-  //     } catch (err) {
-  //       throw new BadRequestException(
-  //         'Error in sending an email. Try again later!',
-  //       );
-  //     }
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message);
-  //   }
-  // }
-
-  // public async resetPassword(resetPasswordDto: ResetPasswordDto) {
-  //   try {
-  //     const user = await this.userModel.findOne({
-  //       resetPasswordToken: resetPasswordDto.pin,
-  //       resetPasswordExpires: { $gt: Date.now() },
-  //     });
-  //     if (!user) throw new NotFoundException('Invalid pin or pin expired!');
-  //     if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
-  //       throw new UnauthorizedException(
-  //         'Password Does Not Match with Confirm Pasword',
-  //       );
-
-  //     user.password = await hash(resetPasswordDto.password, 10);
-  //     user.resetPasswordToken = undefined;
-  //     user.resetPasswordExpires = undefined;
-  //     await user.save();
-
-  //     return 'Password changed successfully!';
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message);
-  //   }
-  // }
 }
