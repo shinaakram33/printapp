@@ -26,13 +26,17 @@ export class AddOrderDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  subTotal: number;
+  subTotal: Number;
 
   @IsNotEmpty()
   @ApiProperty()
-  discount: number;
+  discount: Number;
 
   @IsNotEmpty()
   @ApiProperty()
-  total: number;
+  total: Number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  status: Boolean;
 }
