@@ -47,14 +47,52 @@ export class OrderController {
   }
 
   @ApiBearerAuth()
-  @Post("/update/:id")
+  @Post("/admin/add")
+  @UseGuards(AuthGuard("jwt"))
+  async addOrderAdmin(
+    @GetUser() user: User,
+    @Body() addOrderDto: AddOrderDto,
+    userId: String
+  ): Promise<any> {
+    return await this.orderService.addOrderAdmin(user, addOrderDto, userId);
+  }
+
+  @ApiBearerAuth()
+  @Patch("/update/:id")
   @UseGuards(AuthGuard("jwt"))
   async updateOrder(
     @Param("id") id: String,
     @GetUser()
     user: User,
-    @Body() updateOrderDto: UpdateOrderDto
+    @Body() updateOrderDto: UpdateOrderDto,
+    userId: String
   ): Promise<any> {
-    return await this.orderService.updateOrder(id, user, updateOrderDto);
+    return await this.orderService.updateOrderAdmin(
+      id,
+      user,
+      updateOrderDto,
+      userId
+    );
+  }
+
+  @ApiBearerAuth()
+  @Delete("/delete/:id")
+  @UseGuards(AuthGuard("jwt"))
+  async deleteOrder(
+    @Param("id") id: String,
+    @GetUser()
+    user: User
+  ): Promise<any> {
+    return await this.orderService.deleteOrderAdmin(id, user);
+  }
+
+  @ApiBearerAuth()
+  @Get("/find")
+  @UseGuards(AuthGuard("jwt"))
+  async getAllOrder(
+    @GetUser()
+    user: User
+  ): Promise<any> {
+    return await this.orderService.getAllOrderAdmin(user);
   }
 }

@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
-// import { Product } from "../products/products.model";
 import mongoose from "mongoose";
 
 export enum CategoryTypes {

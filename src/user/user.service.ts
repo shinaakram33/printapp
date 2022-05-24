@@ -434,4 +434,62 @@ export class UserService {
       throw new BadRequestException(error.message);
     }
   }
+
+  // public async forgetPassword(
+  //   forgetPasswordDto: ForgetPasswordDto,
+  // ): Promise<string> {
+  //   try {
+  //     const resetToken = Math.random().toString(36).substring(4);
+
+  //     let user = await this.userModel.findOne({
+  //       email: forgetPasswordDto.email,
+  //     });
+  //     if (!user) throw new NotFoundException('Email does not exist');
+
+  //     user.resetPasswordToken = resetToken;
+  //     user.resetPasswordExpires = Date.now() + 300000;
+
+  //     await user.save();
+
+  //     const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
+
+  //     try {
+  //       await sendEmail({
+  //         email: user.email,
+  //         subject: 'Your password reset token (Valid for 10 mints)',
+  //         message,
+  //       });
+  //       return 'OTP sent to the email';
+  //     } catch (err) {
+  //       throw new BadRequestException(
+  //         'Error in sending an email. Try again later!',
+  //       );
+  //     }
+  //   } catch (error) {
+  //     throw new BadRequestException(error.message);
+  //   }
+  // }
+
+  // public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+  //   try {
+  //     const user = await this.userModel.findOne({
+  //       resetPasswordToken: resetPasswordDto.pin,
+  //       resetPasswordExpires: { $gt: Date.now() },
+  //     });
+  //     if (!user) throw new NotFoundException('Invalid pin or pin expired!');
+  //     if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
+  //       throw new UnauthorizedException(
+  //         'Password Does Not Match with Confirm Pasword',
+  //       );
+
+  //     user.password = await hash(resetPasswordDto.password, 10);
+  //     user.resetPasswordToken = undefined;
+  //     user.resetPasswordExpires = undefined;
+  //     await user.save();
+
+  //     return 'Password changed successfully!';
+  //   } catch (error) {
+  //     throw new BadRequestException(error.message);
+  //   }
+  // }
 }

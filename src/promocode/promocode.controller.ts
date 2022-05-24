@@ -69,7 +69,7 @@ export class PromocodeController {
   @ApiBearerAuth()
   @Post("/findall")
   @UseGuards(AuthGuard("jwt"))
-  async addProduct(@GetUser() user: User): Promise<any> {
+  async getAllPromocode(@GetUser() user: User): Promise<any> {
     return await this.promocodeService.getAllPromocode(user);
   }
 }

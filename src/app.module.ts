@@ -12,7 +12,9 @@ import { OrderModule } from "./order/order.module";
 import { CartModule } from "./cart/cart.module";
 import { PriceChartModule } from "./priceChart/pricechart.module";
 import { StripeModule } from "./stripe/stripe.module";
-import { PromocodeModule } from './promocode/promocode.module';
+import { PromocodeModule } from "./promocode/promocode.module";
+import { NotificationModule } from "./notification/notification.module";
+import { ActivityModule } from './activity/activity.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { PromocodeModule } from './promocode/promocode.module';
     PriceChartModule,
     StripeModule,
     PromocodeModule,
+    ActivityModule,
+    //NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

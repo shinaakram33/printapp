@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import Stripe from "stripe";
 
@@ -29,11 +29,24 @@ export class StripeService {
     //   source: paymentMethodId,
     //   currency: this.configService.get("STRIPE_CURRENCY"),
     // });
-    return await this.stripe.charges.create({
+
+    const card = await this.stripe.customers.createSource(customerId, {
+      source: paymentMethodId,
+    });
+
+    console.log("card ", card);
+
+    if (!card) throw new BadRequestException("fail");
+
+    const charge = await this.stripe.charges.create({
       amount,
       currency: this.configService.get("STRIPE_CURRENCY"),
       customer: customerId,
-      source: paymentMethodId,
+
+      source: card.id,
     });
+    console.log("charge ", charge);
+
+    return charge;
   }
 }

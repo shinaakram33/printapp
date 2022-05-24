@@ -30,6 +30,9 @@ export class Address extends Document {
 
   @Prop({ required: true })
   contactNumber: String;
+
+  @Prop({ type: [String] })
+  deviceId: String[];
 }
 @Schema()
 export class User {

@@ -20,20 +20,75 @@ export class OrderService {
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
-      return await this.orderModel.create({ userId: user._id, addOrderDto });
+      return await this.orderModel.create({ user: user._id, addOrderDto });
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async updateOrder(
-    id: String,
+  //for admin
+  async addOrderAdmin(
     user: User,
-    updateOrderDto: UpdateOrderDto
+    addOrderDto: AddOrderDto,
+    userId: String
   ): Promise<any> {
     try {
-      if (user.role !== "USER") {
-        return await this.orderModel.findByIdAndUpdate(id, updateOrderDto);
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.create({ user: userId, addOrderDto });
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateOrderAdmin(
+    id: String,
+    user: User,
+    updateOrderDto: UpdateOrderDto,
+    userId: String
+  ): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.findByIdAndUpdate(id, {
+          user: userId,
+          updateOrderDto,
+        });
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteOrderAdmin(id: String, user: User): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.findByIdAndDelete(id);
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllOrderAdmin(user: User): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.find();
       }
     } catch (error) {
       throw new BadRequestException(error.message);
