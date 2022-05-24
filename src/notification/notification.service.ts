@@ -25,7 +25,7 @@ export class NotificationService {
 
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: createNotificationDto.message },
-        //include_player_ids: findUserToGetDeviceId.deviceId,
+        include_player_ids: findUserToGetDeviceId.deviceId,
         app_url: "demo://app/home",
       });
 
@@ -43,7 +43,7 @@ export class NotificationService {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: message },
-        //include_player_ids: findUserToGetDeviceId.deviceId,
+        include_player_ids: findUserToGetDeviceId.deviceId,
         app_url: "demo://app/home",
       });
       let id = uuidv4();

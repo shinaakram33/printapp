@@ -5,7 +5,7 @@ import { Document, Schema as MongooseSchema } from "mongoose";
 @Schema()
 export class Activity {
   @Prop()
-  _id: string;
+  _id: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;

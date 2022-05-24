@@ -16,4 +16,8 @@ export class UpdateUserDto {
   @ApiProperty()
   @IsOptional()
   email?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  deviceId?: string;
 }

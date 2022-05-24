@@ -55,10 +55,10 @@ class PriceChart extends Document {
 }
 
 class NumberOfPages extends Document {
-  // @Prop()
+  @Prop()
   pageName: String;
 
-  // @Prop()
+  @Prop()
   number: number;
 }
 

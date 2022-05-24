@@ -87,6 +87,7 @@ export class UserService {
           password: hashedPassword,
           stripeCustomerId: stripeCustomer.id,
         });
+        await this.updateUser({ deviceId: createUserDto.deviceId }, user);
       } catch (err) {
         throw new BadRequestException("All fields are required");
       }
@@ -105,6 +106,7 @@ export class UserService {
       else {
         await this.verifyPassword(loginUserDto.password, user.password);
         const accessToken = await this.signToken(user.id);
+        await this.updateUser({ deviceId: loginUserDto.deviceId }, user);
         return { accessToken };
       }
     } catch (error) {
@@ -126,7 +128,6 @@ export class UserService {
     try {
       if (user.role == "ADMIN") {
         const users = await this.userModel.find();
-        console.log("users ", users);
         if (!users) throw new NotFoundException("No User found!");
         else return users;
       } else {

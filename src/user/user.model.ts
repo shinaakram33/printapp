@@ -30,9 +30,6 @@ export class Address extends Document {
 
   @Prop({ required: true })
   contactNumber: String;
-
-  @Prop({ type: [String] })
-  deviceId: String;
 }
 @Schema()
 export class User {
@@ -66,6 +63,9 @@ export class User {
 
   @Prop()
   resetPasswordExpires: number;
+
+  @Prop({ type: [String] })
+  deviceId: string[];
 
   @Prop({
     type: [
