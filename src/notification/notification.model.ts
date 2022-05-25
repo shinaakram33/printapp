@@ -23,3 +23,4 @@ export class Notification {
 
 export type NotificationDocument = Notification & Document;
 export const NotificationSchema = SchemaFactory.createForClass(Notification);
+// export { NotificationSchema };
