@@ -57,4 +57,9 @@ export class ProductsController {
   async findByCategory(@Param("category") id: CategoryTypes): Promise<any> {
     return await this.productsService.findByCategory(id);
   }
+
+  @Get("/findall")
+  async findAll(@GetUser() user: User): Promise<any> {
+    return await this.productsService.findAll(user);
+  }
 }

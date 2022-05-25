@@ -10,17 +10,27 @@ import { ConfigService } from "@nestjs/config";
 import { User } from "../user/user.model";
 import { AddOrderDto } from "./dto/add-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name)
-    private orderModel: Model<orderDocument>
+    private orderModel: Model<orderDocument>,
+    private notificationService: NotificationService
   ) {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
-      return await this.orderModel.create({ user: user._id, addOrderDto });
+      const order = await this.orderModel.create({
+        user: user._id,
+        addOrderDto,
+      });
+      const notification = await this.notificationService.generateNotification(
+        `Order ${order._id} has been changed to ${order.status}`,
+        user._id.toString()
+      );
+      return order;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -30,7 +40,7 @@ export class OrderService {
   async addOrderAdmin(
     user: User,
     addOrderDto: AddOrderDto,
-    userId: String
+    userId: string
   ): Promise<any> {
     try {
       if (!user || user.role == "USER") {
@@ -38,7 +48,16 @@ export class OrderService {
           "You are not authorize to perform this operation."
         );
       } else {
-        return await this.orderModel.create({ user: userId, addOrderDto });
+        const order = await this.orderModel.create({
+          user: userId,
+          addOrderDto,
+        });
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId
+          );
+        return order;
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -49,7 +68,7 @@ export class OrderService {
     id: String,
     user: User,
     updateOrderDto: UpdateOrderDto,
-    userId: String
+    userId: string
   ): Promise<any> {
     try {
       if (!user || user.role == "USER") {
@@ -57,10 +76,17 @@ export class OrderService {
           "You are not authorize to perform this operation."
         );
       } else {
-        return await this.orderModel.findByIdAndUpdate(id, {
+        const order = await this.orderModel.findByIdAndUpdate(id, {
           user: userId,
           updateOrderDto,
         });
+
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId
+          );
+        return order;
       }
     } catch (error) {
       throw new BadRequestException(error.message);

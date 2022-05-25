@@ -20,13 +20,13 @@ export class NotificationService {
   async createNotification(createNotificationDto: CreateNotificationDto) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(
-        createNotificationDto.to
+        createNotificationDto.userId
       );
 
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: createNotificationDto.message },
         include_player_ids: findUserToGetDeviceId.deviceId,
-        app_url: "demo://app/home",
+        //app_url: "demo://app/home",
       });
 
       const notification = await this.notificationModel.create(
@@ -38,7 +38,7 @@ export class NotificationService {
     }
   }
 
-  async generateNotification(message: string, to: string, from: string) {
+  async generateNotification(message: string, to: string) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       const sendNotification = await this.oneSignalService.createNotification({

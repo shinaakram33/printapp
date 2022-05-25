@@ -52,7 +52,7 @@ export class OrderController {
   async addOrderAdmin(
     @GetUser() user: User,
     @Body() addOrderDto: AddOrderDto,
-    @Param("userId") userId: String
+    @Param("userId") userId: string
   ): Promise<any> {
     return await this.orderService.addOrderAdmin(user, addOrderDto, userId);
   }
@@ -62,7 +62,7 @@ export class OrderController {
   @UseGuards(AuthGuard("jwt"))
   async updateOrder(
     @Param("orderId") orderId: String,
-    @Param("userId") userId: String,
+    @Param("userId") userId: string,
     @GetUser()
     user: User,
     @Body() updateOrderDto: UpdateOrderDto
