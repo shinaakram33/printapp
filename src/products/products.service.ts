@@ -81,4 +81,18 @@ export class ProductsService {
       throw new BadRequestException(error.message);
     }
   }
+
+  async findAll(user: User) {
+    try {
+      if (!user || user.role == "USER") {
+        return await this.productModel.find();
+      } else {
+        throw new UnauthorizedException(
+          "You are not allowed to perform this action"
+        );
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }

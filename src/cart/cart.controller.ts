@@ -23,7 +23,7 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
-  @Post("/")
+  @Get("/")
   async findCart(@GetUser() user: User): Promise<any> {
     return await this.cartService.createCart(user);
   }

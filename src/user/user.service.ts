@@ -9,7 +9,6 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "./user.model";
 import { Model, Schema as MongooseSchema } from "mongoose";
-import { ConfigService } from "@nestjs/config";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { JwtService } from "@nestjs/jwt";
@@ -17,14 +16,35 @@ import { JwtPayload } from "./auth/jwt-payload.interface";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import * as bcrypt from "bcrypt";
 import { AddAddressDto } from "./dto/add-address.dto";
+import { StripeService } from "../stripe/stripe.service";
+import { ForgetPasswordDto } from "./dto/forget-password.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 
 @Injectable()
 export class UserService {
+  sgMail = require("@sendgrid/mail");
+
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private configService: ConfigService,
-    private jwtService: JwtService
-  ) {}
+    private jwtService: JwtService,
+    private stripeService: StripeService
+  ) {
+    this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  }
+
+  async sendEmail(
+    email: String,
+    subject: String,
+    message: String
+  ): Promise<any> {
+    const mailOptions = {
+      from: "admin@printprint.com.hk",
+      to: email,
+      subject: subject,
+      text: message,
+    };
+    await this.sgMail.send(mailOptions);
+  }
 
   private async verifyPassword(
     plainTextPassword: string,
@@ -50,6 +70,10 @@ export class UserService {
     createUserDto: CreateUserDto
   ): Promise<{ accessToken: string }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
+    const stripeCustomer = await this.stripeService.createCustomer(
+      createUserDto.firstName,
+      createUserDto.email
+    );
     if (user) throw new BadRequestException("User already exists!");
     else {
       try {
@@ -61,7 +85,9 @@ export class UserService {
         user = await this.userModel.create({
           ...createUserDto,
           password: hashedPassword,
+          stripeCustomerId: stripeCustomer.id,
         });
+        await this.updateUser({ deviceId: createUserDto.deviceId }, user);
       } catch (err) {
         throw new BadRequestException("All fields are required");
       }
@@ -80,6 +106,7 @@ export class UserService {
       else {
         await this.verifyPassword(loginUserDto.password, user.password);
         const accessToken = await this.signToken(user.id);
+        await this.updateUser({ deviceId: loginUserDto.deviceId }, user);
         return { accessToken };
       }
     } catch (error) {
@@ -87,7 +114,7 @@ export class UserService {
     }
   }
 
-  async findUser(user: User): Promise<User> {
+  async findUser(user: User): Promise<any> {
     try {
       const userInfo = await this.userModel.findById(user._id);
       if (!userInfo) throw new NotFoundException("User not found!");
@@ -97,9 +124,65 @@ export class UserService {
     }
   }
 
-  async getUserById(id: string): Promise<User> {
+  async findAll(user: User): Promise<any> {
     try {
-      const user = await this.userModel.findById(id);
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find();
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchByName(user: User, name: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find({ firstName: name });
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchById(user: User, userId: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.findById(userId);
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async searchByStatus(user: User, status: String) {
+    try {
+      if (user.role == "ADMIN") {
+        const users = await this.userModel.find({ status });
+        if (!users) throw new NotFoundException("No User found!");
+        else return users;
+      } else {
+        throw new UnauthorizedException("Unauthorized User");
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getUserById(userId: String): Promise<User> {
+    try {
+      const user = await this.userModel.findById(userId);
       if (!user) throw new NotFoundException("User not found!");
       else return user;
     } catch (error) {
@@ -127,34 +210,27 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      return await this.userModel
-        .findByIdAndUpdate(
-          user._id,
-          { $addToSet: { addresses: addAddressDto } },
-          { safe: true, upsert: true, new: true },
-          (error, newUser) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newUser;
-            }
-          }
-        )
-        .clone();
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id },
+        { $addToSet: { addresses: addAddressDto } },
+        { new: true }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async deleteAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
+  async deleteAddress(addressId: String, user: User): Promise<any> {
     try {
+      console.log("delete", addressId, user);
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
-          { $pull: { addresses: { _id: addAddressDto } } },
+          { $pull: { addresses: { _id: addressId } } },
           { safe: true, upsert: true, new: true },
           (error, newUser) => {
             if (error) {
+              console.log(error);
               throw new BadRequestException(error.message);
             } else {
               return newUser;
@@ -170,20 +246,72 @@ export class UserService {
   async updateAddress(
     updateAddressDto: AddAddressDto,
     user: User,
-    addressId: string
+    addressId: String
   ): Promise<any> {
     try {
       return await this.userModel.findOneAndUpdate(
-        { _id: user._id, "addresses._id": addressId },
+        {
+          _id: user._id,
+          "addresses._id": addressId,
+        },
         {
           $set: {
-            "portfolio.$.fullname": updateAddressDto.fullName,
-            "portfolio.$.companyName": updateAddressDto.companyName,
-            "portfolio.$.addressLine1": updateAddressDto.addressLine1,
-            "portfolio.$.addressLine2": updateAddressDto.addressLine2,
-            "portfolio.$.district": updateAddressDto.district,
-            "portfolio.$.cityCoutry": updateAddressDto.cityCountry,
-            "portfolio.$.contactNumber": updateAddressDto.contactNumber,
+            "addresses.$.fullName": updateAddressDto.fullName,
+            "addresses.$.companyName": updateAddressDto.companyName,
+            "addresses.$.addressLine1": updateAddressDto.addressLine1,
+            "addresses.$.addressLine2": updateAddressDto.addressLine2,
+            "addresses.$.district": updateAddressDto.district,
+            "addresses.$.cityCountry": updateAddressDto.cityCountry,
+            "addresses.$.contactNumber": updateAddressDto.contactNumber,
+          },
+        },
+        { new: true }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllAddresses(user: User): Promise<any> {
+    try {
+      const addresses = await this.userModel
+        .findById(user._id)
+        .select("addresses");
+      if (!addresses) throw new NotFoundException("User not found!");
+      else return addresses;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async setAddressPrimary(
+    user: User,
+    previousId: String,
+    newId: String
+  ): Promise<any> {
+    try {
+      await this.userModel.findOneAndUpdate(
+        { _id: user._id, "addresses._id": previousId },
+        {
+          $set: {
+            "addresses.$.primary": false,
+          },
+        },
+        { safe: true, upsert: true, new: true },
+        (error, newUser) => {
+          if (error) {
+            throw new BadRequestException(error.message);
+          } else {
+            return newUser;
+          }
+        }
+      );
+
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id, "addresses._id": newId },
+        {
+          $set: {
+            "addresses.$.primary": true,
           },
         },
         { safe: true, upsert: true, new: true },
@@ -200,13 +328,56 @@ export class UserService {
     }
   }
 
-  async getAllAddresses(user: User): Promise<any> {
+  async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<string> {
     try {
-      const addresses = await this.userModel
-        .findById(user._id)
-        .select("addresses");
-      if (!addresses) throw new NotFoundException("User not found!");
-      else return addresses;
+      const resetToken = Math.random().toString(36).substring(4);
+
+      let user = await this.userModel.findOne({
+        email: forgetPasswordDto.email,
+      });
+      if (!user) throw new NotFoundException("Email does not exist");
+
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = Date.now() + 300000;
+
+      await user.save();
+
+      const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
+
+      try {
+        await this.sendEmail(
+          user.email,
+          "Your password reset token (Valid for 10 mints)",
+          message
+        );
+        return "OTP sent to the email";
+      } catch (err) {
+        throw new BadRequestException(
+          "Error in sending an email. Try again later!"
+        );
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    try {
+      const user = await this.userModel.findOne({
+        resetPasswordToken: resetPasswordDto.pin,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+      if (!user) throw new NotFoundException("Invalid pin or pin expired!");
+      if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
+        throw new UnauthorizedException(
+          "Password Does Not Match with Confirm Pasword"
+        );
+      user.password = await bcrypt.hash(resetPasswordDto.password, 10);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      return "Password changed successfully!";
     } catch (error) {
       throw new BadRequestException(error.message);
     }

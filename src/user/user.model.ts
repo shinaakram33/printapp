@@ -53,8 +53,51 @@ export class User {
   @Prop({ required: true })
   role: Role;
 
+  @Prop({ default: "Active" })
+  status: String;
+
   @Prop({ required: false })
-  addresses: Address[];
+  stripeCustomerId: string;
+  @Prop()
+  resetPasswordToken: string;
+
+  @Prop()
+  resetPasswordExpires: number;
+
+  @Prop({ type: [String] })
+  deviceId: string[];
+
+  @Prop({ default: false })
+  payment: boolean;
+
+  @Prop({
+    type: [
+      {
+        fullName: String,
+        companyName: String,
+        addressLine1: String,
+        addressLine2: String,
+        area: String,
+        district: String,
+        cityCountry: String,
+        contactNumber: String,
+        primary: Boolean,
+      },
+    ],
+  })
+  addresses: [
+    {
+      fullName: String;
+      companyName: String;
+      addressLine1: String;
+      addressLine2: String;
+      area: String;
+      district: String;
+      cityCountry: String;
+      contactNumber: String;
+      primary: Boolean;
+    }
+  ];
 }
 
 export type UserDocument = User & Document;

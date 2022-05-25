@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
-// import { Product } from "../products/products.model";
 import mongoose from "mongoose";
 
 export enum CategoryTypes {
@@ -56,10 +55,10 @@ class PriceChart extends Document {
 }
 
 class NumberOfPages extends Document {
-  // @Prop()
+  @Prop()
   pageName: String;
 
-  // @Prop()
+  @Prop()
   number: number;
 }
 
@@ -209,9 +208,6 @@ export class Cart {
       folding: Folding;
     }
   ];
-
-  // @Prop({ required: true })
-  // products: [{ type: Product }];
 }
 
 export type cartDocument = Cart & Document;

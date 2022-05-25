@@ -10,30 +10,111 @@ import { ConfigService } from "@nestjs/config";
 import { User } from "../user/user.model";
 import { AddOrderDto } from "./dto/add-order.dto";
 import { UpdateOrderDto } from "./dto/update-order.dto";
+import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<orderDocument>
-  ) {}
+  ) //private notificationService: NotificationService
+  {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
-      return await this.orderModel.create({ userId: user._id, addOrderDto });
+      const order = await this.orderModel.create({
+        user: user._id,
+        addOrderDto,
+      });
+      // const notification = await this.notificationService.generateNotification(
+      //   `Order ${order._id} has been changed to ${order.status}`,
+      //   user._id.toString()
+      // );
+      return order;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async updateOrder(
-    id: String,
+  //for admin
+  async addOrderAdmin(
     user: User,
-    updateOrderDto: UpdateOrderDto
+    addOrderDto: AddOrderDto,
+    userId: string
   ): Promise<any> {
     try {
-      if (user.role !== "USER") {
-        return await this.orderModel.findByIdAndUpdate(id, updateOrderDto);
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        const order = await this.orderModel.create({
+          user: userId,
+          addOrderDto,
+        });
+        // const notification =
+        //   await this.notificationService.generateNotification(
+        //     `Order ${order._id} has been changed to ${order.status}`,
+        //     userId
+        //   );
+        return order;
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateOrderAdmin(
+    id: String,
+    user: User,
+    updateOrderDto: UpdateOrderDto,
+    userId: string
+  ): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        const order = await this.orderModel.findByIdAndUpdate(id, {
+          user: userId,
+          updateOrderDto,
+        });
+
+        //const notification =
+        // await this.notificationService.generateNotification(
+        //   `Order ${order._id} has been changed to ${order.status}`,
+        //   userId
+        // );
+        return order;
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteOrderAdmin(id: String, user: User): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.findByIdAndDelete(id);
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllOrderAdmin(user: User): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.find();
       }
     } catch (error) {
       throw new BadRequestException(error.message);

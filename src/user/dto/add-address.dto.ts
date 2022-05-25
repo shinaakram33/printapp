@@ -33,4 +33,8 @@ export class AddAddressDto {
   @ApiProperty()
   @IsNotEmpty()
   contactNumber: String;
+
+  @ApiProperty()
+  @IsOptional()
+  primary: Boolean;
 }
