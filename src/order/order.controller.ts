@@ -29,10 +29,10 @@ export class OrderController {
   @Post("/charge")
   @UseGuards(AuthGuard("jwt"))
   async createCharge(@Body() charge: CreateChargeDto, @GetUser() user: User) {
-    await this.stripeService.charge(
+    return await this.stripeService.charge(
       charge.amount,
       charge.paymentMethodId,
-      user.stripeCustomerId
+      user
     );
   }
 
