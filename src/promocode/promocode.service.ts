@@ -9,52 +9,53 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { ConfigService } from "@nestjs/config";
 import { Model, Schema as MongooseSchema } from "mongoose";
-import { CategoryTypes, Product, productDocument } from "./products.model";
 import { User } from "../user/user.model";
-import { AddProductDto } from "./dto/add-product.dto";
-import { UpdateProductDto } from "./dto/update-product.dto";
+import { Promocode, PromocodeDocument } from "./promocode.model";
+import { AddPromocodeDto } from "./dto/add-promocode.dto";
+import { UpdatePromocodeDto } from "./dto/update-promocode.dto";
 
 @Injectable()
-export class ProductsService {
+export class PromocodeService {
   constructor(
-    @InjectModel(Product.name) private productModel: Model<productDocument>,
+    @InjectModel(Promocode.name)
+    private promocodeModel: Model<PromocodeDocument>,
     private configService: ConfigService
   ) {}
 
-  async deleteProduct(user: User, id: string) {
+  async deletePromocode(user: User, promoId: String) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      var product = await this.productModel.findById(id);
-      if (!product) {
-        throw new NotFoundException("No product of this Id exists");
+      var promocode = await this.promocodeModel.findById(promoId);
+      if (!promocode) {
+        throw new NotFoundException("No promo code of this Id exists");
       }
-      return await this.productModel.findByIdAndDelete(id);
+      return await this.promocodeModel.findByIdAndDelete(promoId);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async addProduct(user: User, addProductDto: AddProductDto) {
+  async addPromocode(user: User, addPromocodeDto: AddPromocodeDto) {
     try {
       if (!user || user.role == "USER") {
         throw new UnauthorizedException(
           "You are not authorize to perform this operation."
         );
       }
-      return await this.productModel.create(addProductDto);
+      return await this.promocodeModel.create(addPromocodeDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async updateProduct(
+  async updatePromocode(
     user: User,
-    id: string,
-    updateProductDto: UpdateProductDto
+    updatePromocodeDto: UpdatePromocodeDto,
+    promoId: String
   ) {
     try {
       if (!user || user.role == "USER") {
@@ -62,35 +63,43 @@ export class ProductsService {
           "You are not authorize to perform this operation."
         );
       }
-      var product = await this.productModel.findById(id);
-      if (!product) {
+      var promocode = await this.promocodeModel.findById(promoId);
+      if (!promocode) {
         throw new NotFoundException("No product of this Id exists");
       }
-      return await this.productModel.findByIdAndUpdate(id, updateProductDto, {
-        new: true,
-      });
+      return await this.promocodeModel.findByIdAndUpdate(
+        promoId,
+        updatePromocodeDto,
+        {
+          new: true,
+        }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async findByCategory(category: CategoryTypes) {
-    try {
-      return await this.productModel.find({ title: category });
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  async findAll(user: User) {
+  async getPromocode(user: User, promoId: String) {
     try {
       if (!user || user.role == "USER") {
-        return await this.productModel.find();
-      } else {
         throw new UnauthorizedException(
-          "You are not allowed to perform this action"
+          "You are not authorize to perform this operation."
         );
       }
+      return await this.promocodeModel.findById(promoId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getAllPromocode(user: User) {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      }
+      return await this.promocodeModel.find();
     } catch (error) {
       throw new BadRequestException(error.message);
     }

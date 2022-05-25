@@ -3,12 +3,14 @@ import { UserService } from "./user.service";
 import { UserController } from "./user.controller";
 import { MongooseModule } from "@nestjs/mongoose";
 import { User, UserSchema } from "./user.model";
-import { JwtModule, JwtService } from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./auth/jwt.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { StripeModule } from "src/stripe/stripe.module";
 @Module({
   imports: [
+    StripeModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule.register({ defaultStrategy: "jwt" }),
 

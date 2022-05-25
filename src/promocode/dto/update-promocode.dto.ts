@@ -1,20 +1,21 @@
 import { IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { CategoryTypes } from "src/products/products.model";
 
-export class UpdateCardDto {
+export class UpdatePromocodeDto {
   @ApiProperty()
   @IsOptional()
-  cardNumber: String;
-
-  @ApiProperty()
-  @IsOptional()
-  expiry: String;
+  name: String;
 
   @ApiProperty()
   @IsOptional()
-  cvv: String;
+  status: String;
 
   @ApiProperty()
   @IsOptional()
-  primary: Boolean;
+  category: CategoryTypes;
+
+  @ApiProperty()
+  @IsOptional()
+  discount: String;
 }

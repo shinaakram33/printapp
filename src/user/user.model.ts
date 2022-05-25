@@ -53,6 +53,23 @@ export class User {
   @Prop({ required: true })
   role: Role;
 
+  @Prop({ default: "Active" })
+  status: String;
+
+  @Prop({ required: false })
+  stripeCustomerId: string;
+  @Prop()
+  resetPasswordToken: string;
+
+  @Prop()
+  resetPasswordExpires: number;
+
+  @Prop({ type: [String] })
+  deviceId: string[];
+
+  @Prop({ default: false })
+  payment: boolean;
+
   @Prop({
     type: [
       {
@@ -64,6 +81,7 @@ export class User {
         district: String,
         cityCountry: String,
         contactNumber: String,
+        primary: Boolean,
       },
     ],
   })
@@ -77,23 +95,7 @@ export class User {
       district: String;
       cityCountry: String;
       contactNumber: String;
-    }
-  ];
-
-  @Prop({
-    type: [
-      {
-        cardnumber: String,
-        expiry: String,
-        cvv: String,
-      },
-    ],
-  })
-  cards: [
-    {
-      cardnumber: String;
-      expiry: String;
-      cvv: String;
+      primary: Boolean;
     }
   ];
 }

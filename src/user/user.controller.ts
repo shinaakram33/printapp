@@ -12,11 +12,9 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
 import { AddAddressDto } from "./dto/add-address.dto";
-import { AddCardDto } from "./dto/add-card.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
 import { UpdateAddressDto } from "./dto/update-address.dto";
-import { UpdateCardDto } from "./dto/update-card.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./user.model";
 import { UserService } from "./user.service";
@@ -41,6 +39,34 @@ export class UserController {
   @Get("/find")
   async findUser(@GetUser() user: User) {
     return await this.userService.findUser(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/findall")
+  async findAllUsers(@GetUser() user: User) {
+    return await this.userService.findAll(user);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/name/:name")
+  async findByName(@GetUser() user: User, @Param("name") name: String) {
+    return await this.userService.searchByName(user, name);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/id/:userId")
+  async findById(@GetUser() user: User, @Param("userId") userId: String) {
+    return await this.userService.searchByName(user, userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard("jwt"))
+  @Get("/find/status/:userId")
+  async findByStatus(@GetUser() user: User, @Param("status") status: String) {
+    return await this.userService.searchByName(user, status);
   }
 
   @ApiBearerAuth()
@@ -92,6 +118,7 @@ export class UserController {
     @GetUser() user: User,
     @Param("addressId") addressId: String
   ) {
+    console.log("params ,", addressId, user);
     return await this.userService.deleteAddress(addressId, user);
   }
 
@@ -104,55 +131,12 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Patch("/card/:previousId/:newId")
-  async setCardPrimary(
-    @GetUser() user: User,
-    @Param("previousId") previousId: String,
-    @Param("newId") newId: String
-  ) {
-    return await this.userService.setCardPrimary(user, previousId, newId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
   @Patch("/address/:previousId/:newId")
   async setAddressPrimary(
     @GetUser() user: User,
     @Param("previousId") previousId: String,
     @Param("newId") newId: String
   ) {
-    return await this.userService.setCardPrimary(user, previousId, newId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
-  @Patch("/card/add/")
-  async addCard(@Body() addCardDto: AddCardDto, @GetUser() user: User) {
-    return await this.userService.addCard(addCardDto, user);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
-  @Patch("/card/update/:cardId")
-  async updateCard(
-    @Body() updateCardDto: UpdateCardDto,
-    @GetUser() user: User,
-    @Param("cardId") cardId: String
-  ) {
-    return await this.userService.updateCard(updateCardDto, user, cardId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
-  @Patch("/card/delete/:cardId")
-  async deleteCard(@GetUser() user: User, @Param("cardId") cardId: String) {
-    return await this.userService.deleteCard(cardId, user);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard())
-  @Get("/card/getall/")
-  async getAllCards(@GetUser() user: User) {
-    return await this.userService.getAllCards(user);
+    return await this.userService.setAddressPrimary(user, previousId, newId);
   }
 }

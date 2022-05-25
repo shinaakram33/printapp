@@ -14,6 +14,14 @@ import { UpdateItemDto } from "./dto/update-item.dto";
 export class CartService {
   constructor(@InjectModel(Cart.name) private cartModel: Model<cartDocument>) {}
 
+  async findCart(user: User): Promise<any> {
+    try {
+      return await this.cartModel.findOne({ userId: user._id });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async createCart(user: User) {
     try {
       const cartFound = await this.findCart(user);
@@ -31,17 +39,10 @@ export class CartService {
     }
   }
 
-  async findCart(user: User): Promise<any> {
-    try {
-      return await this.cartModel.findOne({ userId: user._id });
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
   async cartAddItem(user: User, cartAddItemDto: CartAddItemDto) {
     try {
       const cart = await this.createCart(user);
-      await this.cartModel
+      return await this.cartModel
         .findByIdAndUpdate(
           cart.id,
           { $push: { products: cartAddItemDto } },
