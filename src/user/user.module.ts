@@ -33,6 +33,6 @@ import { StripeModule } from "src/stripe/stripe.module";
   ],
   controllers: [UserController],
   providers: [UserService, JwtStrategy, ConfigService],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, UserService],
 })
 export class UserModule {}
