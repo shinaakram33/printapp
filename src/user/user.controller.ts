@@ -13,7 +13,9 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
 import { AddAddressDto } from "./dto/add-address.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
+import { ForgetPasswordDto } from "./dto/forget-password.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { UpdateAddressDto } from "./dto/update-address.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./user.model";
@@ -138,5 +140,19 @@ export class UserController {
     @Param("newId") newId: String
   ) {
     return await this.userService.setAddressPrimary(user, previousId, newId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/forgetpassword")
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    return await this.userService.forgetPassword(forgetPasswordDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/resetpassword")
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return await this.userService.resetPassword(resetPasswordDto);
   }
 }
