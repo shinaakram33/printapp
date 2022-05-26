@@ -1,7 +1,17 @@
-import { IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CategoryTypes } from "src/products/products.model";
+import { PromoTypes } from "../promocode.model";
 
+class PromoType {
+  @ApiProperty()
+  @IsOptional()
+  name: String;
+
+  @IsNotEmpty()
+  @IsOptional()
+  type: PromoTypes;
+}
 export class UpdatePromocodeDto {
   @ApiProperty()
   @IsOptional()
@@ -26,4 +36,8 @@ export class UpdatePromocodeDto {
   @IsOptional()
   @ApiProperty()
   date: String;
+
+  @IsOptional()
+  @ApiProperty()
+  type: PromoType;
 }

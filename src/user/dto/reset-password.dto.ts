@@ -4,8 +4,8 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class ResetPasswordDto {
   @IsNotEmpty()
   @ApiProperty()
-  @IsNumber()
-  pin: number;
+  @IsString()
+  userId: string;
 
   @IsNotEmpty()
   @ApiProperty()
