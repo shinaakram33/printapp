@@ -143,7 +143,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
   @Patch("/forgetpassword")
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return await this.userService.forgetPassword(forgetPasswordDto);
