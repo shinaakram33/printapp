@@ -17,6 +17,12 @@ export class Promocode {
 
   @Prop({ required: true })
   discount: string;
+
+  @Prop({ required: true, default: 0 })
+  noOfTimeUsed: Number;
+
+  @Prop({ required: true })
+  Date: String;
 }
 
 export type PromocodeDocument = Promocode & Document;

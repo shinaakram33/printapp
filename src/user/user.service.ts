@@ -352,6 +352,7 @@ export class UserService {
         );
         return "OTP sent to the email";
       } catch (err) {
+        console.log("error :", err.message);
         throw new BadRequestException(
           "Error in sending an email. Try again later!"
         );
