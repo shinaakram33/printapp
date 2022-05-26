@@ -18,4 +18,8 @@ export class UpdatePromocodeDto {
   @ApiProperty()
   @IsOptional()
   discount: String;
+
+  @ApiProperty()
+  @IsOptional()
+  noOfTimesUsed: Number;
 }
