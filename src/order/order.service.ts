@@ -16,9 +16,9 @@ import { NotificationService } from "src/notification/notification.service";
 export class OrderService {
   constructor(
     @InjectModel(Order.name)
-    private orderModel: Model<orderDocument>
-  ) //private notificationService: NotificationService
-  {}
+    private orderModel: Model<orderDocument>,
+    private notificationService: NotificationService
+  ) {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {

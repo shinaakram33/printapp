@@ -71,7 +71,7 @@ class NumberOfPages extends Document {
   pageName: String;
 
   @Prop()
-  number: number;
+  number: String[];
 }
 
 const NumberOfPagesSchema = SchemaFactory.createForClass(NumberOfPages);

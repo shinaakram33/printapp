@@ -38,7 +38,7 @@ class NumberOfPages {
 
   @ApiProperty()
   @IsOptional()
-  number?: number;
+  number?: String[];
 }
 
 class Corner {

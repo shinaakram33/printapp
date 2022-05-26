@@ -92,6 +92,14 @@ export class PromocodeService {
     }
   }
 
+  async getPromocodeByName(user: User, name: String) {
+    try {
+      return await this.promocodeModel.find({ name });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async getAllPromocode(user: User) {
     try {
       if (!user || user.role == "USER") {
