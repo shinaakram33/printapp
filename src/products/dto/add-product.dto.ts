@@ -210,4 +210,12 @@ export class AddProductDto {
   @ApiProperty()
   @IsOptional()
   numberOfSides?: String[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  status: String;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  date: String;
 }

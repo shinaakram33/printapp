@@ -197,4 +197,8 @@ export class UpdateProductDto {
   @ApiProperty()
   @IsOptional()
   numberOfSides?: String[];
+
+  @ApiProperty()
+  @IsOptional()
+  status: String;
 }

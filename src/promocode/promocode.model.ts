@@ -7,7 +7,7 @@ export class Promocode {
   _id: MongooseSchema.Types.ObjectId;
 
   @Prop({ required: true })
-  name: string;
+  name: String;
 
   @Prop({ required: true })
   category: CategoryTypes;
@@ -16,13 +16,16 @@ export class Promocode {
   status: String;
 
   @Prop({ required: true })
-  discount: string;
+  type: String;
+
+  @Prop({ required: true })
+  discount: String;
 
   @Prop({ required: true, default: 0 })
   noOfTimeUsed: Number;
 
   @Prop({ required: true })
-  Date: String;
+  date: String;
 }
 
 export type PromocodeDocument = Promocode & Document;

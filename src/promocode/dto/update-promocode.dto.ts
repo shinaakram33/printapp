@@ -22,4 +22,8 @@ export class UpdatePromocodeDto {
   @ApiProperty()
   @IsOptional()
   noOfTimesUsed: Number;
+
+  @IsOptional()
+  @ApiProperty()
+  date: String;
 }

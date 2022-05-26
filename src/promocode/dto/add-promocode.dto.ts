@@ -1,7 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CategoryTypes } from "src/products/products.model";
-
 export class AddPromocodeDto {
   @IsNotEmpty()
   @ApiProperty()
@@ -22,4 +21,12 @@ export class AddPromocodeDto {
   @IsNotEmpty()
   @ApiProperty()
   noOfTimesUsed: Number;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  date: String;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  type: String;
 }
