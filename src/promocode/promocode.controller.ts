@@ -67,6 +67,16 @@ export class PromocodeController {
   }
 
   @ApiBearerAuth()
+  @Get("/findbyname/:name")
+  @UseGuards(AuthGuard("jwt"))
+  async getPromocodeByName(
+    @GetUser() user: User,
+    @Param("name") name: String
+  ): Promise<any> {
+    return await this.promocodeService.getPromocode(user, name);
+  }
+
+  @ApiBearerAuth()
   @Post("/findall")
   @UseGuards(AuthGuard("jwt"))
   async getAllPromocode(@GetUser() user: User): Promise<any> {

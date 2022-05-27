@@ -70,6 +70,12 @@ export class User {
   @Prop({ default: false })
   payment: boolean;
 
+  @Prop({ default: false })
+  created: String;
+
+  @Prop({ default: false })
+  date: String;
+
   @Prop({
     type: [
       {

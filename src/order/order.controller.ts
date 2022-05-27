@@ -87,12 +87,23 @@ export class OrderController {
   }
 
   @ApiBearerAuth()
-  @Get("/find")
+  @Get("/findall")
   @UseGuards(AuthGuard("jwt"))
   async getAllOrder(
     @GetUser()
     user: User
   ): Promise<any> {
     return await this.orderService.getAllOrderAdmin(user);
+  }
+
+  @ApiBearerAuth()
+  @Get("/find/:orderId")
+  @UseGuards(AuthGuard("jwt"))
+  async getOrder(
+    @GetUser()
+    user: User,
+    @Param("orderId") orderId: String
+  ): Promise<any> {
+    return await this.orderService.getOrderAdmin(user, orderId);
   }
 }
