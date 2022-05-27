@@ -136,7 +136,7 @@ class Folding {
 export class AddProductDto {
   @ApiProperty()
   @IsNotEmpty()
-  image: [];
+  image: string[];
 
   @ApiProperty()
   @IsEnum(CategoryTypes)

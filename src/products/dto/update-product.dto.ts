@@ -124,7 +124,7 @@ class Category {
 export class UpdateProductDto {
   @ApiProperty()
   @IsOptional()
-  images: string[];
+  image: string[];
 
   @ApiProperty()
   @IsOptional()
