@@ -28,4 +28,12 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   deviceId: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  created: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  date: string;
 }

@@ -71,7 +71,7 @@ class NumberOfPages {
 
   @IsNotEmpty()
   @ApiProperty()
-  number?: number[];
+  number?: String[];
 }
 
 class Corner {
@@ -136,7 +136,7 @@ class Folding {
 export class AddProductDto {
   @ApiProperty()
   @IsNotEmpty()
-  image: [];
+  image: string[];
 
   @ApiProperty()
   @IsEnum(CategoryTypes)
@@ -210,4 +210,12 @@ export class AddProductDto {
   @ApiProperty()
   @IsOptional()
   numberOfSides?: String[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  status: String;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  date: String;
 }

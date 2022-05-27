@@ -2,12 +2,26 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 import { CategoryTypes } from "src/products/products.model";
 
+export enum PromoTypes {
+  DELIVERY_CHARGES = "DELIVERY_CHARGES",
+  PERCENTAGE = "PERCENTAGE",
+  AMOUNT = "AMOUNT",
+}
+
+class PromoType extends Document {
+  @Prop({ required: true })
+  name: String;
+
+  @Prop({ required: true })
+  type: PromoTypes;
+}
+
 @Schema()
 export class Promocode {
   _id: MongooseSchema.Types.ObjectId;
 
   @Prop({ required: true })
-  name: string;
+  name: String;
 
   @Prop({ required: true })
   category: CategoryTypes;
@@ -16,13 +30,16 @@ export class Promocode {
   status: String;
 
   @Prop({ required: true })
-  discount: string;
+  promoType: PromoType;
+
+  @Prop({ required: true })
+  discount: String;
 
   @Prop({ required: true, default: 0 })
   noOfTimeUsed: Number;
 
   @Prop({ required: true })
-  Date: String;
+  date: String;
 }
 
 export type PromocodeDocument = Promocode & Document;

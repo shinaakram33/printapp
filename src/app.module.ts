@@ -37,7 +37,7 @@ import { ActivityModule } from "./activity/activity.module";
     StripeModule,
     PromocodeModule,
     ActivityModule,
-    // NotificationModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

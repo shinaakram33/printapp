@@ -31,100 +31,100 @@ class Category {
   sizes?: String;
 }
 
-class NumberOfPages {
-  @ApiProperty()
-  @IsOptional()
-  pageName?: String;
+// class NumberOfPages {
+//   @ApiProperty()
+//   @IsOptional()
+//   pageName?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  number?: number;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   number?: String[];
+// }
 
-class Corner {
-  @ApiProperty()
-  @IsOptional()
-  cornerName?: String;
+// class Corner {
+//   @ApiProperty()
+//   @IsOptional()
+//   cornerName?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  cornerDescription?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   cornerDescription?: String;
+// }
 
-class Cut {
-  @ApiProperty()
-  @IsOptional()
-  cutName?: String;
+// class Cut {
+//   @ApiProperty()
+//   @IsOptional()
+//   cutName?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  cutHeight?: String;
+//   @ApiProperty()
+//   @IsOptional()
+//   cutHeight?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  cutWidth?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   cutWidth?: String;
+// }
 
-class Window {
-  @ApiProperty()
-  @IsOptional()
-  windowName?: String;
+// class Window {
+//   @ApiProperty()
+//   @IsOptional()
+//   windowName?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  windowHeight?: String;
+//   @ApiProperty()
+//   @IsOptional()
+//   windowHeight?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  windowWidth?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   windowWidth?: String;
+// }
 
-class Folding {
-  @ApiProperty()
-  @IsOptional()
-  foldingName?: String;
+// class Folding {
+//   @ApiProperty()
+//   @IsOptional()
+//   foldingName?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  foldingHeight?: String;
+//   @ApiProperty()
+//   @IsOptional()
+//   foldingHeight?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  foldingWidth?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   foldingWidth?: String;
+// }
 
-class Size {
-  @ApiProperty()
-  @IsOptional()
-  name?: String;
+// class Size {
+//   @ApiProperty()
+//   @IsOptional()
+//   name?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  height?: String;
+//   @ApiProperty()
+//   @IsOptional()
+//   height?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  Width?: String;
+//   @ApiProperty()
+//   @IsOptional()
+//   Width?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  image?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   image?: String;
+// }
 
-class PriceChart {
-  @ApiProperty()
-  @IsOptional()
-  quantity?: String;
+// class PriceChart {
+//   @ApiProperty()
+//   @IsOptional()
+//   quantity?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  unitPrice?: String;
-}
+//   @ApiProperty()
+//   @IsOptional()
+//   unitPrice?: String;
+// }
 
 export class UpdateProductDto {
   @ApiProperty()
   @IsOptional()
-  image: string;
+  image: string[];
 
   @ApiProperty()
   @IsOptional()
@@ -134,25 +134,25 @@ export class UpdateProductDto {
   @IsOptional()
   category?: Category;
 
-  @ApiProperty()
-  @IsOptional()
-  size?: Size[];
+  // @ApiProperty()
+  // @IsOptional()
+  // size?: Size[];
 
-  @ApiProperty()
-  @IsOptional()
-  priceChart?: PriceChart[];
+  // @ApiProperty()
+  // @IsOptional()
+  // priceChart?: PriceChart[];
 
-  @ApiProperty()
-  @IsOptional()
-  preview?: Boolean;
+  // @ApiProperty()
+  // @IsOptional()
+  // preview?: Boolean;
 
-  @ApiProperty()
-  @IsOptional()
-  designUrl?: String;
+  // @ApiProperty()
+  // @IsOptional()
+  // designUrl?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  remarks?: String;
+  // @ApiProperty()
+  // @IsOptional()
+  // remarks?: String;
 
   @ApiProperty()
   @IsOptional()
@@ -162,39 +162,43 @@ export class UpdateProductDto {
   @IsOptional()
   feature2?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  numberOfPages?: NumberOfPages[];
+  // @ApiProperty()
+  // @IsOptional()
+  // numberOfPages?: NumberOfPages[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // corner?: Corner[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // cut?: Cut[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // window?: Window[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // folding?: Folding[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // paperType?: String[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // spotUV?: String[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // finishing?: String[];
+
+  // @ApiProperty()
+  // @IsOptional()
+  // numberOfSides?: String[];
 
   @ApiProperty()
   @IsOptional()
-  corner?: Corner[];
-
-  @ApiProperty()
-  @IsOptional()
-  cut?: Cut[];
-
-  @ApiProperty()
-  @IsOptional()
-  window?: Window[];
-
-  @ApiProperty()
-  @IsOptional()
-  folding?: Folding[];
-
-  @ApiProperty()
-  @IsOptional()
-  paperType?: String[];
-
-  @ApiProperty()
-  @IsOptional()
-  spotUV?: String[];
-
-  @ApiProperty()
-  @IsOptional()
-  finishing?: String[];
-
-  @ApiProperty()
-  @IsOptional()
-  numberOfSides?: String[];
+  status: String;
 }

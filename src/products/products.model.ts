@@ -71,7 +71,7 @@ class NumberOfPages extends Document {
   pageName: String;
 
   @Prop()
-  number: number;
+  number: String[];
 }
 
 const NumberOfPagesSchema = SchemaFactory.createForClass(NumberOfPages);
@@ -195,6 +195,12 @@ export class Product {
 
   @Prop({ required: false, type: [FoldingSchema] })
   folding: Folding[];
+
+  @Prop({ required: true, type: String })
+  status: String;
+
+  @Prop({ required: true, type: String })
+  date: String;
 }
 
 export type productDocument = Product & Document;

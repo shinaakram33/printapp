@@ -42,20 +42,25 @@ export class CartService {
   async cartAddItem(user: User, cartAddItemDto: CartAddItemDto) {
     try {
       const cart = await this.createCart(user);
-      return await this.cartModel
-        .findByIdAndUpdate(
-          cart.id,
-          { $push: { products: cartAddItemDto } },
-          { safe: true, upsert: true },
-          (error, newCart) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newCart;
-            }
-          }
-        )
-        .clone();
+      console.log("dto :", cartAddItemDto);
+      console.log("cart :", cart);
+      const newCart = await this.cartModel.findOneAndUpdate(
+        { _id: cart._id },
+        {
+          $push: {
+            products: cartAddItemDto,
+          },
+        }
+        // { safe: true, upsert: true, new: true },
+        // (error, newCart) => {
+        //   if (error) {
+        //     throw new BadRequestException(error.message);
+        //   } else {
+        //     return newCart;
+        //   }
+        // }
+      );
+      return newCart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

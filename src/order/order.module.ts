@@ -14,10 +14,10 @@ import { OrderService } from "./order.service";
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
-    // MongooseModule.forFeature([
-    //   { name: Notification.name, schema: NotificationSchema },
-    // ]),
-    // NotificationModule,
+    MongooseModule.forFeature([
+      { name: Notification.name, schema: NotificationSchema },
+    ]),
+    NotificationModule,
     StripeModule,
   ],
   controllers: [OrderController],

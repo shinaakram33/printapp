@@ -16,9 +16,9 @@ import { NotificationService } from "src/notification/notification.service";
 export class OrderService {
   constructor(
     @InjectModel(Order.name)
-    private orderModel: Model<orderDocument>
-  ) //private notificationService: NotificationService
-  {}
+    private orderModel: Model<orderDocument>,
+    private notificationService: NotificationService
+  ) {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
@@ -26,10 +26,10 @@ export class OrderService {
         user: user._id,
         addOrderDto,
       });
-      // const notification = await this.notificationService.generateNotification(
-      //   `Order ${order._id} has been changed to ${order.status}`,
-      //   user._id.toString()
-      // );
+      const notification = await this.notificationService.generateNotification(
+        `Order ${order._id} has been changed to ${order.status}`,
+        user._id.toString()
+      );
       return order;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -52,11 +52,11 @@ export class OrderService {
           user: userId,
           addOrderDto,
         });
-        // const notification =
-        //   await this.notificationService.generateNotification(
-        //     `Order ${order._id} has been changed to ${order.status}`,
-        //     userId
-        //   );
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId
+          );
         return order;
       }
     } catch (error) {
@@ -81,11 +81,11 @@ export class OrderService {
           updateOrderDto,
         });
 
-        //const notification =
-        // await this.notificationService.generateNotification(
-        //   `Order ${order._id} has been changed to ${order.status}`,
-        //   userId
-        // );
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId
+          );
         return order;
       }
     } catch (error) {
@@ -115,6 +115,20 @@ export class OrderService {
         );
       } else {
         return await this.orderModel.find();
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getOrderAdmin(user: User, orderId: String): Promise<any> {
+    try {
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.findById(orderId);
       }
     } catch (error) {
       throw new BadRequestException(error.message);

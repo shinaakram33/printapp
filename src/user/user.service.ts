@@ -19,6 +19,7 @@ import { AddAddressDto } from "./dto/add-address.dto";
 import { StripeService } from "../stripe/stripe.service";
 import { ForgetPasswordDto } from "./dto/forget-password.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
+import { VerifyPinDto } from "./dto/verify-pin.dto";
 
 @Injectable()
 export class UserService {
@@ -362,13 +363,22 @@ export class UserService {
     }
   }
 
-  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+  public async verifyOTP(verifyPinDto: VerifyPinDto) {
     try {
       const user = await this.userModel.findOne({
-        resetPasswordToken: resetPasswordDto.pin,
+        resetPasswordToken: verifyPinDto,
         resetPasswordExpires: { $gt: Date.now() },
       });
       if (!user) throw new NotFoundException("Invalid pin or pin expired!");
+      else return user;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  public async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    try {
+      const user = await this.userModel.findById(resetPasswordDto.userId);
       if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
         throw new UnauthorizedException(
           "Password Does Not Match with Confirm Pasword"
@@ -377,7 +387,6 @@ export class UserService {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
       await user.save();
-
       return "Password changed successfully!";
     } catch (error) {
       throw new BadRequestException(error.message);
