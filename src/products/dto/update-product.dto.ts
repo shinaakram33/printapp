@@ -14,21 +14,21 @@ class Category {
   @IsOptional()
   description?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // paperType?: String;
+  @ApiProperty()
+  @IsOptional()
+  paperType?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // leadTime?: String;
+  @ApiProperty()
+  @IsOptional()
+  leadTime?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // colour?: String;
+  @ApiProperty()
+  @IsOptional()
+  colour?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // sizes?: String;
+  @ApiProperty()
+  @IsOptional()
+  sizes?: String;
 }
 
 // class NumberOfPages {
