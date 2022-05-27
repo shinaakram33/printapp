@@ -119,7 +119,7 @@ export class CartAddItemDto {
 
   @ApiProperty()
   @IsOptional()
-  designUrl: String;
+  designUrl: String[];
 
   @ApiProperty()
   @IsOptional()
