@@ -10,7 +10,7 @@ class PromoType {
 
   @IsNotEmpty()
   @ApiProperty()
-  type: PromoTypes;
+  type: String;
 }
 export class AddPromocodeDto {
   @IsNotEmpty()

@@ -122,13 +122,13 @@ class Category {
 // }
 
 export class UpdateProductDto {
-  // @ApiProperty()
-  // @IsOptional()
-  // image: string;
+  @ApiProperty()
+  @IsOptional()
+  images: string[];
 
-  // @ApiProperty()
-  // @IsOptional()
-  // title?: CategoryTypes;
+  @ApiProperty()
+  @IsOptional()
+  title?: CategoryTypes;
 
   @ApiProperty()
   @IsOptional()
@@ -154,13 +154,13 @@ export class UpdateProductDto {
   // @IsOptional()
   // remarks?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // feature1?: String;
+  @ApiProperty()
+  @IsOptional()
+  feature1?: String;
 
-  // @ApiProperty()
-  // @IsOptional()
-  // feature2?: String;
+  @ApiProperty()
+  @IsOptional()
+  feature2?: String;
 
   // @ApiProperty()
   // @IsOptional()
