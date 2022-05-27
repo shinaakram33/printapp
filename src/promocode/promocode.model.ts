@@ -7,7 +7,6 @@ export enum PromoTypes {
   PERCENTAGE = "PERCENTAGE",
   AMOUNT = "AMOUNT",
 }
-
 class PromoType extends Document {
   @Prop({ required: true })
   name: String;

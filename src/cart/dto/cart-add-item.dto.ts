@@ -94,7 +94,7 @@ class Folding {
 export class CartAddItemDto {
   @ApiProperty()
   @IsNotEmpty()
-  image: [];
+  image: String;
 
   @ApiProperty()
   @IsEnum(CategoryTypes)

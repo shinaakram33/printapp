@@ -42,8 +42,6 @@ export class CartService {
   async cartAddItem(user: User, cartAddItemDto: CartAddItemDto) {
     try {
       const cart = await this.createCart(user);
-      console.log("dto :", cartAddItemDto);
-      console.log("cart :", cart);
       const newCart = await this.cartModel.findOneAndUpdate(
         { _id: cart._id },
         {
