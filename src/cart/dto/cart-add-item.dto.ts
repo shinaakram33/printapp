@@ -49,7 +49,7 @@ class NumberOfPages {
   pageName?: String;
 
   @ApiProperty()
-  number?: number;
+  number?: String;
 }
 
 class Corner {
@@ -67,6 +67,7 @@ class Cut {
   @ApiProperty()
   cutHeight?: String;
 
+  @ApiProperty()
   cutWidth?: String;
 }
 
