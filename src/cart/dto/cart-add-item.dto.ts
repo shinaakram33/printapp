@@ -93,16 +93,16 @@ class Folding {
 }
 export class CartAddItemDto {
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   image: String;
 
   @ApiProperty()
   @IsEnum(CategoryTypes)
-  @IsNotEmpty()
+  @IsOptional()
   title: CategoryTypes;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   category: Category;
 
   @ApiProperty()
@@ -110,19 +110,19 @@ export class CartAddItemDto {
   size: Size;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   priceChart: PriceChart;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   preview: Boolean;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   designUrl: String;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   remarks: String;
 
   @ApiProperty()
