@@ -46,7 +46,7 @@ export class CartService {
         .findByIdAndUpdate(
           cart.id,
           { $push: { products: cartAddItemDto } },
-          { safe: true, upsert: true },
+          { safe: true, upsert: true, new: true },
           (error, newCart) => {
             if (error) {
               throw new BadRequestException(error.message);
