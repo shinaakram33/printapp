@@ -223,7 +223,6 @@ export class UserService {
 
   async deleteAddress(addressId: String, user: User): Promise<any> {
     try {
-      console.log("delete", addressId, user);
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
@@ -231,7 +230,6 @@ export class UserService {
           { safe: true, upsert: true, new: true },
           (error, newUser) => {
             if (error) {
-              console.log(error);
               throw new BadRequestException(error.message);
             } else {
               return newUser;
@@ -353,7 +351,6 @@ export class UserService {
         );
         return "OTP sent to the email";
       } catch (err) {
-        console.log("error :", err.message);
         throw new BadRequestException(
           "Error in sending an email. Try again later!"
         );

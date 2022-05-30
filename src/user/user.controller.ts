@@ -120,7 +120,6 @@ export class UserController {
     @GetUser() user: User,
     @Param("addressId") addressId: String
   ) {
-    console.log("params ,", addressId, user);
     return await this.userService.deleteAddress(addressId, user);
   }
 
@@ -149,7 +148,6 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
   @Patch("/resetpassword")
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return await this.userService.resetPassword(resetPasswordDto);
