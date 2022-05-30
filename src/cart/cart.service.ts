@@ -48,8 +48,8 @@ export class CartService {
           $push: {
             products: cartAddItemDto,
           },
-        }
-        // { safe: true, upsert: true, new: true },
+        },
+        { safe: true, upsert: true, new: true }
         // (error, newCart) => {
         //   if (error) {
         //     throw new BadRequestException(error.message);
