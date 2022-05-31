@@ -20,7 +20,7 @@ import { StripeService } from "../stripe/stripe.service";
 import { ForgetPasswordDto } from "./dto/forget-password.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { VerifyPinDto } from "./dto/verify-pin.dto";
-import { ConfirmPasswordDto } from "./dto/confirm-password.dto";
+import { ChangePasswordDto } from "./dto/change-password.dto";
 
 @Injectable()
 export class UserService {
@@ -57,7 +57,7 @@ export class UserService {
       hashedPassword
     );
     if (!isPasswordMatching) {
-      throw new UnauthorizedException("Invalid Credentials");
+      throw new UnauthorizedException("Invalid Password");
     }
   }
 
@@ -393,28 +393,21 @@ export class UserService {
     }
   }
 
-  public async confirmPassword(
+  public async changePassword(
     user: User,
-    confirmPasswordDto: ConfirmPasswordDto
+    changePasswordDto: ChangePasswordDto
   ) {
     try {
       if (!user) throw new UnauthorizedException("Invalid Credentials");
       else {
-        await this.verifyPassword(confirmPasswordDto.password, user.password);
+        await this.verifyPassword(
+          changePasswordDto.currentPassword,
+          user.password
+        );
       }
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
-
-  public async changePassword(
-    user: User,
-    confirmPasswordDto: ConfirmPasswordDto
-  ) {
-    try {
       return await this.userModel.findByIdAndUpdate(
         user._id,
-        confirmPasswordDto,
+        { password: changePasswordDto.newPassword },
         {
           new: true,
         }
