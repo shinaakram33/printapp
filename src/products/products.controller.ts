@@ -58,6 +58,11 @@ export class ProductsController {
     return await this.productsService.findByCategory(id);
   }
 
+  @Get("/find/:productId")
+  async findById(@Param("productId") productId: CategoryTypes): Promise<any> {
+    return await this.productsService.findById(productId);
+  }
+
   @Get("/findall")
   async findAll(@GetUser() user: User): Promise<any> {
     return await this.productsService.findAll(user);

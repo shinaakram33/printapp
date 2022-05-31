@@ -39,5 +39,5 @@ export class UpdatePromocodeDto {
 
   @IsOptional()
   @ApiProperty()
-  type: PromoType;
+  promoType: PromoType;
 }
