@@ -28,7 +28,7 @@ export class Promocode {
   @Prop({ default: "Active" })
   status: String;
 
-  @Prop({ required: true })
+  @Prop()
   promoType: PromoType;
 
   @Prop({ required: true })

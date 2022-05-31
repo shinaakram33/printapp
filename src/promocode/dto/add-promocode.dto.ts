@@ -1,7 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { CategoryTypes } from "src/products/products.model";
-import { PromoTypes } from "../promocode.model";
 
 class PromoType {
   @ApiProperty()
@@ -39,5 +38,5 @@ export class AddPromocodeDto {
 
   @IsNotEmpty()
   @ApiProperty()
-  type: PromoType;
+  promoType: PromoType;
 }
