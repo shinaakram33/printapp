@@ -404,14 +404,19 @@ export class UserService {
           changePasswordDto.currentPassword,
           user.password
         );
+        const password = changePasswordDto.newPassword;
+        const hashedPassword = await bcrypt.hash(
+          password,
+          parseInt(process.env.SALT_ROUNDS)
+        );
+        return await this.userModel.findByIdAndUpdate(
+          user._id,
+          { password: hashedPassword },
+          {
+            new: true,
+          }
+        );
       }
-      return await this.userModel.findByIdAndUpdate(
-        user._id,
-        { password: changePasswordDto.newPassword },
-        {
-          new: true,
-        }
-      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
