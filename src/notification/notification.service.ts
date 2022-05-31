@@ -41,19 +41,23 @@ export class NotificationService {
   async generateNotification(message: string, to: string) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
-      const sendNotification = await this.oneSignalService.createNotification({
-        contents: { en: message },
-        include_player_ids: findUserToGetDeviceId.deviceId,
-        app_url: "demo://app/home",
-      });
-      let id = uuidv4();
-
-      const notification = await this.notificationModel.create({
-        _id: id,
-        to: to,
-        message: message,
-      });
-      return notification;
+      console.log("findUser :", findUserToGetDeviceId);
+      if (findUserToGetDeviceId.deviceId) {
+        const sendNotification = await this.oneSignalService.createNotification(
+          {
+            contents: { en: message },
+            include_player_ids: findUserToGetDeviceId.deviceId,
+            app_url: "demo://app/home",
+          }
+        );
+        let id = uuidv4();
+        const notification = await this.notificationModel.create({
+          _id: id,
+          to: to,
+          message: message,
+        });
+        return notification;
+      }
     } catch (error) {
       throw new BadRequestException(error.message);
     }

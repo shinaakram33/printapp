@@ -20,6 +20,7 @@ import { StripeService } from "../stripe/stripe.service";
 import { ForgetPasswordDto } from "./dto/forget-password.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { VerifyPinDto } from "./dto/verify-pin.dto";
+import { ConfirmPasswordDto } from "./dto/confirm-password.dto";
 
 @Injectable()
 export class UserService {
@@ -211,11 +212,13 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      return await this.userModel.findOneAndUpdate(
+      const newUser = await this.userModel.findOneAndUpdate(
         { _id: user._id },
         { $addToSet: { addresses: addAddressDto } },
         { new: true }
       );
+
+      return newUser;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -385,6 +388,37 @@ export class UserService {
       user.resetPasswordExpires = undefined;
       await user.save();
       return "Password changed successfully!";
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  public async confirmPassword(
+    user: User,
+    confirmPasswordDto: ConfirmPasswordDto
+  ) {
+    try {
+      if (!user) throw new UnauthorizedException("Invalid Credentials");
+      else {
+        await this.verifyPassword(confirmPasswordDto.password, user.password);
+      }
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  public async changePassword(
+    user: User,
+    confirmPasswordDto: ConfirmPasswordDto
+  ) {
+    try {
+      return await this.userModel.findByIdAndUpdate(
+        user._id,
+        confirmPasswordDto,
+        {
+          new: true,
+        }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }

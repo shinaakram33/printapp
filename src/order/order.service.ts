@@ -23,15 +23,17 @@ export class OrderService {
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
       const order = await this.orderModel.create({
-        user: user._id,
-        addOrderDto,
+        userId: user._id,
+        ...addOrderDto,
       });
+      console.log("order :", order);
       const notification = await this.notificationService.generateNotification(
         `Order ${order._id} has been changed to ${order.status}`,
         user._id.toString()
       );
       return order;
     } catch (error) {
+      console.log("error", error.message);
       throw new BadRequestException(error.message);
     }
   }

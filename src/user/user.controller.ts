@@ -12,6 +12,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { GetUser } from "./auth/get-user.decorator";
 import { AddAddressDto } from "./dto/add-address.dto";
+import { ConfirmPasswordDto } from "./dto/confirm-password.dto";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { ForgetPasswordDto } from "./dto/forget-password.dto";
 import { LoginUserDto } from "./dto/login-user.dto";
@@ -151,5 +152,25 @@ export class UserController {
   @Patch("/resetpassword")
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return await this.userService.resetPassword(resetPasswordDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/confirmpassword/")
+  async confirmPassword(
+    @GetUser() user: User,
+    @Body() confirmPasswordDto: ConfirmPasswordDto
+  ) {
+    return await this.userService.confirmPassword(user, confirmPasswordDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch("/changepassword/")
+  async changePassword(
+    @GetUser() user: User,
+    @Body() confirmPasswordDto: ConfirmPasswordDto
+  ) {
+    return await this.userService.changePassword(user, confirmPasswordDto);
   }
 }

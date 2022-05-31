@@ -173,7 +173,7 @@ export class Cart {
         size: { type: mongoose.Schema.Types.Mixed },
         priceChart: { type: mongoose.Schema.Types.Mixed },
         preview: Boolean,
-        designUrl: String,
+        designUrl: [String],
         remarks: String,
         corner: mongoose.Schema.Types.Mixed,
         paperType: String,
@@ -195,7 +195,7 @@ export class Cart {
       size: [{ type: Size }];
       priceChart: [{ type: PriceChart }];
       preview: Boolean;
-      designUrl: String;
+      designUrl: String[];
       remarks: String;
       corner: Corner;
       paperType: String;
