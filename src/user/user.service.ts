@@ -219,13 +219,13 @@ export class UserService {
       if (!addresses) {
         newUser = await this.userModel.findOneAndUpdate(
           { _id: user._id },
-          { $addToSet: { addresses: { primary: true, ...addAddressDto } } },
+          { $addToSet: { addresses: { ...addAddressDto, primary: false } } },
           { new: true }
         );
       } else {
         newUser = await this.userModel.findOneAndUpdate(
           { _id: user._id },
-          { $addToSet: { addresses: addAddressDto } },
+          { $addToSet: { addresses: { ...addAddressDto, primary: true }, } },
           { new: true }
         );
       }
