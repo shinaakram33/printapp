@@ -26,10 +26,10 @@ export class OrderService {
         userId: user._id,
         ...addOrderDto,
       });
-      const notification = await this.notificationService.generateNotification(
+      /* const notification = await this.notificationService.generateNotification(
         `Order ${order._id} has been changed to ${order.status}`,
         user._id.toString()
-      );
+      ); */
       return order;
     } catch (error) {
       throw new BadRequestException(error.message);
