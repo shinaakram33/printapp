@@ -41,7 +41,6 @@ export class NotificationService {
   async generateNotification(message: string, to: string) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
-      console.log("findUser :", findUserToGetDeviceId);
       if (findUserToGetDeviceId.deviceId) {
         const sendNotification = await this.oneSignalService.createNotification(
           {

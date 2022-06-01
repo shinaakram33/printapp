@@ -212,12 +212,23 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      const newUser = await this.userModel.findOneAndUpdate(
-        { _id: user._id },
-        { $addToSet: { addresses: addAddressDto } },
-        { new: true }
-      );
-
+      let newUser;
+      const addresses = await this.userModel
+        .findById(user._id)
+        .select("addresses");
+      if (!addresses) {
+        newUser = await this.userModel.findOneAndUpdate(
+          { _id: user._id },
+          { $addToSet: { addresses: { primary: true, ...addAddressDto } } },
+          { new: true }
+        );
+      } else {
+        newUser = await this.userModel.findOneAndUpdate(
+          { _id: user._id },
+          { $addToSet: { addresses: addAddressDto } },
+          { new: true }
+        );
+      }
       return newUser;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -330,7 +341,7 @@ export class UserService {
     }
   }
 
-  async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<string> {
+  async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<any> {
     try {
       const resetToken = Math.random().toString(36).substring(4);
 
@@ -352,7 +363,7 @@ export class UserService {
           "Your password reset token (Valid for 10 mints)",
           message
         );
-        return "OTP sent to the email";
+        return "OTP sent to the given email";
       } catch (err) {
         throw new BadRequestException(
           "Error in sending an email. Try again later!"

@@ -5,5 +5,5 @@ export class VerifyPinDto {
   @IsNotEmpty()
   @ApiProperty()
   @IsNumber()
-  pin: number;
+  dto: String;
 }

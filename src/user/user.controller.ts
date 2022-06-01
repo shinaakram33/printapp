@@ -19,6 +19,7 @@ import { LoginUserDto } from "./dto/login-user.dto";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { UpdateAddressDto } from "./dto/update-address.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { VerifyPinDto } from "./dto/verify-pin.dto";
 import { User } from "./user.model";
 import { UserService } from "./user.service";
 
@@ -162,5 +163,11 @@ export class UserController {
     @Body() changePasswordDto: ChangePasswordDto
   ) {
     return await this.userService.changePassword(user, changePasswordDto);
+  }
+
+  @ApiBearerAuth()
+  @Post("/verifyotp/")
+  async verifyOTP(@Body() verifyPinDto: VerifyPinDto) {
+    return await this.userService.verifyOTP(verifyPinDto);
   }
 }
