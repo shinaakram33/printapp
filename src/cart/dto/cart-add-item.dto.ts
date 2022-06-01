@@ -98,6 +98,10 @@ export class CartAddItemDto {
   image: String;
 
   @ApiProperty()
+  @IsOptional()
+  productId: String;
+
+  @ApiProperty()
   @IsEnum(CategoryTypes)
   @IsOptional()
   title: CategoryTypes;

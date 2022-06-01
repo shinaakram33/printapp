@@ -82,7 +82,7 @@ export class ProductsService {
     }
   }
 
-  async findById(productId: String) {
+  async findProductById(productId: String) {
     try {
       return await this.productModel.findById(productId);
     } catch (error) {

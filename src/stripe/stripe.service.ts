@@ -65,9 +65,20 @@ export class StripeService {
     }
   }
 
-  public async addCard(addCardDto: AddStripeCardDto, user: User) {
-    return await this.stripe.customers.createSource(user.stripeCustomerId, {
-      source: addCardDto.paymentMethodId,
-    });
+  // public async addCard(addCardDto: AddStripeCardDto, user: User) {
+  //   return await this.stripe.customers.createSource(user.stripeCustomerId, {
+  //     source: addCardDto.paymentMethodId,
+  //   });
+  // }
+
+  public async getAllCards(user: User) {
+    try {
+      return await this.stripe.customers.listSources(user.stripeCustomerId, {
+        object: "card",
+        limit: 100,
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

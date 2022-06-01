@@ -5,6 +5,10 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model, Schema as MongooseSchema } from "mongoose";
 import { OneSignalService } from "onesignal-api-client-nest";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
+import {
+  NotificationBySegmentBuilder,
+  NotificationByDeviceBuilder,
+} from "onesignal-api-client-core";
 import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
@@ -42,19 +46,29 @@ export class NotificationService {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       if (findUserToGetDeviceId.deviceId) {
-        const sendNotification = await this.oneSignalService.createNotification(
-          {
-            contents: { en: message },
-            include_player_ids: findUserToGetDeviceId.deviceId,
-            app_url: "demo://app/home",
-          }
+        const input = new NotificationByDeviceBuilder()
+          .setIncludePlayerIds(findUserToGetDeviceId.deviceId)
+          .notification() // .email()
+          .setContents({ en: message })
+          .build();
+
+        const notification = await this.oneSignalService.createNotification(
+          input
         );
-        let id = uuidv4();
-        const notification = await this.notificationModel.create({
-          _id: id,
-          to: to,
-          message: message,
-        });
+
+        // const sendNotification = await this.oneSignalService.createNotification(
+        //   {
+        //     contents: { en: message },
+        //     include_player_ids: findUserToGetDeviceId.deviceId,
+        //     app_url: "demo://app/home",
+        //   }
+        // );
+        // let id = uuidv4();
+        // const notification = await this.notificationModel.create({
+        //   _id: id,
+        //   to: to,
+        //   message: message,
+        // });
         return notification;
       }
     } catch (error) {

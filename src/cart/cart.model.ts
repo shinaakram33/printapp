@@ -168,6 +168,7 @@ export class Cart {
     type: [
       {
         image: String,
+        productId: String,
         title: mongoose.Schema.Types.Mixed,
         category: mongoose.Schema.Types.Mixed,
         size: { type: mongoose.Schema.Types.Mixed },
@@ -190,6 +191,7 @@ export class Cart {
   products: [
     {
       image: String;
+      productId: String;
       title: CategoryTypes;
       category: Category;
       size: [{ type: Size }];
