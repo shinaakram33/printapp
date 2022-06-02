@@ -5,26 +5,26 @@ import {
   UnauthorizedException,
   HttpException,
   HttpStatus,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { User, UserDocument } from "./user.model";
-import { Model, Schema as MongooseSchema } from "mongoose";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { LoginUserDto } from "./dto/login-user.dto";
-import { JwtService } from "@nestjs/jwt";
-import { JwtPayload } from "./auth/jwt-payload.interface";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import * as bcrypt from "bcrypt";
-import { AddAddressDto } from "./dto/add-address.dto";
-import { StripeService } from "../stripe/stripe.service";
-import { ForgetPasswordDto } from "./dto/forget-password.dto";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
-import { VerifyPinDto } from "./dto/verify-pin.dto";
-import { ChangePasswordDto } from "./dto/change-password.dto";
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './user.model';
+import { Model, Schema as MongooseSchema } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginUserDto } from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from './auth/jwt-payload.interface';
+import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
+import { AddAddressDto } from './dto/add-address.dto';
+import { StripeService } from '../stripe/stripe.service';
+import { ForgetPasswordDto } from './dto/forget-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerifyPinDto } from './dto/verify-pin.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UserService {
-  sgMail = require("@sendgrid/mail");
+  sgMail = require('@sendgrid/mail');
 
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
@@ -34,13 +34,9 @@ export class UserService {
     this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   }
 
-  async sendEmail(
-    email: String,
-    subject: String,
-    message: String
-  ): Promise<any> {
+  async sendEmail(email: String, subject: String, message: String): Promise<any> {
     const mailOptions = {
-      from: "admin@printprint.com.hk",
+      from: 'admin@printprint.com.hk',
       to: email,
       subject: subject,
       text: message,
@@ -48,16 +44,10 @@ export class UserService {
     await this.sgMail.send(mailOptions);
   }
 
-  private async verifyPassword(
-    plainTextPassword: string,
-    hashedPassword: string
-  ) {
-    const isPasswordMatching = await bcrypt.compare(
-      plainTextPassword,
-      hashedPassword
-    );
+  private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
+    const isPasswordMatching = await bcrypt.compare(plainTextPassword, hashedPassword);
     if (!isPasswordMatching) {
-      throw new UnauthorizedException("Invalid Password");
+      throw new UnauthorizedException('Invalid Password');
     }
   }
 
@@ -68,22 +58,14 @@ export class UserService {
     return accessToken;
   }
 
-  async createUser(
-    createUserDto: CreateUserDto
-  ): Promise<{ accessToken: string }> {
+  async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
-    const stripeCustomer = await this.stripeService.createCustomer(
-      createUserDto.firstName,
-      createUserDto.email
-    );
-    if (user) throw new BadRequestException("User already exists!");
+    const stripeCustomer = await this.stripeService.createCustomer(createUserDto.firstName, createUserDto.email);
+    if (user) throw new BadRequestException('User already exists!');
     else {
       try {
         const password = createUserDto.password;
-        const hashedPassword = await bcrypt.hash(
-          password,
-          parseInt(process.env.SALT_ROUNDS)
-        );
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS));
         user = await this.userModel.create({
           ...createUserDto,
           password: hashedPassword,
@@ -91,7 +73,7 @@ export class UserService {
         });
         await this.updateUser({ deviceId: createUserDto.deviceId }, user);
       } catch (err) {
-        throw new BadRequestException("All fields are required");
+        throw new BadRequestException('All fields are required');
       }
     }
     await user.save();
@@ -104,7 +86,7 @@ export class UserService {
       const user = await this.userModel.findOne({
         email: loginUserDto.email,
       });
-      if (!user) throw new UnauthorizedException("Invalid Credentials");
+      if (!user) throw new UnauthorizedException('Invalid Credentials');
       else {
         await this.verifyPassword(loginUserDto.password, user.password);
         const accessToken = await this.signToken(user.id);
@@ -119,7 +101,7 @@ export class UserService {
   async findUser(user: User): Promise<any> {
     try {
       const userInfo = await this.userModel.findById(user._id);
-      if (!userInfo) throw new NotFoundException("User not found!");
+      if (!userInfo) throw new NotFoundException('User not found!');
       else return userInfo;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -128,12 +110,12 @@ export class UserService {
 
   async findAll(user: User): Promise<any> {
     try {
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         const users = await this.userModel.find();
-        if (!users) throw new NotFoundException("No User found!");
+        if (!users) throw new NotFoundException('No User found!');
         else return users;
       } else {
-        throw new UnauthorizedException("Unauthorized User");
+        throw new UnauthorizedException('Unauthorized User');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -142,12 +124,12 @@ export class UserService {
 
   async searchByName(user: User, name: String) {
     try {
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         const users = await this.userModel.find({ firstName: name });
-        if (!users) throw new NotFoundException("No User found!");
+        if (!users) throw new NotFoundException('No User found!');
         else return users;
       } else {
-        throw new UnauthorizedException("Unauthorized User");
+        throw new UnauthorizedException('Unauthorized User');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -156,12 +138,12 @@ export class UserService {
 
   async searchById(user: User, userId: String) {
     try {
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         const users = await this.userModel.findById(userId);
-        if (!users) throw new NotFoundException("No User found!");
+        if (!users) throw new NotFoundException('No User found!');
         else return users;
       } else {
-        throw new UnauthorizedException("Unauthorized User");
+        throw new UnauthorizedException('Unauthorized User');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -170,12 +152,12 @@ export class UserService {
 
   async searchByStatus(user: User, status: String) {
     try {
-      if (user.role == "ADMIN") {
+      if (user.role == 'ADMIN') {
         const users = await this.userModel.find({ status });
-        if (!users) throw new NotFoundException("No User found!");
+        if (!users) throw new NotFoundException('No User found!');
         else return users;
       } else {
-        throw new UnauthorizedException("Unauthorized User");
+        throw new UnauthorizedException('Unauthorized User');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -185,7 +167,7 @@ export class UserService {
   async getUserById(userId: String): Promise<User> {
     try {
       const user = await this.userModel.findById(userId);
-      if (!user) throw new NotFoundException("User not found!");
+      if (!user) throw new NotFoundException('User not found!');
       else return user;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -212,24 +194,19 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      let newUser;
-      const addresses = await this.userModel
-        .findById(user._id)
-        .select("addresses");
-      if (!addresses) {
-        newUser = await this.userModel.findOneAndUpdate(
+      const addresses = await this.userModel.findById(user._id).select('addresses');
+
+      if (addresses.addresses.length)
+        return await this.userModel.findOneAndUpdate(
           { _id: user._id },
           { $addToSet: { addresses: { ...addAddressDto, primary: false } } },
           { new: true }
         );
-      } else {
-        newUser = await this.userModel.findOneAndUpdate(
-          { _id: user._id },
-          { $addToSet: { addresses: { ...addAddressDto, primary: true }, } },
-          { new: true }
-        );
-      }
-      return newUser;
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id },
+        { $addToSet: { addresses: { ...addAddressDto, primary: true } } },
+        { new: true }
+      );
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -256,26 +233,22 @@ export class UserService {
     }
   }
 
-  async updateAddress(
-    updateAddressDto: AddAddressDto,
-    user: User,
-    addressId: String
-  ): Promise<any> {
+  async updateAddress(updateAddressDto: AddAddressDto, user: User, addressId: String): Promise<any> {
     try {
       return await this.userModel.findOneAndUpdate(
         {
           _id: user._id,
-          "addresses._id": addressId,
+          'addresses._id': addressId,
         },
         {
           $set: {
-            "addresses.$.fullName": updateAddressDto.fullName,
-            "addresses.$.companyName": updateAddressDto.companyName,
-            "addresses.$.addressLine1": updateAddressDto.addressLine1,
-            "addresses.$.addressLine2": updateAddressDto.addressLine2,
-            "addresses.$.district": updateAddressDto.district,
-            "addresses.$.cityCountry": updateAddressDto.cityCountry,
-            "addresses.$.contactNumber": updateAddressDto.contactNumber,
+            'addresses.$.fullName': updateAddressDto.fullName,
+            'addresses.$.companyName': updateAddressDto.companyName,
+            'addresses.$.addressLine1': updateAddressDto.addressLine1,
+            'addresses.$.addressLine2': updateAddressDto.addressLine2,
+            'addresses.$.district': updateAddressDto.district,
+            'addresses.$.cityCountry': updateAddressDto.cityCountry,
+            'addresses.$.contactNumber': updateAddressDto.contactNumber,
           },
         },
         { new: true }
@@ -287,56 +260,24 @@ export class UserService {
 
   async getAllAddresses(user: User): Promise<any> {
     try {
-      const addresses = await this.userModel
-        .findById(user._id)
-        .select("addresses");
-      if (!addresses) throw new NotFoundException("User not found!");
+      const addresses = await this.userModel.findById(user._id).select('addresses');
+      if (!addresses) throw new NotFoundException('User not found!');
       else return addresses;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async setAddressPrimary(
-    user: User,
-    previousId: String,
-    newId: String
-  ): Promise<any> {
+  async setAddressPrimary(user: User, newPrimaryAddressId: string): Promise<any> {
     try {
-      await this.userModel.findOneAndUpdate(
-        { _id: user._id, "addresses._id": previousId },
-        {
-          $set: {
-            "addresses.$.primary": false,
-          },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
-          }
-        }
-      );
-
-      return await this.userModel.findOneAndUpdate(
-        { _id: user._id, "addresses._id": newId },
-        {
-          $set: {
-            "addresses.$.primary": true,
-          },
-        },
-        { safe: true, upsert: true, new: true },
-        (error, newUser) => {
-          if (error) {
-            throw new BadRequestException(error.message);
-          } else {
-            return newUser;
-          }
-        }
+      const { addresses } = await this.userModel.findById(user._id).select('addresses').lean();
+      return this.userModel.findOneAndUpdate(
+        { _id: user._id },
+        { $set: { addresses: addresses.map((a) => ({ ...a, primary: a['_id'].toString() === newPrimaryAddressId })) } },
+        { safe: true, upsert: true, new: true }
       );
     } catch (error) {
+      console.log(error);
       throw new BadRequestException(error.message);
     }
   }
@@ -348,7 +289,7 @@ export class UserService {
       let user = await this.userModel.findOne({
         email: forgetPasswordDto.email,
       });
-      if (!user) throw new NotFoundException("Email does not exist");
+      if (!user) throw new NotFoundException('Email does not exist');
 
       user.resetPasswordToken = resetToken;
       user.resetPasswordExpires = Date.now() + 300000;
@@ -358,16 +299,10 @@ export class UserService {
       const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
 
       try {
-        await this.sendEmail(
-          user.email,
-          "Your password reset token (Valid for 10 mints)",
-          message
-        );
-        return "OTP sent to the given email";
+        await this.sendEmail(user.email, 'Your password reset token (Valid for 10 mints)', message);
+        return 'OTP sent to the given email';
       } catch (err) {
-        throw new BadRequestException(
-          "Error in sending an email. Try again later!"
-        );
+        throw new BadRequestException('Error in sending an email. Try again later!');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -380,7 +315,7 @@ export class UserService {
         resetPasswordToken: verifyPinDto,
         resetPasswordExpires: { $gt: Date.now() },
       });
-      if (!user) throw new NotFoundException("Invalid pin or pin expired!");
+      if (!user) throw new NotFoundException('Invalid pin or pin expired!');
       else return user;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -391,35 +326,24 @@ export class UserService {
     try {
       const user = await this.userModel.findById(resetPasswordDto.userId);
       if (resetPasswordDto.password !== resetPasswordDto.confirmPassword)
-        throw new UnauthorizedException(
-          "Password Does Not Match with Confirm Pasword"
-        );
+        throw new UnauthorizedException('Password Does Not Match with Confirm Pasword');
       user.password = await bcrypt.hash(resetPasswordDto.password, 10);
       user.resetPasswordToken = undefined;
       user.resetPasswordExpires = undefined;
       await user.save();
-      return "Password changed successfully!";
+      return 'Password changed successfully!';
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  public async changePassword(
-    user: User,
-    changePasswordDto: ChangePasswordDto
-  ) {
+  public async changePassword(user: User, changePasswordDto: ChangePasswordDto) {
     try {
-      if (!user) throw new UnauthorizedException("Invalid Credentials");
+      if (!user) throw new UnauthorizedException('Invalid Credentials');
       else {
-        await this.verifyPassword(
-          changePasswordDto.currentPassword,
-          user.password
-        );
+        await this.verifyPassword(changePasswordDto.currentPassword, user.password);
         const password = changePasswordDto.newPassword;
-        const hashedPassword = await bcrypt.hash(
-          password,
-          parseInt(process.env.SALT_ROUNDS)
-        );
+        const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS));
         return await this.userModel.findByIdAndUpdate(
           user._id,
           { password: hashedPassword },

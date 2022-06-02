@@ -1,12 +1,14 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Schema as MongooseSchema } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 enum Role {
-  USER = "USER",
-  ADMIN = "ADMIN",
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
 
 export class Address extends Document {
+  _id: ObjectId;
+
   @Prop({ required: true })
   fullName: String;
 
@@ -30,10 +32,13 @@ export class Address extends Document {
 
   @Prop({ required: true })
   contactNumber: String;
+
+  @Prop({ required: true })
+  primary: boolean;
 }
 @Schema()
 export class User {
-  _id: MongooseSchema.Types.ObjectId;
+  _id: ObjectId;
 
   @Prop({ required: true })
   firstName: string;
@@ -53,7 +58,7 @@ export class User {
   @Prop({ required: true })
   role: Role;
 
-  @Prop({ default: "Active" })
+  @Prop({ default: 'Active' })
   status: String;
 
   @Prop({ required: false })
