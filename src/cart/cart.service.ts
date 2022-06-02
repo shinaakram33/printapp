@@ -92,6 +92,7 @@ export class CartService {
       };
       
       cart.products[cartProductId] = { ...cart.products[cartProductId], ...cartUpdateProductDto };
+      console.log(cart.products);
       return await this.cartModel.updateOne(
         { _id: cart._id },
         { $set: { products: cart.products } },

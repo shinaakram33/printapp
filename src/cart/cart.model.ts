@@ -1,15 +1,15 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Schema as MongooseSchema } from "mongoose";
-import mongoose from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
+import mongoose from 'mongoose';
 
 export enum CategoryTypes {
-  BUSINESS_CARD = "BUSINESS_CARD",
-  BOOKLET = "BOOKLET",
-  POSTER = "POSTER",
-  FLYERS_LEAFLET = "FLYERS_LEAFLET",
-  STICKERS_LABEL = "STICKERS_LABEL",
-  ENVELOPE = "ENVELOPE",
-  LETTERHEAD = "LETTERHEAD",
+  BUSINESS_CARD = 'BUSINESS_CARD',
+  BOOKLET = 'BOOKLET',
+  POSTER = 'POSTER',
+  FLYERS_LEAFLET = 'FLYERS_LEAFLET',
+  STICKERS_LABEL = 'STICKERS_LABEL',
+  ENVELOPE = 'ENVELOPE',
+  LETTERHEAD = 'LETTERHEAD',
 }
 
 class Category extends Document {
@@ -161,7 +161,7 @@ export class Product extends Document {
 
 @Schema()
 export class Cart {
-  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: mongoose.Schema.Types.ObjectId;
 
   @Prop({
@@ -171,8 +171,8 @@ export class Cart {
         productId: String,
         title: mongoose.Schema.Types.Mixed,
         category: mongoose.Schema.Types.Mixed,
-        size: { type: mongoose.Schema.Types.Mixed },
-        priceChart: { type: mongoose.Schema.Types.Mixed },
+        size: mongoose.Schema.Types.Mixed,
+        priceChart: mongoose.Schema.Types.Mixed,
         preview: Boolean,
         designUrl: [String],
         remarks: String,
@@ -194,8 +194,8 @@ export class Cart {
       productId: String;
       title: CategoryTypes;
       category: Category;
-      size: [{ type: Size }];
-      priceChart: [{ type: PriceChart }];
+      size: Size;
+      priceChart: PriceChart;
       preview: Boolean;
       designUrl: String[];
       remarks: String;
