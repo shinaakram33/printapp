@@ -111,11 +111,11 @@ export class CartUpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
-  size?: Size[];
+  size?: Size;
 
   @ApiProperty()
   @IsOptional()
-  priceChart?: PriceChart[];
+  priceChart?: PriceChart;
 
   @ApiProperty()
   @IsOptional()
