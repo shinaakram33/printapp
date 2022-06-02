@@ -1,14 +1,15 @@
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { Cart, cartDocument } from "./cart.model";
 import { User } from "../user/user.model";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Schema as MongooseSchema } from "mongoose";
-import { CartAddItemDto } from "./dto/cart-add-item.dto";
-import { UpdateItemDto } from "./dto/update-item.dto";
+import { Model } from "mongoose";
+import { CartAddProductDto } from "./dto/cart-add-product.dto";
+import { CartUpdateProductDto } from "./dto/cart-update-product.dto";
 
 @Injectable()
 export class CartService {
@@ -16,7 +17,9 @@ export class CartService {
 
   async findCart(user: User): Promise<any> {
     try {
-      return await this.cartModel.findOne({ userId: user._id });
+      const userCart = await this.cartModel.findOne({ userId: user._id }).lean();
+      console.log(userCart)
+      return userCart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -39,71 +42,72 @@ export class CartService {
     }
   }
 
-  async cartAddItem(user: User, cartAddItemDto: CartAddItemDto) {
+  async cartAddProduct(user: User, cartAddProductDto: CartAddProductDto) {
     try {
       const cart = await this.createCart(user);
       const newCart = await this.cartModel.findOneAndUpdate(
         { _id: cart._id },
         {
           $push: {
-            products: cartAddItemDto,
+            products: cartAddProductDto,
           },
         },
         { safe: true, upsert: true, new: true }
-        // (error, newCart) => {
-        //   if (error) {
-        //     throw new BadRequestException(error.message);
-        //   } else {
-        //     return newCart;
-        //   }
-        // }
       );
       return newCart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
-  async cartRemoveItem(user: User, itemId: String) {
+  
+  async cartRemoveProduct(user: User, productId: String) {
     try {
       const cart = await this.findCart(user);
       return await this.cartModel
         .findByIdAndUpdate(
           cart._id,
-          { $pull: { products: { _id: itemId } } },
+          { $pull: { products: { _id: productId } } },
           { safe: true, upsert: true },
           (error, newCart) => {
-            if (error) {
-              throw new BadRequestException(error.message);
-            } else {
-              return newCart;
-            }
+            if (error) throw new BadRequestException(error.message);
+            return newCart;
           }
-        )
-        .clone();
+        ).clone();
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async cartUpdateItem(
+  async cartUpdateProduct(
     user: User,
-    itemId: String,
-    updateItemDto: UpdateItemDto
+    productId: string,
+    cartUpdateProductDto: CartUpdateProductDto
   ) {
     try {
       const cart = await this.findCart(user);
-      return await cart.products.findByIdAndUpdate(itemId, updateItemDto);
+      const cartProductId = cart.products.findIndex(p => p.productId.toString() === productId);
+
+      if (cartProductId === -1) {
+        throw new HttpException(`productId: '${productId}' not found`, HttpStatus.NOT_FOUND);
+      };
+      
+      cart.products[cartProductId] = { ...cart.products[cartProductId], ...cartUpdateProductDto };
+      return await this.cartModel.updateOne(
+        { _id: cart._id },
+        { $set: { products: cart.products } },
+        { multi: true }
+      );
     } catch (error) {
-      throw new BadRequestException(error.message);
+      console.log(error);
+      throw new HttpException(error.message, error.status);
     }
   }
 
   async emptyCart(user: User) {
     try {
       const cart = await this.findCart(user);
-      if (!cart) {
-        throw new BadRequestException("This user has no Cart");
-      }
+      if (!cart) throw new BadRequestException("This user has no Cart");
+
       return await this.cartModel.updateOne(
         { _id: cart._id },
         { $set: { products: [] } },

@@ -4,8 +4,8 @@ import { User } from '../user/user.model';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { CartService } from './cart.service';
-import { CartAddItemDto } from './dto/cart-add-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { CartAddProductDto } from './dto/cart-add-product.dto';
+import { CartUpdateProductDto } from './dto/cart-update-product.dto';
 
 @ApiTags('Cart Controller')
 @Controller('cart')
@@ -28,26 +28,26 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/item/add')
-  async addItemToCart(@Body() cartAddItemDto: CartAddItemDto, @GetUser() user: User): Promise<any> {
-    return await this.cartService.cartAddItem(user, cartAddItemDto);
+  @Patch('/product/add')
+  async addItemToCart(@Body() cartAddProductDto: CartAddProductDto, @GetUser() user: User): Promise<any> {
+    return await this.cartService.cartAddProduct(user, cartAddProductDto);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/item/update/:itemId')
+  @Patch('/product/update/:productId')
   async updateItemFromCart(
     @GetUser() user: User,
-    @Param('itemId') itemId: string,
-    @Body() updateItemDto: UpdateItemDto,
+    @Param('productId') productId: string,
+    @Body() cartUpdateProductDto: CartUpdateProductDto,
   ): Promise<any> {
-    return await this.cartService.cartUpdateItem(user, itemId, updateItemDto);
+    return await this.cartService.cartUpdateProduct(user, productId, cartUpdateProductDto);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Delete('/item/delete/:itemId')
-  async removeItemFromCart(@GetUser() user: User, @Param('itemId') itemId: string): Promise<any> {
-    return await this.cartService.cartRemoveItem(user, itemId);
+  @Delete('/product/delete/:productId')
+  async removeItemFromCart(@GetUser() user: User, @Param('productId') productId: string): Promise<any> {
+    return await this.cartService.cartRemoveProduct(user, productId);
   }
 }
