@@ -1,17 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  UnauthorizedException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Schema as MongooseSchema } from "mongoose";
-import { Order, orderDocument } from "./order.model";
-import { ConfigService } from "@nestjs/config";
-import { User } from "../user/user.model";
-import { AddOrderDto } from "./dto/add-order.dto";
-import { UpdateOrderDto } from "./dto/update-order.dto";
-import { NotificationService } from "src/notification/notification.service";
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
+import { Order, orderDocument } from './order.model';
+import { ConfigService } from '@nestjs/config';
+import { User } from '../user/user.model';
+import { AddOrderDto } from './dto/add-order.dto';
+import { UpdateOrderDto } from './dto/update-order.dto';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class OrderService {
@@ -19,11 +14,11 @@ export class OrderService {
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<orderDocument>,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService
   ) {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
-    console.log('here')
+    console.log('here');
     try {
       const order = await this.orderModel.create({
         userId: user._id,
@@ -42,26 +37,19 @@ export class OrderService {
   }
 
   //for admin
-  async addOrderAdmin(
-    user: User,
-    addOrderDto: AddOrderDto,
-    userId: string
-  ): Promise<any> {
+  async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         const order = await this.orderModel.create({
           user: userId,
           addOrderDto,
         });
-        const notification =
-          await this.notificationService.generateNotification(
-            `Order ${order._id} has been changed to ${order.status}`,
-            userId
-          );
+        const notification = await this.notificationService.generateNotification(
+          `Order ${order._id} has been changed to ${order.status}`,
+          userId
+        );
         return order;
       }
     } catch (error) {
@@ -69,28 +57,20 @@ export class OrderService {
     }
   }
 
-  async updateOrderAdmin(
-    id: String,
-    user: User,
-    updateOrderDto: UpdateOrderDto,
-    userId: string
-  ): Promise<any> {
+  async updateOrderAdmin(id: String, user: User, updateOrderDto: UpdateOrderDto, userId: string): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         const order = await this.orderModel.findByIdAndUpdate(id, {
           user: userId,
           updateOrderDto,
         });
 
-        const notification =
-          await this.notificationService.generateNotification(
-            `Order ${order._id} has been changed to ${order.status}`,
-            userId
-          );
+        const notification = await this.notificationService.generateNotification(
+          `Order ${order._id} has been changed to ${order.status}`,
+          userId
+        );
         return order;
       }
     } catch (error) {
@@ -100,10 +80,8 @@ export class OrderService {
 
   async deleteOrderAdmin(id: String, user: User): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         return await this.orderModel.findByIdAndDelete(id);
       }
@@ -114,10 +92,8 @@ export class OrderService {
 
   async getAllOrderAdmin(user: User): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         return await this.orderModel.find();
       }
@@ -128,13 +104,8 @@ export class OrderService {
 
   async getOrderAdmin(user: User, orderId: String): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
-      } else {
-        return await this.orderModel.findById(orderId);
-      }
+      if (user?.role !== 'ADMIN') throw new UnauthorizedException('You are not authorize to perform this operation.');
+      return await this.orderModel.findById(orderId);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

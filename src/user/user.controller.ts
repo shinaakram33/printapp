@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './auth/get-user.decorator';
@@ -136,5 +136,13 @@ export class UserController {
   @Post('/verifyotp/')
   async verifyOTP(@Body() verifyPinDto: VerifyPinDto) {
     return await this.userService.verifyOTP(verifyPinDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch('/admin/address/add/:userId')
+  async addUserAddressByAdmin(@Body() addAddressDto: AddAddressDto, @Param('userId') userId: string, @GetUser() user: User) {
+    if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
+    return await this.userService.addUserAddressByAdmin(addAddressDto, userId);
   }
 }

@@ -356,4 +356,46 @@ export class UserService {
       throw new BadRequestException(error.message);
     }
   }
+
+/*   public async createUserByAdmin(createUserDto: CreateUserDto) {
+    const user = this.userModel.findOne({email: createUserDto.email})
+    if (user) throw new BadRequestException('User already exists!');
+    try {
+      const stripeCustomer = await this.stripeService.createCustomer(createUserDto.firstName, createUserDto.email);
+      const password = createUserDto.password;
+      const hashedPassword = await bcrypt.hash(password, parseInt(process.env.SALT_ROUNDS));
+      const newUser = await this.userModel.create({
+        ...createUserDto,
+        password: hashedPassword,
+        stripeCustomerId: stripeCustomer.id,
+      });
+      await this.updateUser({ deviceId: createUserDto.deviceId }, newUser);
+      await newUser.save();
+      return newUser;
+    } catch (err) {
+      throw new BadRequestException('All fields are required');
+    }
+  } */
+
+  public async addUserAddressByAdmin(addAddressDto: AddAddressDto, userId: string) {
+    try {
+      const user = await this.userModel.findById(userId).lean();
+      if (!user) throw new NotFoundException('User not found');
+
+      if (user.addresses.length)
+        return await this.userModel.findOneAndUpdate(
+          { _id: userId },
+          { $addToSet: { addresses: { ...addAddressDto, primary: false } } },
+          { new: true }
+        );
+
+      return await this.userModel.findOneAndUpdate(
+        { _id: user._id },
+        { $addToSet: { addresses: { ...addAddressDto, primary: true } } },
+        { new: true }
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }
