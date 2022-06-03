@@ -113,65 +113,9 @@ class Folding extends Document {
   foldingWidth: String;
 }
 @Schema()
-export class Product extends Document {
-  @Prop()
-  _id: mongoose.Schema.Types.ObjectId;
-
-  @Prop({ required: true })
-  image: String;
-
-  @Prop({ required: true })
-  title: CategoryTypes;
-
-  @Prop({ required: true })
-  category: Category;
-
-  @Prop({ required: true })
-  size: [{ type: Size }];
-
-  @Prop({ required: true })
-  priceChart: [{ type: PriceChart }];
-
-  @Prop({ required: true })
-  preview: Boolean;
-
-  @Prop({ required: true })
-  designUrl: String;
-
-  @Prop({ required: true })
-  remarks: String;
-
-  @Prop({ required: false })
-  corner: Corner;
-
-  @Prop({ required: false })
-  paperType: String;
-
-  @Prop({ required: false })
-  spotUV: String;
-
-  @Prop({ required: false })
-  finishing: String;
-
-  @Prop({ required: false })
-  numberOfSides: String;
-
-  @Prop({ required: false })
-  numberOfPages: NumberOfPages;
-
-  @Prop({ required: false })
-  cut: Cut;
-
-  @Prop({ required: false })
-  window: Window;
-
-  @Prop({ required: false })
-  folding: Folding;
-}
-@Schema()
 export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
-  user: String;
+  userId: mongoose.Schema.Types.ObjectId;
 
   @Prop({
     type: [
@@ -179,10 +123,10 @@ export class Order {
         image: String,
         title: mongoose.Schema.Types.Mixed,
         category: mongoose.Schema.Types.Mixed,
-        size: [{ type: mongoose.Schema.Types.Mixed }],
-        priceChart: [{ type: mongoose.Schema.Types.Mixed }],
+        size: { type: mongoose.Schema.Types.Mixed },
+        priceChart: { type: mongoose.Schema.Types.Mixed },
         preview: Boolean,
-        designUrl: String,
+        designUrl: [String],
         remarks: String,
         corner: mongoose.Schema.Types.Mixed,
         paperType: String,
@@ -201,10 +145,10 @@ export class Order {
       image: String;
       title: CategoryTypes;
       category: Category;
-      size: [{ type: Size }];
-      priceChart: [{ type: PriceChart }];
+      size: { type: Size };
+      priceChart: { type: PriceChart };
       preview: Boolean;
-      designUrl: String;
+      designUrl: [String];
       remarks: String;
       corner: Corner;
       paperType: String;
@@ -239,7 +183,7 @@ export class Order {
   @Prop({ required: true })
   total: number;
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   status: orderStatus;
 }
 

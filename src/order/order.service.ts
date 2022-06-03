@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -14,24 +15,28 @@ import { NotificationService } from "src/notification/notification.service";
 
 @Injectable()
 export class OrderService {
+  private logger = new Logger();
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<orderDocument>,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {}
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
+    console.log('here')
     try {
       const order = await this.orderModel.create({
-        user: user._id,
-        addOrderDto,
+        userId: user._id,
+        ...addOrderDto,
       });
-      const notification = await this.notificationService.generateNotification(
+      /* const notification = await this.notificationService.generateNotification(
         `Order ${order._id} has been changed to ${order.status}`,
         user._id.toString()
-      );
+      ); */
       return order;
     } catch (error) {
+      console.log(error);
+      this.logger.log('Add Order failed', error);
       throw new BadRequestException(error.message);
     }
   }

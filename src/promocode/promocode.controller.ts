@@ -73,7 +73,7 @@ export class PromocodeController {
     @GetUser() user: User,
     @Param("name") name: String
   ): Promise<any> {
-    return await this.promocodeService.getPromocode(user, name);
+    return await this.promocodeService.getPromocodeByName(user, name);
   }
 
   @ApiBearerAuth()

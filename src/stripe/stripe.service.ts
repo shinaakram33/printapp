@@ -37,8 +37,6 @@ export class StripeService {
     //   { timeout: 30000 }
     // );
 
-    // console.log("token ", token);
-
     if (!user.payment) {
       if (!paymentMethodId) throw new BadRequestException("fail");
       const card = await this.stripe.customers.createSource(
@@ -56,7 +54,6 @@ export class StripeService {
       });
       if (charge.status == "succeeded") {
         user.payment = true;
-        console.log("charge :", charge);
         return charge;
       } else throw new BadRequestException("Charge not Created");
     } else {
@@ -68,9 +65,20 @@ export class StripeService {
     }
   }
 
-  public async addCard(addCardDto: AddStripeCardDto, user: User) {
-    return await this.stripe.customers.createSource(user.stripeCustomerId, {
-      source: addCardDto.paymentMethodId,
-    });
+  // public async addCard(addCardDto: AddStripeCardDto, user: User) {
+  //   return await this.stripe.customers.createSource(user.stripeCustomerId, {
+  //     source: addCardDto.paymentMethodId,
+  //   });
+  // }
+
+  public async getAllCards(user: User) {
+    try {
+      return await this.stripe.customers.listSources(user.stripeCustomerId, {
+        object: "card",
+        limit: 100,
+      });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

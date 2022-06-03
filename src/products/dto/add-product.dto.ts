@@ -109,15 +109,19 @@ class Cut {
 class Window {
   @ApiProperty()
   @IsNotEmpty()
-  windowName?: String;
+  windowName: String;
 
   @ApiProperty()
   @IsNotEmpty()
-  windowHeight?: String;
+  windowHeight: String;
 
   @ApiProperty()
   @IsNotEmpty()
-  windowWidth?: String;
+  windowWidth: String;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  image: String;
 }
 
 class Folding {
@@ -132,6 +136,10 @@ class Folding {
   @ApiProperty()
   @IsNotEmpty()
   foldingWidth?: String;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  image: String;
 }
 export class AddProductDto {
   @ApiProperty()

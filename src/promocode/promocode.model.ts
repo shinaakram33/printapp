@@ -7,7 +7,6 @@ export enum PromoTypes {
   PERCENTAGE = "PERCENTAGE",
   AMOUNT = "AMOUNT",
 }
-
 class PromoType extends Document {
   @Prop({ required: true })
   name: String;
@@ -29,7 +28,7 @@ export class Promocode {
   @Prop({ default: "Active" })
   status: String;
 
-  @Prop({ required: true })
+  @Prop()
   promoType: PromoType;
 
   @Prop({ required: true })

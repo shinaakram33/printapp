@@ -82,6 +82,14 @@ export class ProductsService {
     }
   }
 
+  async findProductById(productId: String) {
+    try {
+      return await this.productModel.findById(productId);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
   async findAll(user: User) {
     try {
       if (!user || user.role == "USER") {

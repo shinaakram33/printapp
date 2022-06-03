@@ -1,27 +1,47 @@
+import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { CategoryTypes } from "../../products/products.model";
-import { IsOptional } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+
 class Category {
   @ApiProperty()
-  name?: String;
+  name: String;
 
   @ApiProperty()
-  pricePerHunderd?: String;
+  pricePerHunderd: String;
 
   @ApiProperty()
-  description?: String;
+  description: String;
 
   @ApiProperty()
-  paperType?: String;
+  paperType: String;
 
   @ApiProperty()
-  leadTime?: String;
+  leadTime: String;
 
   @ApiProperty()
-  colour?: String;
+  colour: String;
 
   @ApiProperty()
-  sizes?: String;
+  sizes: String;
+}
+
+class Size {
+  @ApiProperty()
+  name: String;
+
+  @ApiProperty()
+  height: String;
+
+  @ApiProperty()
+  width: String;
+}
+
+class PriceChart {
+  @ApiProperty()
+  quantity: String;
+
+  @ApiProperty()
+  unitPrice: String;
 }
 
 class NumberOfPages {
@@ -29,7 +49,7 @@ class NumberOfPages {
   pageName?: String;
 
   @ApiProperty()
-  number?: number;
+  number?: String;
 }
 
 class Corner {
@@ -73,65 +93,43 @@ class Folding {
   foldingWidth?: String;
 }
 
-class Size {
-  @ApiProperty()
-  name?: String;
-
-  @ApiProperty()
-  height?: String;
-
-  @ApiProperty()
-  Width?: String;
-}
-
-class PriceChart {
-  @ApiProperty()
-  quantity?: String;
-
-  @ApiProperty()
-  unitPrice?: String;
-}
-
-export class UpdateItemDto {
+export class CartAddProductDto {
   @ApiProperty()
   @IsOptional()
-  image: string;
+  image: String;
 
   @ApiProperty()
   @IsOptional()
-  title?: CategoryTypes;
+  productId: String;
+
+  @ApiProperty()
+  @IsEnum(CategoryTypes)
+  @IsOptional()
+  title: CategoryTypes;
 
   @ApiProperty()
   @IsOptional()
-  category?: Category;
+  category: Category;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  size: Size;
 
   @ApiProperty()
   @IsOptional()
-  size?: Size[];
+  priceChart: PriceChart;
 
   @ApiProperty()
   @IsOptional()
-  priceChart?: PriceChart[];
+  preview: Boolean;
 
   @ApiProperty()
   @IsOptional()
-  preview?: Boolean;
+  designUrl: String[];
 
   @ApiProperty()
   @IsOptional()
-  designUrl?: String;
-
-  @ApiProperty()
-  @IsOptional()
-  remarks?: String;
-
-  @ApiProperty()
-  @IsOptional()
-  feature1?: String;
-
-  @ApiProperty()
-  @IsOptional()
-  feature2?: String;
+  remarks: String;
 
   @ApiProperty()
   @IsOptional()

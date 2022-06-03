@@ -1,47 +1,27 @@
-import { IsEnum, IsNotEmpty, IsOptional } from "class-validator";
 import { CategoryTypes } from "../../products/products.model";
+import { IsOptional, IsNotEmpty } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
-
 class Category {
   @ApiProperty()
-  name: String;
+  name?: String;
 
   @ApiProperty()
-  pricePerHunderd: String;
+  pricePerHunderd?: String;
 
   @ApiProperty()
-  description: String;
+  description?: String;
 
   @ApiProperty()
-  paperType: String;
+  paperType?: String;
 
   @ApiProperty()
-  leadTime: String;
+  leadTime?: String;
 
   @ApiProperty()
-  colour: String;
+  colour?: String;
 
   @ApiProperty()
-  sizes: String;
-}
-
-class Size {
-  @ApiProperty()
-  name: String;
-
-  @ApiProperty()
-  height: String;
-
-  @ApiProperty()
-  width: String;
-}
-
-class PriceChart {
-  @ApiProperty()
-  quantity: String;
-
-  @ApiProperty()
-  unitPrice: String;
+  sizes?: String;
 }
 
 class NumberOfPages {
@@ -67,6 +47,7 @@ class Cut {
   @ApiProperty()
   cutHeight?: String;
 
+  @ApiProperty()
   cutWidth?: String;
 }
 
@@ -91,39 +72,70 @@ class Folding {
   @ApiProperty()
   foldingWidth?: String;
 }
-export class CartAddItemDto {
+
+class Size {
   @ApiProperty()
-  @IsNotEmpty()
-  image: [];
+  name?: String;
 
   @ApiProperty()
-  @IsEnum(CategoryTypes)
-  @IsNotEmpty()
-  title: CategoryTypes;
+  height?: String;
 
   @ApiProperty()
-  @IsNotEmpty()
-  category: Category;
+  Width?: String;
+}
+
+class PriceChart {
+  @ApiProperty()
+  quantity?: String;
 
   @ApiProperty()
-  @IsNotEmpty()
-  size: Size;
+  unitPrice?: String;
+}
 
+export class CartUpdateProductDto {
   @ApiProperty()
   @IsNotEmpty()
-  priceChart: PriceChart;
+  productId: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  preview: Boolean;
+  @IsOptional()
+  image: string;
 
   @ApiProperty()
-  @IsNotEmpty()
-  designUrl: String;
+  @IsOptional()
+  title?: CategoryTypes;
 
   @ApiProperty()
-  @IsNotEmpty()
-  remarks: String;
+  @IsOptional()
+  category?: Category;
+
+  @ApiProperty()
+  @IsOptional()
+  size?: Size;
+
+  @ApiProperty()
+  @IsOptional()
+  priceChart?: PriceChart;
+
+  @ApiProperty()
+  @IsOptional()
+  preview?: Boolean;
+
+  @ApiProperty()
+  @IsOptional()
+  designUrl?: String;
+
+  @ApiProperty()
+  @IsOptional()
+  remarks?: String;
+
+  @ApiProperty()
+  @IsOptional()
+  feature1?: String;
+
+  @ApiProperty()
+  @IsOptional()
+  feature2?: String;
 
   @ApiProperty()
   @IsOptional()

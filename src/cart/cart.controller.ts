@@ -1,68 +1,53 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Patch,
-  Post,
-  Param,
-  UseGuards,
-} from "@nestjs/common";
-import { GetUser } from "src/user/auth/get-user.decorator";
-import { User } from "../user/user.model";
-import { AuthGuard } from "@nestjs/passport";
-import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
-import { CartService } from "./cart.service";
-import { CartAddItemDto } from "./dto/cart-add-item.dto";
-import { UpdateItemDto } from "./dto/update-item.dto";
+import { Body, Controller, Delete, Get, Patch, Post, Param, UseGuards } from '@nestjs/common';
+import { GetUser } from 'src/user/auth/get-user.decorator';
+import { User } from '../user/user.model';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import { CartService } from './cart.service';
+import { CartAddProductDto } from './dto/cart-add-product.dto';
+import { CartUpdateProductDto } from './dto/cart-update-product.dto';
 
-@ApiTags("Cart Controller")
-@Controller("cart")
+@ApiTags('Cart Controller')
+@Controller('cart')
 export class CartController {
   constructor(private cartService: CartService) {}
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Get("/")
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/')
   async findCart(@GetUser() user: User): Promise<any> {
     return await this.cartService.createCart(user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Post("/empty")
+  @UseGuards(AuthGuard('jwt'))
+  @Post('/empty')
   async emptyCart(@GetUser() user: User): Promise<any> {
     return await this.cartService.emptyCart(user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Patch("/item/add")
-  async addItemToCart(
-    @Body() cartAddItemDto: CartAddItemDto,
-    @GetUser() user: User
-  ): Promise<any> {
-    return await this.cartService.cartAddItem(user, cartAddItemDto);
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('/product/add')
+  async addItemToCart(@Body() cartAddProductDto: CartAddProductDto, @GetUser() user: User): Promise<any> {
+    return await this.cartService.cartAddProduct(user, cartAddProductDto);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Patch("/item/delete/:itemId")
-  async removeItemFromCart(
-    @Param("itemId") itemId: string,
-    @GetUser() user: User
-  ): Promise<any> {
-    return await this.cartService.cartRemoveItem(user, itemId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard("jwt"))
-  @Delete("/item/update/:itemId")
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('/product/update/:cartProductId')
   async updateItemFromCart(
-    @Param("itemId") itemId: string,
     @GetUser() user: User,
-    @Body() updateItemDto: UpdateItemDto
+    @Param('cartProductId') productId: string,
+    @Body() cartUpdateProductDto: CartUpdateProductDto,
   ): Promise<any> {
-    return await this.cartService.cartUpdateItem(user, itemId, updateItemDto);
+    return await this.cartService.cartUpdateProduct(user, productId, cartUpdateProductDto);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('/product/delete/:productId')
+  async removeItemFromCart(@GetUser() user: User, @Param('productId') productId: string): Promise<any> {
+    return await this.cartService.cartRemoveProduct(user, productId);
   }
 }

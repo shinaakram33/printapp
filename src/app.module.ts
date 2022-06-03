@@ -11,10 +11,11 @@ import { HomeSliderModule } from "./home-slider/home-slider.module";
 import { OrderModule } from "./order/order.module";
 import { CartModule } from "./cart/cart.module";
 import { PriceChartModule } from "./priceChart/pricechart.module";
-import { StripeModule } from "./stripe/stripe.module";
 import { PromocodeModule } from "./promocode/promocode.module";
 import { NotificationModule } from "./notification/notification.module";
 import { ActivityModule } from "./activity/activity.module";
+import { StripeModule } from "nestjs-stripe";
+import { ConfigService } from "aws-sdk";
 
 @Module({
   imports: [
@@ -27,14 +28,21 @@ import { ActivityModule } from "./activity/activity.module";
         uri: process.env.DB_URL,
       }),
     }),
+    // StripeModule.forRootAsync({
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     apiKey: process.env.STRIPE_SECRET_KEY,
+    //     apiVersion: "2020-08-27",
+    //   }),
+    // }),
     CategoryModule,
+    StripeModule,
     UploadFileModule,
     ProductsModule,
     HomeSliderModule,
     OrderModule,
     CartModule,
     PriceChartModule,
-    StripeModule,
     PromocodeModule,
     ActivityModule,
     NotificationModule,

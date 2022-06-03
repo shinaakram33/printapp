@@ -117,6 +117,9 @@ class Window extends Document {
 
   @Prop()
   windowWidth: String;
+
+  @Prop()
+  image: String;
 }
 
 const WindowSchema = SchemaFactory.createForClass(Window);
@@ -131,6 +134,9 @@ class Folding extends Document {
 
   @Prop()
   foldingWidth: String;
+
+  @Prop()
+  image: String;
 }
 
 const FoldingSchema = SchemaFactory.createForClass(Folding);
