@@ -3,8 +3,6 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.model';
@@ -194,16 +192,17 @@ export class UserService {
 
   async addAddress(addAddressDto: AddAddressDto, user: User): Promise<any> {
     try {
-      const addresses = await this.userModel.findById(user._id).select('addresses');
+      const dbUser = await this.userModel.findById(user._id).lean();
+      if (!dbUser) throw new NotFoundException('User not found');
 
-      if (addresses.addresses.length)
+      if (dbUser.addresses.length)
         return await this.userModel.findOneAndUpdate(
-          { _id: user._id },
+          { _id: dbUser._id },
           { $addToSet: { addresses: { ...addAddressDto, primary: false } } },
           { new: true }
         );
       return await this.userModel.findOneAndUpdate(
-        { _id: user._id },
+        { _id: dbUser._id },
         { $addToSet: { addresses: { ...addAddressDto, primary: true } } },
         { new: true }
       );
@@ -376,26 +375,4 @@ export class UserService {
       throw new BadRequestException('All fields are required');
     }
   } */
-
-  public async addUserAddressByAdmin(addAddressDto: AddAddressDto, userId: string) {
-    try {
-      const user = await this.userModel.findById(userId).lean();
-      if (!user) throw new NotFoundException('User not found');
-
-      if (user.addresses.length)
-        return await this.userModel.findOneAndUpdate(
-          { _id: userId },
-          { $addToSet: { addresses: { ...addAddressDto, primary: false } } },
-          { new: true }
-        );
-
-      return await this.userModel.findOneAndUpdate(
-        { _id: user._id },
-        { $addToSet: { addresses: { ...addAddressDto, primary: true } } },
-        { new: true }
-      );
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
 }

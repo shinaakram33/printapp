@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { ObjectId } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './auth/get-user.decorator';
@@ -140,9 +141,29 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard())
-  @Patch('/admin/address/add/:userId')
+  @Post('/admin/address/add/:userId')
   async addUserAddressByAdmin(@Body() addAddressDto: AddAddressDto, @Param('userId') userId: string, @GetUser() user: User) {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
-    return await this.userService.addUserAddressByAdmin(addAddressDto, userId);
+    return await this.userService.addAddress(addAddressDto, { _id: userId as unknown as ObjectId } as User);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch('/admin/address/update/:userId/:addressId')
+  async updateAddressByAdmin(@Body() updateAddressDto: UpdateAddressDto, @GetUser() user: User, @Param() params) {
+    if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
+    
+    const { addressId, userId } = params;
+    return await this.userService.updateAddress(updateAddressDto, { _id: userId as unknown as ObjectId } as User, addressId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard())
+  @Patch('/admin/address/delete/:userId/:addressId')
+  async deleteAddressByAdmin(@GetUser() user: User, @Param() params) {
+    if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
+
+    const { addressId, userId } = params;
+    return await this.userService.deleteAddress(addressId, { _id: userId as unknown as ObjectId } as User);
   }
 }
