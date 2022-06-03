@@ -35,10 +35,10 @@ export class CartController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @Patch('/product/update/:productId')
+  @Patch('/product/update/:cartProductId')
   async updateItemFromCart(
     @GetUser() user: User,
-    @Param('productId') productId: string,
+    @Param('cartProductId') productId: string,
     @Body() cartUpdateProductDto: CartUpdateProductDto,
   ): Promise<any> {
     return await this.cartService.cartUpdateProduct(user, productId, cartUpdateProductDto);
