@@ -1,33 +1,28 @@
-import { Module } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { UserController } from "./user.controller";
-import { MongooseModule } from "@nestjs/mongoose";
-import { User, UserSchema } from "./user.model";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
-import { JwtStrategy } from "./auth/jwt.strategy";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { StripeModule } from "src/stripe/stripe.module";
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
+import { User, UserSchema } from './user.model';
+import { JwtStrategy } from './auth/jwt.strategy';
+import { StripeModule } from '../stripe/stripe.module';
+
 @Module({
   imports: [
     StripeModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    PassportModule.register({ defaultStrategy: "jwt" }),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
 
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        return {
-          secret: configService.get("JWT_SECRET_KEY"),
-          signOptions: {
-            ...(configService.get("JWT_EXPIRATION_TIME")
-              ? {
-                  expiresIn: Number(configService.get("JWT_EXPIRATION_TIME")),
-                }
-              : {}),
-          },
-        };
+        const secret = configService.get('JWT_SECRET_KEY');
+        const expiresIn = configService.get('JWT_EXPIRATION_TIME');
+        return { secret, signOptions: (expiresIn && { expiresIn }) || {} };
       },
     }),
   ],

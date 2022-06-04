@@ -12,10 +12,13 @@ import { NotificationService } from 'src/notification/notification.service';
 export class OrderService {
   private logger = new Logger();
   constructor(
-    @InjectModel(Order.name)
-    private orderModel: Model<orderDocument>,
+    @InjectModel(Order.name) private orderModel: Model<orderDocument>,
     private notificationService: NotificationService
   ) {}
+
+  async getAllUserOrders(user: User) {
+    return this.orderModel.find({ userId: user._id });
+  }
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     console.log('here');

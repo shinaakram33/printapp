@@ -7,6 +7,7 @@ import {
   Post,
   Param,
   UseGuards,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { GetUser } from "src/user/auth/get-user.decorator";
 import { User } from "../user/user.model";
@@ -24,6 +25,13 @@ export class OrderController {
     private orderService: OrderService,
     private readonly stripeService: StripeService
   ) {}
+
+  @ApiBearerAuth()
+  @Get()
+  @UseGuards(AuthGuard('jwt'))
+  async getUserOrders(@GetUser() user: User) {
+    return this.orderService.getAllUserOrders(user);
+  }
 
   @ApiBearerAuth()
   @Post("/charge")
@@ -87,12 +95,13 @@ export class OrderController {
   }
 
   @ApiBearerAuth()
-  @Get("/findall")
+  @Get("/admin/findall")
   @UseGuards(AuthGuard("jwt"))
   async getAllOrder(
     @GetUser()
     user: User
   ): Promise<any> {
+    if (user.role !== 'ADMIN') throw new UnauthorizedException('You dont have authorization to access this route');
     return await this.orderService.getAllOrderAdmin(user);
   }
 
