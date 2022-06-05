@@ -9,9 +9,11 @@ import { UserController } from './user.controller';
 import { User, UserSchema } from './user.model';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { StripeModule } from '../stripe/stripe.module';
+import { SendGridModule } from '../sendgrid.module';
 
 @Module({
   imports: [
+    SendGridModule,
     StripeModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     PassportModule.register({ defaultStrategy: 'jwt' }),

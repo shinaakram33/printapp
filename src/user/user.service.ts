@@ -1,45 +1,50 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
+  Logger,
+  LoggerService,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
+
+import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
+import { ClientResponse } from '@sendgrid/mail';
+
 import { User, UserDocument } from './user.model';
-import { Model, Schema as MongooseSchema } from 'mongoose';
+
+import { JwtPayload } from './auth/jwt-payload.interface';
+
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './auth/jwt-payload.interface';
-import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcrypt';
-import { AddAddressDto } from './dto/add-address.dto';
-import { StripeService } from '../stripe/stripe.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyPinDto } from './dto/verify-pin.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { AddAddressDto } from './dto/add-address.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+import { StripeService } from '../stripe/stripe.service';
+
+import { SendgridService } from '../sendgrid.module';
+
 
 @Injectable()
 export class UserService {
-  sgMail = require('@sendgrid/mail');
+  private logger: LoggerService = new Logger();
 
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private jwtService: JwtService,
-    private stripeService: StripeService
-  ) {
-    this.sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-  }
+    private stripeService: StripeService,
+    private sendgridService: SendgridService
+  ) {}
 
-  async sendEmail(email: String, subject: String, message: String): Promise<any> {
-    const mailOptions = {
-      from: 'admin@printprint.com.hk',
-      to: email,
-      subject: subject,
-      text: message,
-    };
-    await this.sgMail.send(mailOptions);
+  private sendEmail(to: string, subject: string, text: string): Promise<void> {
+    return this.sendgridService.sendMail({ to, subject, text });
   }
 
   private async verifyPassword(plainTextPassword: string, hashedPassword: string) {
@@ -68,6 +73,7 @@ export class UserService {
           ...createUserDto,
           password: hashedPassword,
           stripeCustomerId: stripeCustomer.id,
+          date: new Date().toISOString()
         });
         await this.updateUser({ deviceId: createUserDto.deviceId }, user);
       } catch (err) {
@@ -283,39 +289,36 @@ export class UserService {
 
   async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<any> {
     try {
+      const { email } = forgetPasswordDto;
       const resetToken = Math.random().toString(36).substring(4);
+      const message = `Your Verification Code is ${resetToken}.`;
 
-      let user = await this.userModel.findOne({
-        email: forgetPasswordDto.email,
-      });
+      const user = await this.userModel.findOne({ email });
+
       if (!user) throw new NotFoundException('Email does not exist');
 
       user.resetPasswordToken = resetToken;
       user.resetPasswordExpires = Date.now() + 300000;
 
-      await user.save();
-
-      const message = `Forget your password? Submit a patch request with your new password and password Confirm to ${resetToken}.\n If you don't forget your password then ignore this email!`;
-
-      try {
-        await this.sendEmail(user.email, 'Your password reset token (Valid for 10 mints)', message);
-        return 'OTP sent to the given email';
-      } catch (err) {
-        throw new BadRequestException('Error in sending an email. Try again later!');
-      }
+      await Promise.all([this.sendEmail(user.email, 'Reset Password', message), user.save()]);
+      
+      return 'OTP sent to the given email';
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new InternalServerErrorException('Something Occurred. Try again in a few minutes')
     }
   }
 
   public async verifyOTP(verifyPinDto: VerifyPinDto) {
     try {
       const user = await this.userModel.findOne({
-        resetPasswordToken: verifyPinDto,
+        resetPasswordToken: verifyPinDto.otp.toString(),
         resetPasswordExpires: { $gt: Date.now() },
-      });
+      }).lean();
+
       if (!user) throw new NotFoundException('Invalid pin or pin expired!');
-      else return user;
+
+      delete user.password;
+      return user;
     } catch (error) {
       throw new BadRequestException(error.message);
     }

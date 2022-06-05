@@ -1,39 +1,34 @@
-import { NestFactory } from "@nestjs/core";
-import { ValidationPipe } from "@nestjs/common";
-import { AppModule } from "./app.module";
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { ConfigService } from "@nestjs/config";
+import { NestFactory } from '@nestjs/core';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+import { AppModule } from './app.module';
 
+(async function () {
+  const app: INestApplication = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-
-  app.enableCors({
-    origin: configService.get("FRONTEND_URL"),
-    credentials: true,
+  const apiPrefix: string = `/api/${configService.get<string>('API_VERSION')}`;
+  const apiValidationPipes: ValidationPipe =  new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transformOptions: { enableImplicitConversion: true },
   });
 
-  const options = new DocumentBuilder()
-    .setTitle("Print App Backend")
-    .setDescription("Print app backend - NestJS")
-    .setVersion("0.0.1")
-    .addServer("/api/v1")
+  app.enableCors({ origin: configService.get('FRONTEND_URL'), credentials: true });
+  app.setGlobalPrefix(apiPrefix);
+  app.enableCors();
+  app.useGlobalPipes(apiValidationPipes);
+
+  const options: Omit<OpenAPIObject, 'paths'> = new DocumentBuilder()
+    .setTitle('Print App Backend')
+    .setDescription('Print app backend - NestJS')
+    .setVersion('0.0.1')
+    .addServer(apiPrefix)
     .addBearerAuth()
     .build();
+  SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, options));
 
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup("api/docs", app, document);
-  app.setGlobalPrefix("api/v1");
-  app.enableCors();
-  app.useGlobalPipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transformOptions: { enableImplicitConversion: true },
-    })
-  );
-  await app.listen(process.env.PORT || 3000);
-}
-bootstrap();
+  await app.listen(Number(configService.get('PORT')) || 3000);
+})();
