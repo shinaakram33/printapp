@@ -3,15 +3,13 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import { AppModule } from './app.module';
 
 async function bootstrap () {
   const app: INestApplication = await NestFactory.create(AppModule);
+  const configService: ConfigService = app.get(ConfigService);
   console.warn(process.env.API_VERSION)
-  const apiPrefix: string = `/api/v1`;
+  const apiPrefix: string = `/api/${configService.get('API_VERSION')}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
     whitelist: true,
@@ -19,7 +17,7 @@ async function bootstrap () {
     transformOptions: { enableImplicitConversion: true },
   });
 
-  app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
+  app.enableCors({ origin: configService.get('FRONTEND_URL'), credentials: true });
   app.setGlobalPrefix(apiPrefix);
   app.enableCors();
   app.useGlobalPipes(apiValidationPipes);
@@ -33,7 +31,7 @@ async function bootstrap () {
     .build();
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, options));
 
-  await app.listen(Number(process.env.PORT) || 3000);
+  await app.listen(Number(configService.get('PORT')) || 3000);
 }
 
 bootstrap();
