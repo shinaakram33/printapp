@@ -8,6 +8,7 @@ import { AppModule } from './app.module';
 (async function () {
   const app: INestApplication = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
+  console.log(configService.get<string>('API_VERSION'))
   const apiPrefix: string = `/api/${configService.get<string>('API_VERSION')}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
