@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class VerifyPinDto {
   @IsNotEmpty()
   @ApiProperty()
-  @IsNumber()
-  otp: String;
+  @IsString()
+  otp: string;
 }
