@@ -3,11 +3,14 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { AppModule } from './app.module';
 
 (async function () {
   const app: INestApplication = await NestFactory.create(AppModule);
-  console.log(process.env.API_VERSION)
+  console.log()
   const apiPrefix: string = `/api/${process.env.API_VERSION}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
