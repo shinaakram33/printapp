@@ -11,7 +11,7 @@ import { AppModule } from './app.module';
 async function bootstrap () {
   const app: INestApplication = await NestFactory.create(AppModule);
   console.warn(process.env.API_VERSION)
-  const apiPrefix: string = `/api/${process.env.API_VERSION}`;
+  const apiPrefix: string = `/api/v1`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
     whitelist: true,
