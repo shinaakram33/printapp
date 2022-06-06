@@ -8,7 +8,7 @@ dotenv.config();
 
 import { AppModule } from './app.module';
 
-(async function () {
+async function bootstrap () {
   const app: INestApplication = await NestFactory.create(AppModule);
   console.warn(process.env.API_VERSION)
   const apiPrefix: string = `/api/${process.env.API_VERSION}`;
@@ -34,4 +34,6 @@ import { AppModule } from './app.module';
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, options));
 
   await app.listen(Number(process.env.PORT) || 3000);
-})();
+}
+
+bootstrap();
