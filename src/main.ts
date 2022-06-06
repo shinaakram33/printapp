@@ -10,7 +10,7 @@ import { AppModule } from './app.module';
 
 (async function () {
   const app: INestApplication = await NestFactory.create(AppModule);
-  console.log()
+  console.warn(process.env.API_VERSION)
   const apiPrefix: string = `/api/${process.env.API_VERSION}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
