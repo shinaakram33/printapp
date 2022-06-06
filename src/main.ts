@@ -7,9 +7,8 @@ import { AppModule } from './app.module';
 
 (async function () {
   const app: INestApplication = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
-  console.log(configService.get<string>('API_VERSION'))
-  const apiPrefix: string = `/api/${configService.get<string>('API_VERSION')}`;
+  console.log(process.env.API_VERSION)
+  const apiPrefix: string = `/api/${process.env.API_VERSION}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
     whitelist: true,
@@ -17,7 +16,7 @@ import { AppModule } from './app.module';
     transformOptions: { enableImplicitConversion: true },
   });
 
-  app.enableCors({ origin: configService.get('FRONTEND_URL'), credentials: true });
+  app.enableCors({ origin: process.env.FRONTEND_URL, credentials: true });
   app.setGlobalPrefix(apiPrefix);
   app.enableCors();
   app.useGlobalPipes(apiValidationPipes);
@@ -31,5 +30,5 @@ import { AppModule } from './app.module';
     .build();
   SwaggerModule.setup('api/docs', app, SwaggerModule.createDocument(app, options));
 
-  await app.listen(Number(configService.get('PORT')) || 3000);
+  await app.listen(Number(process.env.PORT) || 3000);
 })();
