@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap () {
-  const app: INestApplication = await NestFactory.create(AppModule);s
+  const app: INestApplication = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
   const apiPrefix: string = `/api/${configService.get('API_VERSION')}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
