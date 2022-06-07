@@ -61,7 +61,7 @@ export class UserService {
     return accessToken;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string }> {
+  async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string, user: User }> {
     let user = await this.userModel.findOne({ email: createUserDto.email });
     const stripeCustomer = await this.stripeService.createCustomer(createUserDto.firstName, createUserDto.email);
     if (user) throw new BadRequestException('User already exists!');
@@ -81,8 +81,9 @@ export class UserService {
       }
     }
     await user.save();
+    delete user.password;
     const accessToken = await this.signToken(user.id);
-    return { accessToken };
+    return { accessToken, user };
   }
 
   async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
