@@ -23,7 +23,7 @@ async function bootstrap () {
   .addBearerAuth()
   .build();
 
-  app.enableCors({ origin: configService.get('FRONTEND_URL'), credentials: true });
+  app.enableCors({ origin: '*', credentials: true });
   app.setGlobalPrefix(apiPrefix);
   app.enableCors();
   app.useGlobalPipes(apiValidationPipes);

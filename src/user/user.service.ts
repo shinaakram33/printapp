@@ -81,7 +81,7 @@ export class UserService {
       }
     }
     await user.save();
-    delete user.password;
+    user.password = null;
     const accessToken = await this.signToken(user.id);
     return { accessToken, user };
   }
