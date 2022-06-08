@@ -185,6 +185,9 @@ export class Order {
 
   @Prop({ required: true })
   status: orderStatus;
+
+  @Prop({ required: false })
+  deliveryCost: number;
 }
 
 export type orderDocument = Order & Document;

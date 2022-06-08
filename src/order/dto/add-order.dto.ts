@@ -238,4 +238,8 @@ export class AddOrderDto {
   @IsNotEmpty()
   @ApiProperty()
   status: orderStatus;
+
+  @IsOptional()
+  @ApiProperty()
+  deliveryCost: number;
 }

@@ -21,7 +21,6 @@ export class OrderService {
   }
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
-    console.log('here');
     try {
       const order = await this.orderModel.create({
         userId: user._id,
@@ -33,28 +32,22 @@ export class OrderService {
       ); */
       return order;
     } catch (error) {
-      console.log(error);
       this.logger.log('Add Order failed', error);
       throw new BadRequestException(error.message);
     }
   }
 
   //for admin
-  async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<any> {
+  async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<Order> {
     try {
-      if (!user || user.role == 'USER') {
-        throw new UnauthorizedException('You are not authorize to perform this operation.');
-      } else {
-        const order = await this.orderModel.create({
-          user: userId,
-          addOrderDto,
-        });
-        const notification = await this.notificationService.generateNotification(
-          `Order ${order._id} has been changed to ${order.status}`,
-          userId
-        );
-        return order;
-      }
+      if (user?.role === 'USER') throw new UnauthorizedException('You are not authorize to perform this operation.');
+
+      const order = await this.orderModel.create({ user: userId, addOrderDto });
+      /* const notification = await this.notificationService.generateNotification(
+        `Order ${order._id} has been changed to ${order.status}`,
+        userId
+      ); */
+      return order;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
