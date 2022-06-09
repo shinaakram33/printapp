@@ -12,7 +12,6 @@ import { JwtService } from '@nestjs/jwt';
 
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { ClientResponse } from '@sendgrid/mail';
 
 import { User, UserDocument } from './user.model';
 
@@ -127,7 +126,7 @@ export class UserService {
     }
   }
 
-  async searchByName(user: User, name: String) {
+  async searchByName(user: User, name: string) {
     try {
       if (user.role == 'ADMIN') {
         const users = await this.userModel.find({ firstName: name });
@@ -141,7 +140,7 @@ export class UserService {
     }
   }
 
-  async searchById(user: User, userId: String) {
+  async searchById(user: User, userId: string) {
     try {
       if (user.role == 'ADMIN') {
         const users = await this.userModel.findById(userId);
@@ -155,7 +154,7 @@ export class UserService {
     }
   }
 
-  async searchByStatus(user: User, status: String) {
+  async searchByStatus(user: User, status: string) {
     try {
       if (user.role == 'ADMIN') {
         const users = await this.userModel.find({ status });
@@ -169,7 +168,7 @@ export class UserService {
     }
   }
 
-  async getUserById(userId: String): Promise<User> {
+  async getUserById(userId: string): Promise<User> {
     try {
       const user = await this.userModel.findById(userId);
       if (!user) throw new NotFoundException('User not found!');
@@ -218,7 +217,7 @@ export class UserService {
     }
   }
 
-  async deleteAddress(addressId: String, user: User): Promise<any> {
+  async deleteAddress(addressId: string, user: User): Promise<any> {
     try {
       return await this.userModel
         .findByIdAndUpdate(
@@ -239,7 +238,7 @@ export class UserService {
     }
   }
 
-  async updateAddress(updateAddressDto: AddAddressDto, user: User, addressId: String): Promise<any> {
+  async updateAddress(updateAddressDto: AddAddressDto, user: User, addressId: string): Promise<any> {
     try {
       return await this.userModel.findOneAndUpdate(
         {
@@ -359,7 +358,6 @@ export class UserService {
       throw new BadRequestException(error.message);
     }
   }
-
 /*   public async createUserByAdmin(createUserDto: CreateUserDto) {
     const user = this.userModel.findOne({email: createUserDto.email})
     if (user) throw new BadRequestException('User already exists!');

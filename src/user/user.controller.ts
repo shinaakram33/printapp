@@ -47,68 +47,68 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get('/find/name/:name')
-  async findByName(@GetUser() user: User, @Param('name') name: String) {
+  async findByName(@GetUser() user: User, @Param('name') name: string) {
     return await this.userService.searchByName(user, name);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get('/find/id/:userId')
-  async findById(@GetUser() user: User, @Param('userId') userId: String) {
+  async findById(@GetUser() user: User, @Param('userId') userId: string) {
     return await this.userService.searchByName(user, userId);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
   @Get('/find/status/:userId')
-  async findByStatus(@GetUser() user: User, @Param('status') status: String) {
+  async findByStatus(@GetUser() user: User, @Param('status') status: string) {
     return await this.userService.searchByName(user, status);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/update')
   async updateUser(@Body() updateUserDto: UpdateUserDto, @GetUser() user: User) {
     return await this.userService.updateUser(updateUserDto, user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/delete')
   async delete(@GetUser() user: User) {
     return await this.userService.deleteUser(user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/address/add/')
   async addAddress(@Body() addAddressDto: AddAddressDto, @GetUser() user: User) {
     return await this.userService.addAddress(addAddressDto, user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/address/update/:addressId')
-  async updateAddress(@Body() updateAddressDto: UpdateAddressDto, @GetUser() user: User, @Param('addressId') addressId: String) {
+  async updateAddress(@Body() updateAddressDto: UpdateAddressDto, @GetUser() user: User, @Param('addressId') addressId: string) {
     return await this.userService.updateAddress(updateAddressDto, user, addressId);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/address/delete/:addressId')
-  async deleteAddress(@GetUser() user: User, @Param('addressId') addressId: String) {
+  async deleteAddress(@GetUser() user: User, @Param('addressId') addressId: string) {
     return await this.userService.deleteAddress(addressId, user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Get('/address/getall/')
   async getAllAddresses(@GetUser() user: User) {
     return await this.userService.getAllAddresses(user);
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/address/:addressId')
   async setAddressPrimary(@GetUser() user: User, @Param('addressId') addressId: string) {
     return await this.userService.setAddressPrimary(user, addressId);
@@ -127,7 +127,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/changepassword/')
   async changePassword(@GetUser() user: User, @Body() changePasswordDto: ChangePasswordDto) {
     return await this.userService.changePassword(user, changePasswordDto);
@@ -140,7 +140,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Post('/admin/address/add/:userId')
   async addUserAddressByAdmin(@Body() addAddressDto: AddAddressDto, @Param('userId') userId: string, @GetUser() user: User) {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
@@ -148,7 +148,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/admin/address/update/:userId/:addressId')
   async updateAddressByAdmin(@Body() updateAddressDto: UpdateAddressDto, @GetUser() user: User, @Param() params) {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
@@ -158,7 +158,7 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/admin/address/delete/:userId/:addressId')
   async deleteAddressByAdmin(@GetUser() user: User, @Param() params) {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');

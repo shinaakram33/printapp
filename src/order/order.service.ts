@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema as MongooseSchema } from 'mongoose';
-import { Order, orderDocument } from './order.model';
-import { ConfigService } from '@nestjs/config';
+import { Model } from 'mongoose';
+import { Order, orderDocument, orderStatus } from './order.model';
 import { User } from '../user/user.model';
 import { AddOrderDto } from './dto/add-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -105,5 +104,9 @@ export class OrderService {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
+  }
+
+  async getUserPreviousOrders(userId: string): Promise<any> {
+    return this.orderModel.find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] }} );
   }
 }
