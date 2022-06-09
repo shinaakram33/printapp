@@ -12,41 +12,29 @@ export class PriceChartController {
   @UseGuards(AuthGuard("jwt"))
   @Get("/businesscard?")
   async getBussinessCard(
-    @Query("product") product: String,
-    @Query("size") size: String,
-    @Query("corner") corner: String,
-    @Query("spotuvside") spotUVSide?: String
+    @Query("product") product: string,
+    @Query("size") size: string,
+    @Query("corner") corner: string,
+    @Query("spotuvside") spotUVSide?: string
   ): Promise<any> {
-    return await this.priceChartService.getBussinessCard(
-      product,
-      size,
-      corner,
-      spotUVSide
-    );
+    return await this.priceChartService.getBussinessCard(product, size, corner, spotUVSide);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Get("/booklet?")
   async getBooklet(
-    @Query("product") product: String,
-    @Query("size") size: String,
-    @Query("innerpage") innerPageNumber: String
+    @Query("product") product: string,
+    @Query("size") size: string,
+    @Query("innerpage") innerPageNumber: string
   ): Promise<any> {
-    return await this.priceChartService.getBooklet(
-      product,
-      size,
-      innerPageNumber
-    );
+    return await this.priceChartService.getBooklet(product, size, innerPageNumber);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Get("/envelop?")
-  async getEnvelop(
-    @Query("product") product: String,
-    @Query("window") window: String
-  ): Promise<any> {
+  async getEnvelop(@Query("product") product: string, @Query("window") window: string): Promise<any> {
     return await this.priceChartService.getEnvelop(product, window);
   }
 
@@ -54,23 +42,18 @@ export class PriceChartController {
   @UseGuards(AuthGuard("jwt"))
   @Get("/flyer?")
   async getFlyer(
-    @Query("product") product: String,
-    @Query("size") size: String,
-    @Query("papertype") paperType: String,
-    @Query("folding") folding: String
+    @Query("product") product: string,
+    @Query("size") size: string,
+    @Query("papertype") paperType: string,
+    @Query("folding") folding: string
   ): Promise<any> {
-    return await this.priceChartService.getFlyer(
-      product,
-      size,
-      paperType,
-      folding
-    );
+    return await this.priceChartService.getFlyer(product, size, paperType, folding);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Get("/letterhead?")
-  async getletterhead(@Query("product") product: String): Promise<any> {
+  async getletterhead(@Query("product") product: string): Promise<any> {
     return await this.priceChartService.getletterhead(product);
   }
 
@@ -78,26 +61,21 @@ export class PriceChartController {
   @UseGuards(AuthGuard("jwt"))
   @Get("/poster?")
   async getPoster(
-    @Query("product") product: String,
-    @Query("size") size: String,
-    @Query("papertype") paperType: String,
-    @Query("sides") sides?: String
+    @Query("product") product: string,
+    @Query("size") size: string,
+    @Query("papertype") paperType: string,
+    @Query("sides") sides?: string
   ): Promise<any> {
-    return await this.priceChartService.getPoster(
-      product,
-      size,
-      paperType,
-      sides
-    );
+    return await this.priceChartService.getPoster(product, size, paperType, sides);
   }
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard("jwt"))
   @Get("/sticker?")
   async getSticker(
-    @Query("product") product: String,
-    @Query("size") size: String,
-    @Query("shape") shape: String
+    @Query("product") product: string,
+    @Query("size") size: string,
+    @Query("shape") shape: string
   ): Promise<any> {
     return await this.priceChartService.getBooklet(product, size, shape);
   }

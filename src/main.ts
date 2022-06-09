@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 async function bootstrap () {
   const app: INestApplication = await NestFactory.create(AppModule);
   const configService: ConfigService = app.get(ConfigService);
-  const apiPrefix: string = `/api/${configService.get('API_VERSION')}`;
+  const apiPrefix: string = `api/${configService.get('API_VERSION')}`;
   const apiValidationPipes: ValidationPipe =  new ValidationPipe({
     transform: true,
     whitelist: true,
@@ -19,7 +19,6 @@ async function bootstrap () {
   .setTitle('Print App Backend')
   .setDescription('Print app backend - NestJS')
   .setVersion('0.0.1')
-  .addServer(apiPrefix)
   .addBearerAuth()
   .build();
 
