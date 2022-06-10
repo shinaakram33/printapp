@@ -15,8 +15,8 @@ import { OneSignalModule } from "onesignal-api-client-nest";
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     UserModule,
     OneSignalModule.forRoot({
-      appId: "041fb0c4-d5be-4a35-bcde-68e3be50d503",
-      restApiKey: "NjEwNTRkMzgtYmEwMi00ZDJhLTg0ZDAtMzcwZGM0Y2ViYjE5",
+      appId: "fe2ee0f0-84e5-4650-b18b-1ad055d48339",
+      restApiKey: "ZGRkOTBiMzctMjk0Ny00Yzk1LWE1ZWMtODg0YmEwMGEyNjcy",
     }),
   ],
   providers: [NotificationService],

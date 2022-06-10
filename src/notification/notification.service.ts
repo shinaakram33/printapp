@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { Notification, NotificationDocument } from "./notification.model";
 import { User, UserDocument } from "../user/user.model";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model, Schema as MongooseSchema } from "mongoose";
+import mongoose, { Model, Schema as MongooseSchema } from "mongoose";
 import { OneSignalService } from "onesignal-api-client-nest";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
 import {
@@ -46,31 +46,36 @@ export class NotificationService {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       if (findUserToGetDeviceId.deviceId) {
-        const input = new NotificationByDeviceBuilder()
-          .setIncludePlayerIds(findUserToGetDeviceId.deviceId)
-          .notification() // .email()
-          .setContents({ en: message })
-          .build();
+        const sendNotification = await this.oneSignalService.createNotification({
+          contents: { en: message },
+          include_player_ids: findUserToGetDeviceId.deviceId,
+          app_url: 'demo://app/home',
+        });
+        const notification = await this.notificationModel.create({
+          to: to,
+          message: message,
+        });
 
-        const notification = await this.oneSignalService.createNotification(
-          input
-        );
-
-        // const sendNotification = await this.oneSignalService.createNotification(
-        //   {
-        //     contents: { en: message },
-        //     include_player_ids: findUserToGetDeviceId.deviceId,
-        //     app_url: "demo://app/home",
-        //   }
-        // );
-        // let id = uuidv4();
-        // const notification = await this.notificationModel.create({
-        //   _id: id,
-        //   to: to,
-        //   message: message,
-        // });
         return notification;
       }
+      return 'Device Id not found';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async testNotifications() {
+    try {
+      const sendNotification = await this.oneSignalService.createNotification({
+        contents: { en: 'Testing Notifications' },
+        include_player_ids: ['6c14155f-1822-4174-9f63-8a78ed09730b'],
+        app_url: 'demo://app/splash',
+      });
+      const notification = await this.notificationModel.create({
+        userId: '62a2f123d287a98f522c7995',
+        message: 'TEST',
+      });
+      return sendNotification;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -79,6 +84,28 @@ export class NotificationService {
   async getUserNotifications(id: string): Promise<Notification> {
     try {
       return await this.notificationModel.findById(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async getUserNotificationsAndGroupByDate(user: User): Promise<any> {
+    try {
+      return await this.notificationModel.aggregate([
+        {
+          $match: {
+            userId: new mongoose.Types.ObjectId(user._id.toString()),
+          }
+        },
+        {
+          $group: {
+            _id: `$createdAt`,
+            notifications:{
+              $push: '$$ROOT'
+            }
+          },
+        }
+      ]);
     } catch (error) {
       throw new BadRequestException(error.message);
     }

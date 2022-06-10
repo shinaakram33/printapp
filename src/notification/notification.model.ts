@@ -2,16 +2,13 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
 import { Document, Schema as MongooseSchema } from "mongoose";
 
-@Schema()
+@Schema({
+  timestamps: true
+})
 export class Notification {
-  @Prop()
-  _id: mongoose.Schema.Types.ObjectId;
 
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;
-
-  @Prop({ default: true })
-  Date: String;
 
   @Prop({ default: false })
   isRead: boolean;

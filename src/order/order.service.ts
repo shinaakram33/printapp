@@ -113,14 +113,12 @@ export class OrderService {
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
-        console.log(updateOrderDto)
         const order = await this.orderModel.findOneAndUpdate({_id: id},updateOrderDto, { new: true });
 
-        console.log(order);
-        // const notification = await this.notificationService.generateNotification(
-        //   `Order ${order._id} has been changed to ${order.status}`,
-        //   userId
-        // );
+        const notification = await this.notificationService.generateNotification(
+          `Order ${order._id} has been changed to ${order.status}`,
+          userId
+        );
         return order;
       }
     } catch (error) {
