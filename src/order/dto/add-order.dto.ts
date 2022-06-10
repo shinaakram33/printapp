@@ -201,7 +201,6 @@ class Product {
   @IsOptional()
   numberOfSides?: String;
 }
-
 export class AddOrderDto {
   @ApiProperty()
   @IsNotEmpty()

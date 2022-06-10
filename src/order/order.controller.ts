@@ -88,4 +88,11 @@ export class OrderController {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
     return this.orderService.getUserPreviousOrders(userId);
   }
+
+  // @ApiBearerAuth()
+  @Post('/support/:referenceNumber/:isInvoie')
+  // @UseGuards(AuthGuard('jwt'))
+  async orderSupport(@Param('referenceNumber') referenceNumber:string, @GetUser() user: User, @Param('isInvoie') isInvoie:string ){
+    return this.orderService.postSupportEmail(user, referenceNumber, isInvoie);
+  }
 }

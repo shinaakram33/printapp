@@ -10,9 +10,12 @@ import { StripeModule } from "src/stripe/stripe.module";
 import { OrderController } from "./order.controller";
 import { Order, OrderSchema } from "./order.model";
 import { OrderService } from "./order.service";
+import { SendGridModule } from '../sendgrid.module';
+
 
 @Module({
   imports: [
+    SendGridModule,
     MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
     MongooseModule.forFeature([
       { name: Notification.name, schema: NotificationSchema },

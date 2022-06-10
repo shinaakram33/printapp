@@ -6,14 +6,44 @@ import { User } from '../user/user.model';
 import { AddOrderDto } from './dto/add-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { NotificationService } from 'src/notification/notification.service';
+import { SendgridService } from 'src/sendgrid.module';
 
 @Injectable()
 export class OrderService {
   private logger = new Logger();
   constructor(
     @InjectModel(Order.name) private orderModel: Model<orderDocument>,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private sendgridService: SendgridService
   ) {}
+
+  private sendEmail(to: string, subject: string, text: string): Promise<void> {
+    return this.sendgridService.sendMail({ to, subject, text });
+  }
+
+  async postSupportEmail(user: User, referenceNumber: string, isInvoie: string) {
+    await Promise.all(
+      isInvoie === 'true'
+        ? [
+            this.sendEmail(
+              'admin@printprint.com.hk',
+              'Invoice Request',
+              `Invoice request: ${referenceNumber}. The client has requested an invoice to be e-mailed to them.
+    `
+            ),
+          ]
+        : [
+            this.sendEmail(
+              'admin@printprint.com.hk',
+              'Order support request',
+              `Order support request: ${referenceNumber}. The client has requested an invoice to be e-mailed to them.
+    `
+            ),
+          ]
+    );
+
+    return 'Email Sent to the admin';
+  }
 
   async getAllUserOrders(user: User) {
     return this.orderModel.find({ userId: user._id });
@@ -26,6 +56,22 @@ export class OrderService {
         createdBy: user._id,
         ...addOrderDto,
       });
+      await Promise.all( [
+              this.sendEmail(
+                user.email,
+                'Order Detail',
+                `Order ${order._id} was created by ${user.firstName} having order amount=${order.total}`
+              ),
+            ]
+      );
+      await Promise.all( [
+        this.sendEmail(
+          'admin@printprint.com.hk',
+          'Order Detail',
+          `Order ${order._id} was created by ${user.firstName} having order amount=${order.total}`
+        ),
+      ]
+);
       /* const notification = await this.notificationService.generateNotification(
         `Order ${order._id} has been changed to ${order.status}`,
         user._id.toString()
@@ -40,21 +86,18 @@ export class OrderService {
   //for admin
   async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<Order> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         const order = await this.orderModel.create({
           user: userId,
           createdBy: user._id,
           addOrderDto,
         });
-        const notification =
-          await this.notificationService.generateNotification(
-            `Order ${order._id} has been changed to ${order.status}`,
-            userId
-          );
+        const notification = await this.notificationService.generateNotification(
+          `Order ${order._id} has been changed to ${order.status}`,
+          userId
+        );
         return order;
       }
     } catch (error) {
@@ -109,10 +152,8 @@ export class OrderService {
 
   async getOrderAdmin(user: User, orderId: String): Promise<any> {
     try {
-      if (!user || user.role == "USER") {
-        throw new UnauthorizedException(
-          "You are not authorize to perform this operation."
-        );
+      if (!user || user.role == 'USER') {
+        throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         return await this.orderModel.findById(orderId);
       }
@@ -122,6 +163,8 @@ export class OrderService {
   }
 
   async getUserPreviousOrders(userId: string): Promise<any> {
-    return this.orderModel.find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] }} ).populate('createdBy userId');
+    return this.orderModel
+      .find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] } })
+      .populate('createdBy userId');
   }
 }
