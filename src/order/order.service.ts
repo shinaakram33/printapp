@@ -23,6 +23,7 @@ export class OrderService {
     try {
       const order = await this.orderModel.create({
         userId: user._id,
+        createdBy: user._id,
         ...addOrderDto,
       });
       /* const notification = await this.notificationService.generateNotification(
@@ -39,14 +40,23 @@ export class OrderService {
   //for admin
   async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<Order> {
     try {
-      if (user?.role === 'USER') throw new UnauthorizedException('You are not authorize to perform this operation.');
-
-      const order = await this.orderModel.create({ user: userId, addOrderDto });
-      /* const notification = await this.notificationService.generateNotification(
-        `Order ${order._id} has been changed to ${order.status}`,
-        userId
-      ); */
-      return order;
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        const order = await this.orderModel.create({
+          user: userId,
+          createdBy: user._id,
+          addOrderDto,
+        });
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId
+          );
+        return order;
+      }
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -99,14 +109,19 @@ export class OrderService {
 
   async getOrderAdmin(user: User, orderId: String): Promise<any> {
     try {
-      if (user?.role !== 'ADMIN') throw new UnauthorizedException('You are not authorize to perform this operation.');
-      return await this.orderModel.findById(orderId);
+      if (!user || user.role == "USER") {
+        throw new UnauthorizedException(
+          "You are not authorize to perform this operation."
+        );
+      } else {
+        return await this.orderModel.findById(orderId);
+      }
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
   async getUserPreviousOrders(userId: string): Promise<any> {
-    return this.orderModel.find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] }} );
+    return this.orderModel.find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] }} ).populate('createdBy userId');
   }
 }

@@ -242,4 +242,8 @@ export class AddOrderDto {
   @IsOptional()
   @ApiProperty()
   deliveryCost: number;
+
+  @IsOptional()
+  @ApiProperty()
+  sendByMail: boolean;
 }
