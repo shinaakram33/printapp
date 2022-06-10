@@ -191,6 +191,9 @@ export class Order {
 
   @Prop({ required: false })
   deliveryCost: number;
+
+  @Prop({ required: false, default: false })
+  sendByMail: boolean;
 }
 
 export type orderDocument = Order & Document;
