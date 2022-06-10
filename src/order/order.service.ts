@@ -60,12 +60,12 @@ export class OrderService {
         const order = await this.orderModel.findByIdAndUpdate(id, {
           user: userId,
           updateOrderDto,
-        });
+        }, {new: true} );
 
-        const notification = await this.notificationService.generateNotification(
-          `Order ${order._id} has been changed to ${order.status}`,
-          userId
-        );
+        // const notification = await this.notificationService.generateNotification(
+        //   `Order ${order._id} has been changed to ${order.status}`,
+        //   userId
+        // );
         return order;
       }
     } catch (error) {
