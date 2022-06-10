@@ -180,6 +180,7 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
     try {
+      console.log('Update user api - user service -line 183', updateUserDto,user);
       return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
         new: true,
       });
@@ -190,6 +191,7 @@ export class UserService {
 
   async updateUserByAdmin(updateUserDto: UpdateUserDto, user: User, userId: string): Promise<User> {
     try {
+      console.log('Update user by admin api - user service -line 194', updateUserDto,user)
       if (user.role == 'ADMIN') {
         const userExists = await this.userModel.findById(userId.toString());
         console.log(userExists);
