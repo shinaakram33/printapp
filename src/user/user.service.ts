@@ -191,7 +191,8 @@ export class UserService {
   async updateUserByAdmin(updateUserDto: UpdateUserDto, user: User, userId: string): Promise<User> {
     try {
       if (user.role == 'ADMIN') {
-        const userExists = await this.userModel.findById(userId);
+        const userExists = await this.userModel.findById(userId.toString());
+        console.log(userExists);
         if (!userExists) {
           throw new NotFoundException(`User with id ${userId} does not exists`);
         }
