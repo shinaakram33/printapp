@@ -74,6 +74,13 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @Patch('/updateBtAdmin/:userId')
+  async updateUserByAdmin(@Param('userId') userId: string, @Body() updateUserDto: UpdateUserDto, @GetUser() user: User) {
+    return await this.userService.updateUserByAdmin(updateUserDto, user, userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/delete')
   async delete(@GetUser() user: User) {
     return await this.userService.deleteUser(user);

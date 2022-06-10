@@ -10,13 +10,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 
-import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { User, UserDocument } from './user.model';
 
 import { JwtPayload } from './auth/jwt-payload.interface';
 
+import { Model, ObjectId, Schema as MongooseSchema } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
@@ -183,6 +183,25 @@ export class UserService {
       return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
         new: true,
       });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateUserByAdmin(updateUserDto: UpdateUserDto, user: User, userId: string): Promise<User> {
+    try {
+      if (user.role == 'ADMIN') {
+        const userExists = await this.userModel.findById(userId.toString());
+        console.log(userExists);
+        if (!userExists) {
+          throw new NotFoundException(`User with id ${userId} does not exists`);
+        }
+        return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
+          new: true,
+        });
+      } else {
+        throw new UnauthorizedException('Unauthorized User');
+      }
     } catch (error) {
       throw new BadRequestException(error.message);
     }

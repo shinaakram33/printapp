@@ -7,6 +7,7 @@ import { AddOrderDto } from './dto/add-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { NotificationService } from 'src/notification/notification.service';
 import { SendgridService } from 'src/sendgrid.module';
+import { CodeBuild } from 'aws-sdk';
 
 @Injectable()
 export class OrderService {
@@ -90,14 +91,15 @@ export class OrderService {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
         const order = await this.orderModel.create({
-          user: userId,
+          userId: userId,
           createdBy: user._id,
-          addOrderDto,
+          ...addOrderDto,
         });
-        const notification = await this.notificationService.generateNotification(
-          `Order ${order._id} has been changed to ${order.status}`,
-          userId
-        );
+        // const notification =
+        //   await this.notificationService.generateNotification(
+        //     `Order ${order._id} has been changed to ${order.status}`,
+        //     userId
+        //   );
         return order;
       }
     } catch (error) {
@@ -105,20 +107,20 @@ export class OrderService {
     }
   }
 
-  async updateOrderAdmin(id: String, user: User, updateOrderDto: UpdateOrderDto, userId: string): Promise<any> {
+  async updateOrderAdmin(id: string, user: User, updateOrderDto: UpdateOrderDto, userId: string): Promise<any> {
     try {
+      console.log(id,userId, updateOrderDto, user)
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
-        const order = await this.orderModel.findByIdAndUpdate(id, {
-          user: userId,
-          updateOrderDto,
-        });
+        console.log(updateOrderDto)
+        const order = await this.orderModel.findOneAndUpdate({_id: id},updateOrderDto, { new: true });
 
-        const notification = await this.notificationService.generateNotification(
-          `Order ${order._id} has been changed to ${order.status}`,
-          userId
-        );
+        console.log(order);
+        // const notification = await this.notificationService.generateNotification(
+        //   `Order ${order._id} has been changed to ${order.status}`,
+        //   userId
+        // );
         return order;
       }
     } catch (error) {
