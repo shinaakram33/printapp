@@ -117,6 +117,9 @@ export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
+  createdBy: mongoose.Schema.Types.ObjectId;
+
   @Prop({
     type: [
       {
