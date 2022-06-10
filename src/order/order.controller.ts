@@ -46,7 +46,7 @@ export class OrderController {
   @Patch('/update/:userId/:orderId')
   @UseGuards(AuthGuard('jwt'))
   async updateOrder(
-    @Param('orderId') orderId: String,
+    @Param('orderId') orderId: string,
     @Param('userId') userId: string,
     @GetUser()
     user: User,
