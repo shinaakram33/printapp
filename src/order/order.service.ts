@@ -47,15 +47,15 @@ export class OrderService {
         );
       } else {
         const order = await this.orderModel.create({
-          user: userId,
+          userId: userId,
           createdBy: user._id,
-          addOrderDto,
+          ...addOrderDto,
         });
-        const notification =
-          await this.notificationService.generateNotification(
-            `Order ${order._id} has been changed to ${order.status}`,
-            userId
-          );
+        // const notification =
+        //   await this.notificationService.generateNotification(
+        //     `Order ${order._id} has been changed to ${order.status}`,
+        //     userId
+        //   );
         return order;
       }
     } catch (error) {
