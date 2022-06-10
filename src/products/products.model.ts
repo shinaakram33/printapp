@@ -207,6 +207,9 @@ export class Product {
 
   @Prop({ required: true, type: String })
   date: String;
+
+  @Prop({ required: false, default: false })
+  sendByMail: boolean;
 }
 
 export type productDocument = Product & Document;
