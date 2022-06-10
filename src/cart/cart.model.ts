@@ -164,6 +164,9 @@ export class Cart {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ required: false, default: false })
+  sendByMail: boolean;
+
   @Prop({
     type: [
       {

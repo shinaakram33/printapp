@@ -166,4 +166,8 @@ export class CartAddProductDto {
   @ApiProperty()
   @IsOptional()
   numberOfSides?: String;
+
+  @IsOptional()
+  @ApiProperty()
+  sendByMail: boolean;
 }
