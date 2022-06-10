@@ -196,7 +196,7 @@ export class UserService {
         if (!userExists) {
           throw new NotFoundException(`User with id ${userId} does not exists`);
         }
-        return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
+        return await this.userModel.findOneAndUpdate({_id: userId}, updateUserDto, {
           new: true,
         });
       } else {
