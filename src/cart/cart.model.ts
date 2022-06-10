@@ -188,6 +188,7 @@ export class Cart {
         cut: mongoose.Schema.Types.Mixed,
         window: mongoose.Schema.Types.Mixed,
         folding: mongoose.Schema.Types.Mixed,
+        sendByMail: Boolean
       },
     ],
   })
@@ -211,6 +212,7 @@ export class Cart {
       cut: Cut;
       window: Window;
       folding: Folding;
+      sendByMail: boolean;
     }
   ];
 }
