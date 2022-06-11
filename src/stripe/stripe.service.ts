@@ -47,7 +47,7 @@ export class StripeService {
       );
 
       const charge = await this.stripe.charges.create({
-        amount,
+        amount: Math.round(amount),
         currency: this.configService.get("STRIPE_CURRENCY"),
         customer: user.stripeCustomerId,
         source: card.id,
