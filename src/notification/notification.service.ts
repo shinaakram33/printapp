@@ -10,6 +10,7 @@ import {
   NotificationByDeviceBuilder,
 } from "onesignal-api-client-core";
 import { v4 as uuidv4 } from "uuid";
+import { orderStatus } from "src/order/order.model";
 
 @Injectable()
 export class NotificationService {
@@ -42,7 +43,7 @@ export class NotificationService {
     }
   }
 
-  async generateNotification(message: string, to: string) {
+  async generateNotification(message: string, to: string, orderStatus: orderStatus) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       if (findUserToGetDeviceId.deviceId) {
@@ -52,8 +53,9 @@ export class NotificationService {
           app_url: 'demo://app/home',
         });
         const notification = await this.notificationModel.create({
-          to: to,
+          userId: to,
           message: message,
+          orderStatus,
         });
 
         return notification;

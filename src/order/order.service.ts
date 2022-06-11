@@ -75,7 +75,8 @@ export class OrderService {
 );
       /* const notification = await this.notificationService.generateNotification(
         `Order ${order._id} has been changed to ${order.status}`,
-        user._id.toString()
+        user._id.toString(),
+        order.status
       ); */
       return order;
     } catch (error) {
@@ -98,7 +99,8 @@ export class OrderService {
         // const notification =
         //   await this.notificationService.generateNotification(
         //     `Order ${order._id} has been changed to ${order.status}`,
-        //     userId
+        //     userId,
+        //     order.status
         //   );
         return order;
       }
@@ -109,7 +111,6 @@ export class OrderService {
 
   async updateOrderAdmin(id: string, user: User, updateOrderDto: UpdateOrderDto, userId: string): Promise<any> {
     try {
-      console.log(id,userId, updateOrderDto, user)
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
@@ -117,7 +118,8 @@ export class OrderService {
 
         const notification = await this.notificationService.generateNotification(
           `Order ${order._id} has been changed to ${order.status}`,
-          userId
+          userId,
+          order.status
         );
         return order;
       }
