@@ -180,7 +180,6 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
     try {
-      console.log('Update user api - user service -line 183', updateUserDto,user);
       return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
         new: true,
       });
@@ -191,10 +190,8 @@ export class UserService {
 
   async updateUserByAdmin(updateUserDto: UpdateUserDto, user: User, userId: string): Promise<User> {
     try {
-      console.log('Update user by admin api - user service -line 194', updateUserDto,user)
       if (user.role == 'ADMIN') {
         const userExists = await this.userModel.findById(userId.toString());
-        console.log(userExists);
         if (!userExists) {
           throw new NotFoundException(`User with id ${userId} does not exists`);
         }
@@ -240,6 +237,9 @@ export class UserService {
 
   async deleteAddress(addressId: string, user: User): Promise<any> {
     try {
+      if(!addressId || !user) {
+        throw new BadRequestException();
+      }
       return await this.userModel
         .findByIdAndUpdate(
           user._id,
@@ -303,7 +303,6 @@ export class UserService {
         { safe: true, upsert: true, new: true }
       );
     } catch (error) {
-      console.log(error);
       throw new BadRequestException(error.message);
     }
   }

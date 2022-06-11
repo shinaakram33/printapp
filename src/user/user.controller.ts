@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './auth/get-user.decorator';
 import { AddAddressDto } from './dto/add-address.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -166,6 +166,8 @@ export class UserController {
 
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @ApiParam({name: 'userId'})
+  @ApiParam({name: 'addressId'})
   @Patch('/admin/address/delete/:userId/:addressId')
   async deleteAddressByAdmin(@GetUser() user: User, @Param() params) {
     if (user.role !== 'ADMIN') return new UnauthorizedException('User has no access');
