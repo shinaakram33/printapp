@@ -28,10 +28,11 @@ export class PriceChartService {
 
   async getBooklet(product: string, size: string, innerPageNumber: string): Promise<any> {
     try {
+      let searchQuery
       const priceChart = await this.priceChartModel.find({
         product,
         size,
-        shape: innerPageNumber,
+        innerPageNumber,
       });
       if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;

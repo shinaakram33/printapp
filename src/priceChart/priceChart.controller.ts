@@ -77,6 +77,6 @@ export class PriceChartController {
     @Query("size") size: string,
     @Query("shape") shape: string
   ): Promise<any> {
-    return await this.priceChartService.getBooklet(product, size, shape);
+    return await this.priceChartService.getSticker(product, size, shape);
   }
 }
