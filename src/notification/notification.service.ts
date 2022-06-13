@@ -50,7 +50,7 @@ export class NotificationService {
         const sendNotification = await this.oneSignalService.createNotification({
           contents: { en: message },
           include_player_ids: findUserToGetDeviceId.deviceId,
-          app_url: 'demo://app/home',
+          app_url: 'mychat://activity',
         });
         const notification = await this.notificationModel.create({
           userId: to,
