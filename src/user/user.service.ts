@@ -61,6 +61,7 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<{ accessToken: string, user: User }> {
+    createUserDto.email = createUserDto.email.toLowerCase();
     let user = await this.userModel.findOne({ email: createUserDto.email });
     const stripeCustomer = await this.stripeService.createCustomer(createUserDto.firstName, createUserDto.email);
     if (user) throw new BadRequestException('User already exists!');
@@ -87,6 +88,7 @@ export class UserService {
 
   async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
     try {
+      loginUserDto.email = loginUserDto.email.toLowerCase();
       const user = await this.userModel.findOne({
         email: loginUserDto.email,
       });
@@ -180,6 +182,9 @@ export class UserService {
 
   async updateUser(updateUserDto: UpdateUserDto, user: User): Promise<User> {
     try {
+      if(updateUserDto.email) {
+        updateUserDto.email = updateUserDto.email.toLowerCase();
+      }
       return await this.userModel.findByIdAndUpdate(user._id, updateUserDto, {
         new: true,
       });
@@ -194,6 +199,9 @@ export class UserService {
         const userExists = await this.userModel.findById(userId.toString());
         if (!userExists) {
           throw new NotFoundException(`User with id ${userId} does not exists`);
+        }
+        if(updateUserDto.email) {
+          updateUserDto.email = updateUserDto.email.toLowerCase();
         }
         return await this.userModel.findOneAndUpdate({_id: userId}, updateUserDto, {
           new: true,
@@ -309,6 +317,7 @@ export class UserService {
 
   async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<any> {
     try {
+      forgetPasswordDto.email = forgetPasswordDto.email.toLowerCase();
       const { email } = forgetPasswordDto;
       const resetToken = Math.random().toString(36).substring(4);
       const message = `Your Verification Code is ${resetToken}.`;
@@ -379,6 +388,7 @@ export class UserService {
     }
   }
 /*   public async createUserByAdmin(createUserDto: CreateUserDto) {
+    createUserDto.email = createUserDto.email.toLowerCase();
     const user = this.userModel.findOne({email: createUserDto.email})
     if (user) throw new BadRequestException('User already exists!');
     try {
