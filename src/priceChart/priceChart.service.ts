@@ -31,7 +31,7 @@ export class PriceChartService {
       const priceChart = await this.priceChartModel.find({
         product,
         size,
-        innerPageNumber,
+        shape: innerPageNumber,
       });
       if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
