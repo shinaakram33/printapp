@@ -101,11 +101,11 @@ export class NotificationService {
         },
         {
           $group: {
-            _id: `$createdAt`,
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }},
             notifications:{
               $push: '$$ROOT'
             }
-          },
+          }
         }
       ]);
     } catch (error) {

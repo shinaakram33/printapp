@@ -12,7 +12,7 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @ApiBearerAuth()
-  @Post("/user_test")
+  @Get("/user_test")
   @UseGuards(AuthGuard("jwt"))
   getUserNotificationsAndGroupByDate(@GetUser() user: User): Promise<any> {
     return this.notificationService.getUserNotificationsAndGroupByDate(user);
