@@ -1,16 +1,13 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { Notification, NotificationDocument } from "./notification.model";
-import { User, UserDocument } from "../user/user.model";
-import { InjectModel } from "@nestjs/mongoose";
-import mongoose, { Model, Schema as MongooseSchema } from "mongoose";
-import { OneSignalService } from "onesignal-api-client-nest";
-import { CreateNotificationDto } from "./dto/create-notification.dto";
-import {
-  NotificationBySegmentBuilder,
-  NotificationByDeviceBuilder,
-} from "onesignal-api-client-core";
-import { v4 as uuidv4 } from "uuid";
-import { orderStatus } from "src/order/order.model";
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { Notification, NotificationDocument } from './notification.model';
+import { User, UserDocument } from '../user/user.model';
+import { InjectModel } from '@nestjs/mongoose';
+import mongoose, { Model, Schema as MongooseSchema } from 'mongoose';
+import { OneSignalService } from 'onesignal-api-client-nest';
+import { CreateNotificationDto } from './dto/create-notification.dto';
+import { NotificationBySegmentBuilder, NotificationByDeviceBuilder } from 'onesignal-api-client-core';
+import { v4 as uuidv4 } from 'uuid';
+import { orderStatus } from 'src/order/order.model';
 
 @Injectable()
 export class NotificationService {
@@ -24,9 +21,7 @@ export class NotificationService {
 
   async createNotification(createNotificationDto: CreateNotificationDto) {
     try {
-      const findUserToGetDeviceId = await this.userModel.findById(
-        createNotificationDto.userId
-      );
+      const findUserToGetDeviceId = await this.userModel.findById(createNotificationDto.userId);
 
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: createNotificationDto.message },
@@ -34,9 +29,7 @@ export class NotificationService {
         //app_url: "demo://app/home",
       });
 
-      const notification = await this.notificationModel.create(
-        createNotificationDto
-      );
+      const notification = await this.notificationModel.create(createNotificationDto);
       return notification;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -97,17 +90,36 @@ export class NotificationService {
         {
           $match: {
             userId: new mongoose.Types.ObjectId(user._id.toString()),
-          }
+          },
         },
         {
           $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }},
-            notifications:{
-              $push: '$$ROOT'
-            }
-          }
-        }
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+            notifications: {
+              $push: '$$ROOT',
+            },
+          },
+        },
       ]);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async changeReadStatus(id: string): Promise<any> {
+    try {
+      return await this.notificationModel.findOneAndUpdate({ _id: id }, { isRead: true }, { new: true });
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async changeReadStatusOfAll(): Promise<any> {
+    try {
+      return await this.notificationModel.updateMany(
+        { isRead: false },
+        { $set: { isRead: true } }
+      )
     } catch (error) {
       throw new BadRequestException(error.message);
     }

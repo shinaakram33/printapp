@@ -12,10 +12,24 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @ApiBearerAuth()
-  @Get("/user_test")
+  @Get("/")
   @UseGuards(AuthGuard("jwt"))
   getUserNotificationsAndGroupByDate(@GetUser() user: User): Promise<any> {
     return this.notificationService.getUserNotificationsAndGroupByDate(user);
+  }
+
+  @ApiBearerAuth()
+  @Get("/change/status/:id")
+  @UseGuards(AuthGuard("jwt"))
+  changeReadStatus(@Param('id') id: string): Promise<any> {
+    return this.notificationService.changeReadStatus(id)
+  }
+
+  @ApiBearerAuth()
+  @Get("/change/status/all")
+  @UseGuards(AuthGuard("jwt"))
+  changeReadStatusOfAll(): Promise<any> {
+    return this.notificationService.changeReadStatusOfAll()
   }
 
   @ApiBearerAuth()
