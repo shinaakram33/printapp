@@ -8,12 +8,15 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { NotificationService } from 'src/notification/notification.service';
 import { SendgridService } from 'src/sendgrid.module';
 import { CodeBuild } from 'aws-sdk';
+import { Promocode, PromocodeDocument } from 'src/promocode/promocode.model';
 
 @Injectable()
 export class OrderService {
   private logger = new Logger();
   constructor(
     @InjectModel(Order.name) private orderModel: Model<orderDocument>,
+    @InjectModel(Promocode.name)
+    private promoCodeModel: Model<PromocodeDocument>,
     private notificationService: NotificationService,
     private sendgridService: SendgridService
   ) {}
@@ -57,6 +60,15 @@ export class OrderService {
         createdBy: user._id,
         ...addOrderDto,
       });
+
+      if(addOrderDto.promoCodeApplied){
+        const updatePromoCodeCount = await this.promoCodeModel.findOneAndUpdate(
+          { _id: addOrderDto.promoCodeId },
+          { $inc: { noOfTimeUsed: 1 } },
+          { new: true}
+        )
+      }
+
       await Promise.all( [
               this.sendEmail(
                 user.email,
@@ -73,11 +85,12 @@ export class OrderService {
         ),
       ]
 );
-      /* const notification = await this.notificationService.generateNotification(
-        `Order ${order._id} has been changed to ${order.status}`,
+      const notification = await this.notificationService.generateNotification(
+        `Order ${order._id} was created`,
         user._id.toString(),
-        order.status
-      ); */
+        order.status,
+        order._id
+      );
       return order;
     } catch (error) {
       this.logger.log('Add Order failed', error);
@@ -96,12 +109,13 @@ export class OrderService {
           createdBy: user._id,
           ...addOrderDto,
         });
-        // const notification =
-        //   await this.notificationService.generateNotification(
-        //     `Order ${order._id} has been changed to ${order.status}`,
-        //     userId,
-        //     order.status
-        //   );
+        const notification =
+          await this.notificationService.generateNotification(
+            `Order ${order._id} has been changed to ${order.status}`,
+            userId,
+            order.status,
+            order._id
+          );
         return order;
       }
     } catch (error) {
@@ -119,7 +133,8 @@ export class OrderService {
         const notification = await this.notificationService.generateNotification(
           `Order ${order._id} has been changed to ${order.status}`,
           userId,
-          order.status
+          order.status,
+          order._id
         );
         return order;
       }

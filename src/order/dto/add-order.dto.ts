@@ -245,4 +245,12 @@ export class AddOrderDto {
   @IsOptional()
   @ApiProperty()
   sendByMail: boolean;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  promoCodeApplied: boolean;
+
+  @IsOptional()
+  @ApiProperty()
+  promoCodeId: string;
 }

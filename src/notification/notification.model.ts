@@ -11,6 +11,9 @@ export class Notification {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "Order" })
+  orderId: mongoose.Schema.Types.ObjectId;
+
   @Prop({ default: false })
   isRead: boolean;
 

@@ -12,5 +12,6 @@ import { Promocode, PromocodeSchema } from "./promocode.model";
   ],
   providers: [PromocodeService],
   controllers: [PromocodeController],
+  exports: [PromocodeService]
 })
 export class PromocodeModule {}

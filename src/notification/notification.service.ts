@@ -36,7 +36,7 @@ export class NotificationService {
     }
   }
 
-  async generateNotification(message: string, to: string, orderStatus: orderStatus) {
+  async generateNotification(message: string, to: string, orderStatus: orderStatus, orderId: String) {
     try {
       const findUserToGetDeviceId = await this.userModel.findById(to);
       if (findUserToGetDeviceId.deviceId) {
@@ -49,6 +49,7 @@ export class NotificationService {
           userId: to,
           message: message,
           orderStatus,
+          orderId
         });
 
         return notification;
@@ -63,13 +64,13 @@ export class NotificationService {
     try {
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: 'Testing Notifications' },
-        include_player_ids: ['6c14155f-1822-4174-9f63-8a78ed09730b'],
+        include_player_ids: ['b94b95d5-e1d2-4b5f-abc0-a2792353ee0e'],
         app_url: 'demo://app/splash',
       });
-      const notification = await this.notificationModel.create({
-        userId: '62a2f123d287a98f522c7995',
-        message: 'TEST',
-      });
+      // const notification = await this.notificationModel.create({
+      //   userId: '62a2f123d287a98f522c7995',
+      //   message: 'TEST',
+      // });
       return sendNotification;
     } catch (error) {
       throw new BadRequestException(error.message);
