@@ -145,7 +145,7 @@ export class OrderService {
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
-        return await this.orderModel.find();
+        return await this.orderModel.find().populate('createdBy userId');
       }
     } catch (error) {
       throw new BadRequestException(error.message);
