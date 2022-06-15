@@ -1,14 +1,14 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document, Schema as MongooseSchema } from "mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 export enum CategoryTypes {
-  BUSINESS_CARD = "BUSINESS_CARD",
-  BOOKLET = "BOOKLET",
-  POSTER = "POSTER",
-  FLYERS_LEAFLET = "FLYERS_LEAFLET",
-  STICKERS_LABEL = "STICKERS_LABEL",
-  ENVELOPE = "ENVELOPE",
-  LETTERHEAD = "LETTERHEAD",
+  BUSINESS_CARD = 'BUSINESS_CARD',
+  BOOKLET = 'BOOKLET',
+  POSTER = 'POSTER',
+  FLYERS_LEAFLET = 'FLYERS_LEAFLET',
+  STICKERS_LABEL = 'STICKERS_LABEL',
+  ENVELOPE = 'ENVELOPE',
+  LETTERHEAD = 'LETTERHEAD',
 }
 
 class Category extends Document {
@@ -210,6 +210,8 @@ export class Product {
 
   @Prop({ required: false, default: false })
   sendByMail: boolean;
+  @Prop({ required: false, default: true })
+  isActive: boolean;
 }
 
 export type productDocument = Product & Document;

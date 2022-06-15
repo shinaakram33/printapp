@@ -29,6 +29,10 @@ class Category {
   @ApiProperty()
   @IsOptional()
   sizes?: String;
+
+  @ApiProperty()
+  @IsOptional()
+  isActive?: Boolean;
 }
 
 // class NumberOfPages {
