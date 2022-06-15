@@ -210,6 +210,7 @@ export class Product {
 
   @Prop({ required: false, default: false })
   sendByMail: boolean;
+  
   @Prop({ required: false, default: true })
   isActive: boolean;
 }

@@ -30,9 +30,6 @@ class Category {
   @IsOptional()
   sizes?: String;
 
-  @ApiProperty()
-  @IsOptional()
-  isActive?: Boolean;
 }
 
 // class NumberOfPages {
@@ -205,4 +202,8 @@ export class UpdateProductDto {
   @ApiProperty()
   @IsOptional()
   status: String;
+
+  @ApiProperty()
+  @IsOptional()
+  isActive?: Boolean;
 }
