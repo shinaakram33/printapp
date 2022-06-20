@@ -1,12 +1,8 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model, Schema as MongooseSchema } from "mongoose";
-import { ConfigService } from "@nestjs/config";
-import { PriceChart, priceChartDocument } from "./priceChart.model";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Schema as MongooseSchema } from 'mongoose';
+import { ConfigService } from '@nestjs/config';
+import { PriceChart, priceChartDocument } from './priceChart.model';
 
 @Injectable()
 export class PriceChartService {
@@ -16,47 +12,29 @@ export class PriceChartService {
     private configService: ConfigService
   ) {}
 
-  async getBussinessCard(
-    product: String,
-    size: String,
-    corner: String,
-    spotUVSide: String
-  ): Promise<any> {
+  async getBussinessCard(product: string, size: string, corner: string, spotUVSide: string): Promise<any> {
     try {
-      let priceChart;
-      if (spotUVSide) {
-        priceChart = await this.priceChartModel.find({
-          product,
-          size,
-          corner,
-          spotUVSide,
-        });
-      } else {
-        priceChart = await this.priceChartModel.find({
-          product,
-          size,
-          corner,
-        });
-      }
-      if (!priceChart) throw new NotFoundException("No data found");
-      else return priceChart;
+      const priceChartParams: any = { product, size, corner };
+      if (spotUVSide) priceChartParams.spotUVSide = spotUVSide;
+
+      const priceChart = await this.priceChartModel.find(priceChartParams);
+
+      if (!priceChart) throw new NotFoundException('No data found');
+      return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async getBooklet(
-    product: String,
-    size: String,
-    innerPageNumber: String
-  ): Promise<any> {
+  async getBooklet(product: string, size: string, innerPageNumber: string): Promise<any> {
     try {
+      let searchQuery
       const priceChart = await this.priceChartModel.find({
         product,
         size,
         innerPageNumber,
       });
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -69,19 +47,14 @@ export class PriceChartService {
         product,
         window,
       });
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async getFlyer(
-    product: String,
-    size: String,
-    paperType: String,
-    folding: String
-  ): Promise<any> {
+  async getFlyer(product: String, size: String, paperType: String, folding: String): Promise<any> {
     try {
       let priceChart;
       if (folding) {
@@ -98,7 +71,7 @@ export class PriceChartService {
           paperType,
         });
       }
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -108,19 +81,14 @@ export class PriceChartService {
   async getletterhead(product: String): Promise<any> {
     try {
       const priceChart = await this.priceChartModel.find({ product });
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  async getPoster(
-    product: String,
-    size: String,
-    paperType: String,
-    sides: String
-  ): Promise<any> {
+  async getPoster(product: String, size: String, paperType: String, sides: String): Promise<any> {
     try {
       const priceChart = await this.priceChartModel.find({
         product,
@@ -128,7 +96,7 @@ export class PriceChartService {
         paperType,
         sides,
       });
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -142,7 +110,7 @@ export class PriceChartService {
         size,
         shape,
       });
-      if (!priceChart) throw new NotFoundException("No data found");
+      if (!priceChart) throw new NotFoundException('No data found');
       else return priceChart;
     } catch (error) {
       throw new BadRequestException(error.message);

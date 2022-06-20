@@ -40,4 +40,8 @@ export class UpdatePromocodeDto {
   @IsOptional()
   @ApiProperty()
   promoType: PromoType;
+
+  @ApiProperty()
+  @IsOptional()
+  isActive?: Boolean;
 }

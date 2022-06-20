@@ -94,7 +94,10 @@ export class PromocodeService {
 
   async getPromocodeByName(user: User, name: String) {
     try {
-      return await this.promocodeModel.find({ name });
+      return await this.promocodeModel.find({
+        name: name,
+        isActive: true
+      });
     } catch (error) {
       throw new BadRequestException(error.message);
     }

@@ -164,6 +164,9 @@ export class Cart {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: 'User' })
   userId: mongoose.Schema.Types.ObjectId;
 
+  @Prop({ required: false, default: false })
+  sendByMail: boolean;
+
   @Prop({
     type: [
       {
@@ -185,6 +188,7 @@ export class Cart {
         cut: mongoose.Schema.Types.Mixed,
         window: mongoose.Schema.Types.Mixed,
         folding: mongoose.Schema.Types.Mixed,
+        sendByMail: Boolean
       },
     ],
   })
@@ -208,6 +212,7 @@ export class Cart {
       cut: Cut;
       window: Window;
       folding: Folding;
+      sendByMail: boolean;
     }
   ];
 }

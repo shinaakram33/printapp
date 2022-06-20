@@ -201,7 +201,6 @@ class Product {
   @IsOptional()
   numberOfSides?: String;
 }
-
 export class AddOrderDto {
   @ApiProperty()
   @IsNotEmpty()
@@ -238,4 +237,20 @@ export class AddOrderDto {
   @IsNotEmpty()
   @ApiProperty()
   status: orderStatus;
+
+  @IsOptional()
+  @ApiProperty()
+  deliveryCost: number;
+
+  @IsOptional()
+  @ApiProperty()
+  sendByMail: boolean;
+
+  @IsNotEmpty()
+  @ApiProperty()
+  promoCodeApplied: boolean;
+
+  @IsOptional()
+  @ApiProperty()
+  promoCodeId: string;
 }

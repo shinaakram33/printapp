@@ -226,4 +226,8 @@ export class AddProductDto {
   @ApiProperty()
   @IsNotEmpty()
   date: String;
+
+  @IsOptional()
+  @ApiProperty()
+  sendByMail: boolean;
 }

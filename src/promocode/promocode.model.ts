@@ -39,6 +39,9 @@ export class Promocode {
 
   @Prop({ required: true })
   date: String;
+
+  @Prop({ required: false, default: true })
+  isActive: boolean;
 }
 
 export type PromocodeDocument = Promocode & Document;
