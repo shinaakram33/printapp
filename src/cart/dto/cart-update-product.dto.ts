@@ -127,6 +127,11 @@ export class CartUpdateProductDto {
 
   @ApiProperty()
   @IsOptional()
+  designFileUrl?: String;
+
+
+  @ApiProperty()
+  @IsOptional()
   remarks?: String;
 
   @ApiProperty()

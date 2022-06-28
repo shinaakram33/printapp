@@ -163,6 +163,10 @@ class Product {
 
   @ApiProperty()
   @IsOptional()
+  designFileUrl: String[];
+
+  @ApiProperty()
+  @IsOptional()
   remarks: String;
 
   @ApiProperty()

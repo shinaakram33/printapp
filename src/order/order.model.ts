@@ -130,6 +130,7 @@ export class Order {
         priceChart: { type: mongoose.Schema.Types.Mixed },
         preview: Boolean,
         designUrl: [String],
+        designFileUrl: [String],
         remarks: String,
         corner: mongoose.Schema.Types.Mixed,
         paperType: String,
@@ -152,6 +153,7 @@ export class Order {
       priceChart: { type: PriceChart };
       preview: Boolean;
       designUrl: [String];
+      designFileUrl: [String];
       remarks: String;
       corner: Corner;
       paperType: String;

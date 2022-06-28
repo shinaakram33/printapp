@@ -180,6 +180,10 @@ export class AddProductDto {
   designUrl: String[];
 
   @ApiProperty()
+  @IsOptional()
+  designFileUrl: String[];
+
+  @ApiProperty()
   @IsNotEmpty()
   remarks: String;
 

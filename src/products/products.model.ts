@@ -166,6 +166,9 @@ export class Product {
   @Prop({ required: true })
   designUrl: String[];
 
+  @Prop({ required: false })
+  designFileUrl: String[];
+
   @Prop({ required: true })
   remarks: String;
 

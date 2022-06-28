@@ -128,6 +128,9 @@ export class Product extends Document {
   @Prop({ required: true })
   designUrl: String;
 
+  @Prop({ required: false })
+  designFileUrl: String;
+
   @Prop({ required: true })
   remarks: String;
 
