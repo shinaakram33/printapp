@@ -72,7 +72,7 @@ export class OrderService {
               this.sendEmail(
                 user.email,
                 'Order Detail',
-                `Order ${order._id} was created by ${user.firstName} having order amount=${order.total}`
+                `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}. Order has payment method is ${order.paymentMethod}`
               ),
             ]
       );
@@ -80,7 +80,7 @@ export class OrderService {
         this.sendEmail(
           'admin@printprint.com.hk',
           'Order Detail',
-          `Order ${order._id} was created by ${user.firstName} having order amount=${order.total}`
+          `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}. Order has payment method is ${order.paymentMethod}`
         ),
       ]
 );
