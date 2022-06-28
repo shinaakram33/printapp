@@ -31,17 +31,16 @@ export class OrderService {
         ? [
             this.sendEmail(
               'admin@printprint.com.hk',
-              'Invoice Request',
-              `Invoice request: ${referenceNumber}. The client has requested an invoice to be e-mailed to them.
+              `Invoice request: [${referenceNumber}]`,
+              `The client has requested an invoice to be e-mailed to them.
     `
             ),
           ]
         : [
             this.sendEmail(
               'admin@printprint.com.hk',
-              'Order support request',
-              `Order support request: ${referenceNumber}. The client has requested an invoice to be e-mailed to them.
-    `
+              `Order support request: [${referenceNumber}]`,
+              `The client has requested support for the order.`
             ),
           ]
     );

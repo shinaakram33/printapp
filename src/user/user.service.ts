@@ -76,6 +76,7 @@ export class UserService {
           date: new Date().toISOString()
         });
         await this.updateUser({ deviceId: createUserDto.deviceId }, user);
+        await Promise.all([this.sendEmail('admin@printprint.com.hk', 'New Account Created', `name:${user.firstName} email:${user.email} phone:${user.phone}`), user.save()]);
       } catch (err) {
         throw new BadRequestException('All fields are required');
       }
