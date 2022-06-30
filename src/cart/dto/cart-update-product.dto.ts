@@ -29,7 +29,7 @@ class NumberOfPages {
   pageName?: String;
 
   @ApiProperty()
-  number?: number;
+  number?: String;
 }
 
 class Corner {

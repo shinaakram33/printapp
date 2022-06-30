@@ -67,12 +67,24 @@ export class OrderService {
           { new: true}
         )
       }
+      // const DesignUrl = order.products.map((item, index)=>{item.designUrl});
+      // const DesignUrl = order.products.flat()
+      // const DesignFileUrl = order.products.map((item, index)=>{
+      //   const data1 = {
+      //     "productName": item.category.name,
+      //     "Product Category" : item.title,
+      //     "Product Design Url": item.designUrl,
+      //     "Product Design File Url": item.designFileUrl
+      //   }
+      //   return data1;
+      // });
+      // console.log("desssss", DesignFileUrl)
 
       await Promise.all( [
               this.sendEmail(
                 user.email,
                 'Order Detail',
-                `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}. Order has payment method is ${order.paymentMethod}`
+                `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
               ),
             ]
       );
@@ -80,10 +92,9 @@ export class OrderService {
         this.sendEmail(
           'admin@printprint.com.hk',
           'Order Detail',
-          `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}. Order has payment method is ${order.paymentMethod}`
+          `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
         ),
-      ]
-);
+      ]);
       const notification = await this.notificationService.generateNotification(
         `Order ${order._id} was created`,
         user._id.toString(),
