@@ -54,6 +54,7 @@ export class OrderService {
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
+      const getLastOrder = await this.orderModel.find({}).sort({createdAt:-1}).limit(1);
       const order = await this.orderModel.create({
         userId: user._id,
         createdBy: user._id,
@@ -193,5 +194,9 @@ export class OrderService {
     return this.orderModel
       .find({ userId, status: { $in: [orderStatus.COMPLETED, orderStatus.CANCELLED] } })
       .populate('createdBy userId');
+  }
+
+  async test() {
+    return this.orderModel.find()
   }
 }

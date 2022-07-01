@@ -112,7 +112,9 @@ class Folding extends Document {
   @Prop()
   foldingWidth: String;
 }
-@Schema()
+@Schema({
+  timestamps: true
+})
 export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;
