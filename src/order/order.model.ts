@@ -112,7 +112,9 @@ class Folding extends Document {
   @Prop()
   foldingWidth: String;
 }
-@Schema()
+@Schema({
+  timestamps: true
+})
 export class Order {
   @Prop({ required: true, type: mongoose.Schema.Types.ObjectId, ref: "User" })
   userId: mongoose.Schema.Types.ObjectId;
@@ -130,6 +132,7 @@ export class Order {
         priceChart: { type: mongoose.Schema.Types.Mixed },
         preview: Boolean,
         designUrl: [String],
+        designFileUrl: [String],
         remarks: String,
         corner: mongoose.Schema.Types.Mixed,
         paperType: String,
@@ -152,6 +155,7 @@ export class Order {
       priceChart: { type: PriceChart };
       preview: Boolean;
       designUrl: [String];
+      designFileUrl: [String];
       remarks: String;
       corner: Corner;
       paperType: String;
@@ -164,6 +168,9 @@ export class Order {
       folding: Folding;
     }
   ];
+
+  @Prop({ required: true })
+  orderRefrence: String;
 
   @Prop({ required: true })
   orderDate: String;
@@ -191,6 +198,9 @@ export class Order {
 
   @Prop({ required: false })
   deliveryCost: number;
+
+  @Prop({ required: false })
+  createdAt: Date;
 
   @Prop({ required: false, default: false })
   sendByMail: boolean;

@@ -59,7 +59,7 @@ class NumberOfPages extends Document {
   pageName: String;
 
   @Prop()
-  number: number;
+  number: String;
 }
 
 class Corner extends Document {
@@ -128,6 +128,9 @@ export class Product extends Document {
   @Prop({ required: true })
   designUrl: String;
 
+  @Prop({ required: false })
+  designFileUrl: String;
+
   @Prop({ required: true })
   remarks: String;
 
@@ -178,6 +181,7 @@ export class Cart {
         priceChart: mongoose.Schema.Types.Mixed,
         preview: Boolean,
         designUrl: [String],
+        designFileUrl: [String],
         remarks: String,
         corner: mongoose.Schema.Types.Mixed,
         paperType: String,
@@ -202,6 +206,7 @@ export class Cart {
       priceChart: PriceChart;
       preview: Boolean;
       designUrl: String[];
+      designFileUrl: String[],
       remarks: String;
       corner: Corner;
       paperType: String;

@@ -29,7 +29,7 @@ class NumberOfPages {
   pageName?: String;
 
   @ApiProperty()
-  number?: number;
+  number?: String;
 }
 
 class Corner {
@@ -124,6 +124,11 @@ export class CartUpdateProductDto {
   @ApiProperty()
   @IsOptional()
   designUrl?: String;
+
+  @ApiProperty()
+  @IsOptional()
+  designFileUrl?: String;
+
 
   @ApiProperty()
   @IsOptional()
