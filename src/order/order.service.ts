@@ -137,7 +137,7 @@ export class OrderService {
   }
 
   //for admin
-  async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<Order> {
+  async addOrderAdmin(user: User, addOrderDto: AddOrderDto, userId: string): Promise<any> {
     try {
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
