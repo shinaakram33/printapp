@@ -170,6 +170,9 @@ export class Order {
   ];
 
   @Prop({ required: true })
+  orderRefrence: String;
+
+  @Prop({ required: true })
   orderDate: String;
 
   @Prop({ required: true })
@@ -195,6 +198,9 @@ export class Order {
 
   @Prop({ required: false })
   deliveryCost: number;
+
+  @Prop({ required: false })
+  createdAt: Date;
 
   @Prop({ required: false, default: false })
   sendByMail: boolean;

@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -22,7 +23,7 @@ export class OrderService {
   ) {}
 
   private sendEmail(to: string, subject: string, text: string): Promise<void> {
-    return this.sendgridService.sendMail({ to, subject, text });
+    return this.sendgridService.sendMail({ to, subject, text});
   }
 
   async postSupportEmail(user: User, referenceNumber: string, isInvoie: string) {
@@ -54,10 +55,36 @@ export class OrderService {
 
   async addOrder(user: User, addOrderDto: AddOrderDto): Promise<any> {
     try {
+      const currentDate = new Date();
+      let refrenceId='';
       const getLastOrder = await this.orderModel.find({}).sort({createdAt:-1}).limit(1);
+      
+      const currentDateMonth = moment(new Date()).format('MM');
+      const currentDateYear = moment(new Date()).format('YYYY');
+
+      if(getLastOrder.length>0){
+        const getLastOrderDate = getLastOrder[0].createdAt;
+        const month = moment(getLastOrderDate).format('MM');  
+        const orderRefrence = getLastOrder[0].orderRefrence;
+        const count = orderRefrence.split('-');
+        let countInNumber = parseInt(count[1]);
+        if(currentDateMonth == month){
+         const newOrderRefrenceCount = countInNumber+1;
+          refrenceId = `PP${currentDateYear}${currentDateMonth}-${newOrderRefrenceCount}`
+        }
+        else{
+          refrenceId = `PP${currentDateYear}${currentDateMonth}-1041`;
+        }
+      }
+      else{
+         refrenceId = `PP${currentDateYear}${currentDateMonth}-1041`;
+      }
+     
+
       const order = await this.orderModel.create({
         userId: user._id,
         createdBy: user._id,
+        orderRefrence: refrenceId,
         ...addOrderDto,
       });
 
@@ -85,7 +112,7 @@ export class OrderService {
               this.sendEmail(
                 user.email,
                 'Order Detail',
-                `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
+                `Order ${order.orderRefrence} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
               ),
             ]
       );
@@ -93,11 +120,11 @@ export class OrderService {
         this.sendEmail(
           'admin@printprint.com.hk',
           'Order Detail',
-          `Order ${order._id} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
+          `Order ${order.orderRefrence} was created by ${user.firstName} having order subTotal=${order.subTotal} and amount=${order.total}.Order has payment method is ${order.paymentMethod}.`
         ),
       ]);
       const notification = await this.notificationService.generateNotification(
-        `Order ${order._id} was created`,
+        `Order ${order.orderRefrence} was created`,
         user._id.toString(),
         order.status,
         order._id
@@ -115,14 +142,44 @@ export class OrderService {
       if (!user || user.role == 'USER') {
         throw new UnauthorizedException('You are not authorize to perform this operation.');
       } else {
+
+        const currentDate = new Date();
+      let refrenceId='';
+      const getLastOrder = await this.orderModel.find({}).sort({createdAt:-1}).limit(1);
+      
+      const currentDateMonth = moment(new Date()).format('MM');
+      const currentDateYear = moment(new Date()).format('YYYY');
+
+      if(getLastOrder.length>0){
+        const getLastOrderDate = getLastOrder[0].createdAt;
+        const month = moment(getLastOrderDate).format('MM');  
+        const orderRefrence = getLastOrder[0].orderRefrence;
+        const count = orderRefrence.split('-');
+        let countInNumber = parseInt(count[1]);
+        if(currentDateMonth == month){
+         const newOrderRefrenceCount = countInNumber+1;
+          refrenceId = `PP${currentDateYear}${currentDateMonth}-${newOrderRefrenceCount}`
+        }
+        else{
+          refrenceId = `PP${currentDateYear}${currentDateMonth}-1041`;
+        }
+      }
+      else{
+         refrenceId = `PP${currentDateYear}${currentDateMonth}-1041`;
+      }
+     
+
+
+
         const order = await this.orderModel.create({
           userId: userId,
           createdBy: user._id,
+          orderRefrence: refrenceId,
           ...addOrderDto,
         });
         const notification =
           await this.notificationService.generateNotification(
-            `Order ${order._id} has been changed to ${order.status}`,
+            `Order ${order.orderRefrence} has been changed to ${order.status}`,
             userId,
             order.status,
             order._id
@@ -142,7 +199,7 @@ export class OrderService {
         const order = await this.orderModel.findOneAndUpdate({_id: id},updateOrderDto, { new: true });
 
         const notification = await this.notificationService.generateNotification(
-          `Order ${order._id} has been changed to ${order.status}`,
+          `Order ${order.orderRefrence} has been changed to ${order.status}`,
           userId,
           order.status,
           order._id
