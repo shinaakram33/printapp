@@ -26,7 +26,6 @@ export class NotificationService {
       const sendNotification = await this.oneSignalService.createNotification({
         contents: { en: createNotificationDto.message },
         include_player_ids: findUserToGetDeviceId.deviceId,
-        //app_url: "demo://app/home",
       });
 
       const notification = await this.notificationModel.create(createNotificationDto);
@@ -125,4 +124,5 @@ export class NotificationService {
       throw new BadRequestException(error.message);
     }
   }
+
 }
